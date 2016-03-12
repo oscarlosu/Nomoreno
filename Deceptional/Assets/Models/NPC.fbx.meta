@@ -60,7 +60,7 @@ ModelImporter:
     4300004: shoes
     4300006: top_hat
     4300008: head_and_hands
-    7400000: Take 001
+    7400000: Walk
     9500000: //RootNode
     11100000: //RootNode
     13700000: head_and_hands
@@ -82,13 +82,91 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Walk
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 100
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hat
+        weight: 1
+      - path: head_and_hands
+        weight: 1
+      - path: jacket
+        weight: 1
+      - path: pants
+        weight: 1
+      - path: Root
+        weight: 1
+      - path: Root/chest
+        weight: 1
+      - path: Root/chest/head
+        weight: 1
+      - path: Root/chest/leftshoulder
+        weight: 1
+      - path: Root/chest/leftshoulder/leftelbow
+        weight: 1
+      - path: Root/chest/leftshoulder/leftelbow/lefthand
+        weight: 1
+      - path: Root/chest/rightshoulder
+        weight: 1
+      - path: Root/chest/rightshoulder/rightelbow
+        weight: 1
+      - path: Root/chest/rightshoulder/rightelbow/righthand
+        weight: 1
+      - path: Root/hipgroin
+        weight: 1
+      - path: Root/hipgroin/lefthip
+        weight: 1
+      - path: Root/hipgroin/lefthip/leftknee
+        weight: 1
+      - path: Root/hipgroin/lefthip/leftknee/leftfoot
+        weight: 1
+      - path: Root/hipgroin/lefthip/leftknee/leftfoot/lefttoe
+        weight: 1
+      - path: Root/hipgroin/righthip
+        weight: 1
+      - path: Root/hipgroin/righthip/rightknee
+        weight: 1
+      - path: Root/hipgroin/righthip/rightknee/rightfoot
+        weight: 1
+      - path: Root/hipgroin/righthip/rightknee/rightfoot/righttoe
+        weight: 1
+      - path: shoes
+        weight: 1
+      - path: top_hat
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0.96
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -126,7 +204,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 1
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
