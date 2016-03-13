@@ -111,6 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: 
+  Index: 0
   HeadRenderer: {fileID: 179052656}
   TorsoRenderer: {fileID: 196874570}
   LegsRenderer: {fileID: 2144975309}

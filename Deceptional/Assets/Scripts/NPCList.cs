@@ -1,0 +1,40 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+/**
+*   Singleton class that holds a list of the NPCs present in the scene
+*
+*/
+public class NPCList
+{
+    private static NPCList instance;
+    public static NPCList Instance
+    {
+        get
+        {
+            if(instance == null)
+            {
+                instance = new NPCList();
+            }
+            return instance;
+        }
+    }
+    private List<NPC> list;
+
+    public NPCList()
+    {
+        list = new List<NPC>();
+    }
+    public void Add(NPC npc)
+    {
+        list.Add(npc);
+    }
+    public int Count
+    {
+        get
+        {
+            return list.Count;
+        }
+    }
+}
