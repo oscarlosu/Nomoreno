@@ -26,6 +26,10 @@ public class NPCList : IEnumerable
     {
         list = new List<NPC>();
     }
+    public NPC Get(int index)
+    {
+        return list[index];
+    }
     public void Add(NPC npc)
     {
         list.Add(npc);
