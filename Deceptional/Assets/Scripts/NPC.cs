@@ -44,11 +44,10 @@ public class NPC : MonoBehaviour, IPointerClickHandler
     [Tooltip("The higher the value, the higher the chance to Mingle and the lower the chance to Roam. [0, 1]")]
     public float MingleRoamChanceRatio;
 
-
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("Clicked on " + name);
-    }
+}
 
 
     // Use this for initialization

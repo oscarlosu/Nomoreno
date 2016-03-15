@@ -3,16 +3,18 @@ using System.Collections;
 
 public class ButtonTester : MonoBehaviour {
 
+    public TextMesh tm;
+
 	public void ArrestButton()
     {
-        Debug.Log("Arrest");
+        tm.text = "Arrest";
     }
     public void AccuseButton()
     {
-        Debug.Log("You are lying!");
+        tm.text = "You Lie!";
     }
     public void CallInButton()
     {
-        Debug.Log("Call In");
+        tm.text = "Call in";
     }
 }
