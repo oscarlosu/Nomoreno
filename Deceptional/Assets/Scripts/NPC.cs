@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
-public class NPC : MonoBehaviour
+public class NPC : MonoBehaviour, IPointerClickHandler
 {
     public string Name;
     /**
@@ -18,9 +19,12 @@ public class NPC : MonoBehaviour
     public bool IsKiller { get; set; }
     //public bool IsKiller    
 
-    public SkinnedMeshRenderer HeadRenderer;
-    public SkinnedMeshRenderer TorsoRenderer;
-    public SkinnedMeshRenderer LegsRenderer;
+    public MeshFilter HeadMeshFilter;
+    public MeshRenderer HeadRenderer;
+    public MeshFilter TorsoMeshFilter;
+    public MeshRenderer TorsoRenderer;
+    public MeshFilter LegsMeshFilter;
+    public MeshRenderer LegsRenderer;
 
     private NPCPart head;
     private NPCPart torso;
@@ -37,6 +41,14 @@ public class NPC : MonoBehaviour
     public float MinglingDuration;
     public Vector3 WaitingRoomMin;
     public Vector3 WaitingRoomMax;
+    [Tooltip("The higher the value, the higher the chance to Mingle and the lower the chance to Roam. [0, 1]")]
+    public float MingleRoamChanceRatio;
+
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("Clicked on " + name);
+    }
 
 
     // Use this for initialization
@@ -50,7 +62,9 @@ public class NPC : MonoBehaviour
         Index = NPCList.Instance.Count;
         NPCList.Instance.Add(this);
         // NPCs always start waiting
-        StartCoroutine(Waiting());
+        //StartCoroutine(Waiting());
+
+        
         /*
         // TESTS
         // Assemble test
@@ -71,14 +85,14 @@ public class NPC : MonoBehaviour
         this.legs = legs;
         // Load meshes and materials
         // Head
-        HeadRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + this.head.Type.ToString());
-        HeadRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + this.head.Description.ToString());
+        HeadMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.head.Type.ToString());
+        HeadRenderer.material = Resources.Load<Material>("Materials/" + this.head.Description.ToString());
         // Torso
-        TorsoRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + this.torso.Type.ToString());
-        TorsoRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + this.torso.Description.ToString());
+        TorsoMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.torso.Type.ToString());
+        TorsoRenderer.material = Resources.Load<Material>("Materials/" + this.torso.Description.ToString());
         // Legs
-        LegsRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + this.legs.Type.ToString());
-        LegsRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + this.legs.Description.ToString());
+        LegsMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.legs.Type.ToString());
+        LegsRenderer.material = Resources.Load<Material>("Materials/" + this.legs.Description.ToString());
     }
 
     private IEnumerator HandleWalkAnimation()
@@ -102,7 +116,7 @@ public class NPC : MonoBehaviour
             if (Random.Range(0.0f, 1.0f) < BehaviourChangeChance)
             {
                 // Select Roam or Mingle
-                if(Random.Range(0, 2) == 0)
+                if(Random.Range(0.0f, 1.0f) < MingleRoamChanceRatio)
                 {
                     StartCoroutine(Mingle());
                 }
