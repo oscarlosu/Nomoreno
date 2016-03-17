@@ -1,0 +1,15 @@
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\Assembly-CSharp.dll
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\Assembly-CSharp.pdb
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\UnityEditor.dll
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\UnityEditor.iOS.Extensions.Xcode.dll
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\UnityEngine.dll
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\UnityEngine.Networking.dll
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\UnityEngine.UI.dll
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\UnityEngine.xml
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\UnityEngine.UI.xml
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\UnityEngine.Networking.xml
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\UnityEditor.xml
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_bin\Debug\UnityEditor.iOS.Extensions.Xcode.xml
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_obj\Debug\Deceptional.CSharp.csprojResolveAssemblyReference.cache
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_obj\Debug\Assembly-CSharp.dll
+D:\Projects\MSU\MSU-Game\Nomoreno\Deceptional\Temp\UnityVS_obj\Debug\Assembly-CSharp.pdb

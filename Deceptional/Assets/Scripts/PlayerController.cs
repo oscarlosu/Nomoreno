@@ -39,16 +39,21 @@ namespace Assets.Scripts {
 
         public void DisplayConversation() {
             // Set UI text to CurrentInterrogationTarget.Conversation.Statement
-            // OR
-            // CurrentInterrogationTarget.Conversation.Show()
         }
 
         public void Arrest() {
-            // Arrest the NPC
-            foreach (NPC poi in NPC.NPCList) {
-                poi.Conversation.ShownStatement = "I think we are done here"; // Placeholder for "ArrestStatement".
-                poi.Conversation.Disable();
-            }
+            // Check if victorious. Else ->
+            // Make NPC angry + Make invulnerable.
+            NPC currentInterrogationNPC = CurrentInterrogationTarget.GetComponent<NPC>();
+            if (currentInterrogationNPC.IsKiller) { /* Run Victory */ }
+            else currentInterrogationNPC.Mood = false;
+
+            // Disables NPCS. 
+            // (Obsolete, should skip to next day).
+            //foreach (NPC poi in NPCList.Instance) {
+            //    poi.Conversation.ShownStatement = "I think we are done here"; // Placeholder for "ArrestStatement".
+            //    poi.Conversation.Disable();
+            //}
             NextDay();
         }
         public void Accuse() { CurrentInterrogationTarget.Conversation.Next(false); }
@@ -56,13 +61,18 @@ namespace Assets.Scripts {
         public void Dismiss() {
             CurrentInterrogationTarget.GoToWaiting();
             CurrentInterrogationTarget = null;
+            if (UseRealTime && currentTime == 0)
+                NextDay();
+            else if (!UseRealTime && interactionCount == 0)
+                NextDay();
         }
+        
         public void NextDay() {
-            if (CurrentInterrogationTarget != null)
-                Dismiss();
-
             currentTime = dayDuration;
             interactionCount = dailyInteracions;
+            // Hard-reset the scene.
+            // Disable scene.
+            // Murder new witness.
         }
         #endregion
     }
