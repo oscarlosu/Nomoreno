@@ -5,7 +5,9 @@ using UnityEngine.EventSystems;
 
 public class NPC : MonoBehaviour, IPointerClickHandler
 {
+    public static List<NPC> NPCList;
     public string Name;
+    public bool IsMale;
     /**
     *  Index of this NPC in NPCList
     *
@@ -44,6 +46,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler
     [Tooltip("The higher the value, the higher the chance to Mingle and the lower the chance to Roam. [0, 1]")]
     public float MingleRoamChanceRatio;
 
+    public bool CanMingle;
+    public int MaxSelectionAttempts;
+
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("Clicked on " + name);
@@ -58,22 +63,12 @@ public class NPC : MonoBehaviour, IPointerClickHandler
         navAgent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         // Save index and add self to NPCList
-        Index = NPCList.Instance.Count;
-        NPCList.Instance.Add(this);
-        // NPCs always start waiting
-        //StartCoroutine(Waiting());
+        Index = NPC.NPCList.Count;
+        NPC.NPCList.Add(this);
 
-        
-        /*
-        // TESTS
-        // Assemble test
-        NPCPart head = new NPCPart(NPCPart.NPCPartType.Hat, NPCPart.NPCPartDescription.Black);
-        NPCPart torso = new NPCPart(NPCPart.NPCPartType.Shirt, NPCPart.NPCPartDescription.Yellow);
-        NPCPart legs = new NPCPart(NPCPart.NPCPartType.Pants, NPCPart.NPCPartDescription.Red);
-        Assemble(head, torso, legs);
-        // Test navmesh agent
-        GoToInterrogation();
-        */
+        CanMingle = true;
+        // NPCs always start waiting
+        StartCoroutine(Waiting());
     }
 
     public void Assemble(NPCPart head, NPCPart torso, NPCPart legs)
@@ -97,19 +92,21 @@ public class NPC : MonoBehaviour, IPointerClickHandler
     private IEnumerator HandleWalkAnimation()
     {
         // Start walk animation        
-        anim.SetBool("Travelling", true);
+        anim.SetBool("Walk", true);
         // Wait for agent to reach destination
         do
         {
             yield return null;
         } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
         // Stop walk animation
-        anim.SetBool("Travelling", false);
+        anim.SetBool("Walk", false);
     }
     
     private IEnumerator Waiting()
     {
-        while(true)
+        Debug.Log("Waiting");
+        CanMingle = true;
+        while (true)
         {
             // Switch to Roam or Mingle?
             if (Random.Range(0.0f, 1.0f) < BehaviourChangeChance)
@@ -129,21 +126,34 @@ public class NPC : MonoBehaviour, IPointerClickHandler
             yield return new WaitForSeconds(1.0f);
         }        
     }
-    
 
+    
     private IEnumerator Mingle()
     {
-        // Set animator state
-        anim.SetTrigger("Mingle");
-        anim.SetBool("Travelling", true);
+        Debug.Log("Mingle");
+        CanMingle = false;
         // Select target (make sure it is available)
-        int index;
-        NPC target;
-        do
+        int index = Random.Range(0, NPC.NPCList.Count);
+        NPC target = NPC.NPCList[index];
+        bool found = false;
+        for (int i = 0; i < MaxSelectionAttempts; ++i)
+        {            
+            if(target.CanMingle)
+            {
+                found = true;
+                break;                
+            }
+            index = Random.Range(0, NPC.NPCList.Count);
+            target = NPC.NPCList[index];
+        }
+        if(!found)
         {
-            index = Random.Range(0, NPCList.Instance.Count);
-            target = NPCList.Instance.Get(index);
-        } while (!target.CanMingle());
+            StartCoroutine(Waiting());
+            Debug.Log("Mingle cancelled");
+            yield break;
+        }
+        // Set animator state
+        anim.SetBool("Walk", true);
         // Inform target of mingling start
         target.WaitForMingle(this);
         // Navigate to target
@@ -154,7 +164,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler
             yield return null;
         } while (navAgent.remainingDistance > MinglingDistance);
         // Set animator state
-        anim.SetBool("Travelling", false);
+        anim.SetBool("Walk", false);
         // Display result of mingling
         // TODO
         // Wait for mingling duration
@@ -168,23 +178,20 @@ public class NPC : MonoBehaviour, IPointerClickHandler
 
     private IEnumerator Roam()
     {
-        // Set animator state
-        anim.SetBool("Interrogation", false);
-        anim.SetBool("Travelling", true);
+        Debug.Log("Roam");
+        CanMingle = true;
         // Select destination
-        Vector3 result;        
-        while (RandomPoint(RandomVector3(WaitingRoomMin, WaitingRoomMax), 10.0f, out result))
-        {
-            yield return null;
-        }
+        Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
         navAgent.SetDestination(result);
+        // Set animator state
+        anim.SetBool("Walk", true);
         // Wait until target is reached
         do
         {
             yield return null;
         } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
         // Set animation state
-        anim.SetBool("Travelling", false);
+        anim.SetBool("Walk", false);
         // Start Waiting coroutine
         StartCoroutine(Waiting());
         // End
@@ -192,31 +199,15 @@ public class NPC : MonoBehaviour, IPointerClickHandler
 
     private Vector3 RandomVector3(Vector3 min, Vector3 max)
     {
-        return new Vector3(Random.Range(min.x, max.x),
-                                Random.Range(min.y, max.y),
-                                Random.Range(min.z, max.z));
-    }
-
-    private bool RandomPoint(Vector3 center, float range, out Vector3 result)
-    {
-        for (int i = 0; i < 30; i++)
-        {
-            Vector3 randomPoint = center + Random.insideUnitSphere * range;
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, NavMesh.AllAreas))
-            {
-                result = hit.position;
-                return true;
-            }
-        }
-        result = Vector3.zero;
-        return false;
-    }
-
-    public bool CanMingle()
-    {
-        return anim.GetCurrentAnimatorStateInfo(0).IsName("Roam") &&
-               anim.GetCurrentAnimatorStateInfo(0).IsName("Waiting");
+        float minX = Mathf.Min(min.x, max.x);
+        float maxX = Mathf.Max(min.x, max.x);
+        float minY = Mathf.Min(min.y, max.y);
+        float maxY = Mathf.Max(min.y, max.y);
+        float minZ = Mathf.Min(min.z, max.z);
+        float maxZ = Mathf.Max(min.z, max.z);
+        return new Vector3(Random.Range(minX, maxX),
+                           Random.Range(minY, maxY),
+                           Random.Range(minZ, maxZ));
     }
 
     public void WaitForMingle(NPC other)
@@ -229,10 +220,11 @@ public class NPC : MonoBehaviour, IPointerClickHandler
 
     private IEnumerator CoWaitForMingle(NPC other)
     {
-        // Set animator state
-        anim.SetBool("WaitForMingle", true);
+        Debug.Log("WaitForMingle");
+        anim.SetBool("Walk", false);
+        CanMingle = false;
         // Wait for other NPC to get near
-        while(Vector3.Distance(transform.position, other.transform.position) > MinglingDistance)
+        while (Vector3.Distance(transform.position, other.transform.position) > MinglingDistance)
         {
             yield return null;
         }
@@ -242,8 +234,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler
         // Wait for other NPC to finish mingling
         // TODO: Is this good enough?
         yield return new WaitForSeconds(MinglingDuration);
-        // Set animator state
-        anim.SetBool("WaitForMingle", false);
         // Face original direction
         transform.rotation = rotation;
         // Start Waiting coroutine
@@ -269,9 +259,10 @@ public class NPC : MonoBehaviour, IPointerClickHandler
 
     private IEnumerator CoGoToInterrogation()
     {
+        Debug.Log("GoToInterrogation");
+        CanMingle = false;
         // Set animator state
-        anim.SetBool("Interrogation", true);
-        anim.SetBool("Travelling", true);
+        anim.SetBool("Walk", true);        
         // Navigate to interrogation room
         navAgent.SetDestination(InterrogationPosition);
         // Wait until target is reached
@@ -280,7 +271,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler
             yield return null;
         } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
         // Set animation state
-        anim.SetBool("Travelling", false);
+        anim.SetBool("Walk", false);
         // Inform Player Controller of arrival
         Assets.Scripts.PlayerController.Instance.DisplayConversation();
         yield return null;
@@ -296,15 +287,12 @@ public class NPC : MonoBehaviour, IPointerClickHandler
 
     private IEnumerator CoGoToWaiting()
     {
-        // Set animation state
-        anim.SetBool("Interrogation", false);
-        anim.SetBool("Travelling", true);
+        Debug.Log("GoToWaiting");
+        CanMingle = false;
         // Select destination in waiting room
-        Vector3 result;
-        while (RandomPoint(RandomVector3(WaitingRoomMin, WaitingRoomMax), 10.0f, out result))
-        {
-            yield return null;
-        }
+        Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
+        // Set animation state
+        anim.SetBool("Walk", true);
         // Navigate to waiting room
         navAgent.SetDestination(result);
         // Wait until target is reached
@@ -313,7 +301,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler
             yield return null;
         } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
         // Set animation state
-        anim.SetBool("Travelling", false);
+        anim.SetBool("Walk", false);
         // Start Waiting coroutine
         StartCoroutine(Waiting());
         // End

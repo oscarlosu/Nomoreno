@@ -18,14 +18,7 @@ namespace Assets.Scripts {
 
             //Console.WriteLine("Adding killer node...");
             var killerNode = new Node();
-            killerNode.NPC = NPCList.Instance.Get(0);
-            //killerNode.NPC = new DataNPC() { // Should be considered a standard NPC or the like.
-            //    IsMale = Convert.ToBoolean(r.Next(2)), 
-            //    HatColor = ClueConverter.GetRandomColor(),
-            //    ShirtColor = ClueConverter.GetRandomColor(),
-            //    PantsColor = ClueConverter.GetRandomColor()
-            //};
-            //killerNode.NPC.Name = ClueConverter.GetRandomName(killerNode.NPC.IsMale);
+            killerNode.NPC = NPC.NPCList.FirstOrDefault(npc => npc.IsKiller);
             killerNode.IsKiller = true;
             killerNode.IsVisited = true;
             g.Nodes.Add(killerNode);
