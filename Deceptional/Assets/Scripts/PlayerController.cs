@@ -42,13 +42,18 @@ namespace Assets.Scripts {
         }
 
         public void Arrest() {
-            // Arrest the NPC.
             // Check if victorious. Else ->
             // Make NPC angry + Make invulnerable.
-            foreach (NPC poi in NPCList.Instance) {
-                poi.Conversation.ShownStatement = "I think we are done here"; // Placeholder for "ArrestStatement".
-                poi.Conversation.Disable();
-            }
+            NPC currentInterrogationNPC = CurrentInterrogationTarget.GetComponent<NPC>();
+            if (currentInterrogationNPC.IsKiller) { /* Run Victory */ }
+            else currentInterrogationNPC.Mood = false;
+
+            // Disables NPCS. 
+            // (Obsolete, should skip to next day).
+            //foreach (NPC poi in NPCList.Instance) {
+            //    poi.Conversation.ShownStatement = "I think we are done here"; // Placeholder for "ArrestStatement".
+            //    poi.Conversation.Disable();
+            //}
 
             NextDay();
         }
