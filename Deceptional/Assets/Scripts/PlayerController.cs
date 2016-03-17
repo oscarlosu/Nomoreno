@@ -45,7 +45,7 @@ namespace Assets.Scripts {
 
         public void Arrest() {
             // Arrest the NPC
-            foreach (NPC poi in NPC.NPCList.Instance) {
+            foreach (NPC poi in NPC.NPCList) {
                 poi.Conversation.ShownStatement = "I think we are done here"; // Placeholder for "ArrestStatement".
                 poi.Conversation.Disable();
             }

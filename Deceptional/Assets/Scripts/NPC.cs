@@ -5,7 +5,19 @@ using UnityEngine.EventSystems;
 
 public class NPC : MonoBehaviour, IPointerClickHandler
 {
-    public static List<NPC> NPCList;
+    private static List<NPC> npcList;
+    public static List<NPC> NPCList
+    {
+        get
+        {
+            if(NPC.npcList == null)
+            {
+                NPC.npcList = new List<NPC>();
+            }
+            return NPC.npcList;
+        }
+    }
+
     public string Name;
     public bool IsMale;
     /**
@@ -28,9 +40,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler
     public MeshFilter LegsMeshFilter;
     public MeshRenderer LegsRenderer;
 
-    private NPCPart head;
-    private NPCPart torso;
-    private NPCPart legs;
+    public NPCPart Head { get; set; }
+    public NPCPart Torso { get; set; }
+    public NPCPart Legs { get; set; }
 
     private NavMeshAgent navAgent;
     public Vector3 InterrogationPosition;
@@ -74,19 +86,19 @@ public class NPC : MonoBehaviour, IPointerClickHandler
     public void Assemble(NPCPart head, NPCPart torso, NPCPart legs)
     {
         // Save parts
-        this.head = head;
-        this.torso = torso;
-        this.legs = legs;
+        this.Head = head;
+        this.Torso = torso;
+        this.Legs = legs;
         // Load meshes and materials
         // Head
-        HeadMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.head.Type.ToString());
-        HeadRenderer.material = Resources.Load<Material>("Materials/" + this.head.Description.ToString());
+        HeadMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Head.Type.ToString());
+        HeadRenderer.material = Resources.Load<Material>("Materials/" + this.Head.Description.ToString());
         // Torso
-        TorsoMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.torso.Type.ToString());
-        TorsoRenderer.material = Resources.Load<Material>("Materials/" + this.torso.Description.ToString());
+        TorsoMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Torso.Type.ToString());
+        TorsoRenderer.material = Resources.Load<Material>("Materials/" + this.Torso.Description.ToString());
         // Legs
-        LegsMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.legs.Type.ToString());
-        LegsRenderer.material = Resources.Load<Material>("Materials/" + this.legs.Description.ToString());
+        LegsMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Legs.Type.ToString());
+        LegsRenderer.material = Resources.Load<Material>("Materials/" + this.Legs.Description.ToString());
     }
 
     private IEnumerator HandleWalkAnimation()
