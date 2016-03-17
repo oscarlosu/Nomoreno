@@ -383,7 +383,7 @@ MonoBehaviour:
   LegsMeshFilter: {fileID: 3340842}
   LegsRenderer: {fileID: 2372956}
   InterrogationPosition: {x: 0, y: 0.1, z: -11.35}
-  BehaviourChangeChance: 0.1
+  BehaviourChangeChance: 1
   MinglingDistance: 3
   MinglingDuration: 2
   WaitingRoomMin: {x: 8.948, y: 0.1, z: -8.629}
