@@ -13,10 +13,8 @@ namespace Assets.Scripts {
             // Add Descriptive Nodes.
             // Add Informational Nodes.
             // Add Boolean Nodes..?
-            //Console.WriteLine("Building Graph...");
             Graph g = new Graph();
 
-            //Console.WriteLine("Adding killer node...");
             var killerNode = new Node();
             killerNode.NPC = NPC.NPCList.FirstOrDefault(npc => npc.IsKiller);
             killerNode.IsKiller = true;
@@ -32,30 +30,27 @@ namespace Assets.Scripts {
                 };
 
                 switch (r.Next(3)) {
-                    case 0: descriptiveNode.Clue = ClueConverter.ConstructClue(true, descriptiveNode.TargetNode.NPC.HatColor, "hat", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale); break;
-                    case 1: descriptiveNode.Clue = ClueConverter.ConstructClue(true, descriptiveNode.TargetNode.NPC.ShirtColor, "shirt", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale); break;
-                    case 2: descriptiveNode.Clue = ClueConverter.ConstructClue(true, descriptiveNode.TargetNode.NPC.PantsColor, "pants", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale); break;
+                    case 0: descriptiveNode.Clue = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Head.Description), "hat", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale); break;
+                    case 1: descriptiveNode.Clue = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Torso.Description), "shirt", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale); break;
+                    case 2: descriptiveNode.Clue = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Legs.Description), "pants", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale); break;
                     default: throw new Exception("Random generator tried to access non-existant clothing.");
                 }
 
+                descriptiveNode.NPC = NPC.NPCList.Where(npc => !npc.IsKiller).FirstOrDefault();
                 g.Nodes.Add(descriptiveNode);
             }
 
             //Console.WriteLine("Adding remaining nodes...");
             for (int i = descriptiveCount; i < nodeCount; i++) {
                 var restNode = new Node();
-                restNode.NPC = new DataNPC() {
-                    IsMale = Convert.ToBoolean(r.Next(2)),
-                    HatColor = ClueConverter.GetRandomColor(),
-                    ShirtColor = ClueConverter.GetRandomColor(),
-                    PantsColor = ClueConverter.GetRandomColor()
-                };
-                restNode.NPC.Name = ClueConverter.GetRandomName(restNode.NPC.IsMale);
                 g.Nodes.Add(restNode);
             }
 
             //Console.WriteLine("Setting up remaining nodes...");
             foreach (Node restNode in g.Nodes.Where(n => !n.IsVisited)) {
+                restNode.NPC = g.Nodes.Where(node => !node.IsVisited).Select(node => node.NPC).FirstOrDefault();
+                restNode.IsVisited = true;
+
                 Node targetNode = null;
                 while (restNode != targetNode) 
                     targetNode = g.Nodes[r.Next(g.Nodes.Count)];
@@ -63,9 +58,9 @@ namespace Assets.Scripts {
 
                 string clothingColor = "<COLOR_ERROR>";
                 switch (r.Next(3)) {
-                    case 0: clothingColor = restNode.TargetNode.NPC.HatColor; break;
-                    case 1: clothingColor = restNode.TargetNode.NPC.ShirtColor; break;
-                    case 2: clothingColor = restNode.TargetNode.NPC.PantsColor; break;
+                    case 0: clothingColor = NPCDescriptionToString(restNode.TargetNode.NPC.Head.Description); break;
+                    case 1: clothingColor = NPCDescriptionToString(restNode.TargetNode.NPC.Torso.Description); break;
+                    case 2: clothingColor = NPCDescriptionToString(restNode.TargetNode.NPC.Legs.Description); break;
                     default: throw new Exception("Random generator tried to access non-existant clothing.");
                 }
                 restNode.Clue = ClueConverter.ConstructClue(clothingColor, restNode.TargetNode.NPC.Name, restNode.TargetNode.NPC.IsMale);
@@ -73,13 +68,13 @@ namespace Assets.Scripts {
 
             // Set up killerNode.Clue
             //Console.WriteLine("Setting up killer node clue...");
-            var restNodes = g.Nodes.Where(n => !n.IsVisited).ToList();
+            var restNodes = g.Nodes.Where(n => !n.IsDescriptive && !n.IsKiller).ToList();
             g.Nodes[0].TargetNode = restNodes[r.Next(restNodes.Count)];
             string kTargetClothingColor = "<COLOR_ERROR>";
             switch (r.Next(3)) {
-                case 0: kTargetClothingColor = g.Nodes[0].TargetNode.NPC.HatColor; break;
-                case 1: kTargetClothingColor = g.Nodes[0].TargetNode.NPC.ShirtColor; break;
-                case 2: kTargetClothingColor = g.Nodes[0].TargetNode.NPC.PantsColor; break;
+                case 0: kTargetClothingColor = NPCDescriptionToString(g.Nodes[0].TargetNode.NPC.Head.Description); break;
+                case 1: kTargetClothingColor = NPCDescriptionToString(g.Nodes[0].TargetNode.NPC.Torso.Description); break;
+                case 2: kTargetClothingColor = NPCDescriptionToString(g.Nodes[0].TargetNode.NPC.Legs.Description); break;
                 default: throw new Exception("Random generator tried to access non-existant clothing.");
             }
             g.Nodes[0].Clue = ClueConverter.ConstructClue(kTargetClothingColor, g.Nodes[0].TargetNode.NPC.Name, g.Nodes[0].TargetNode.NPC.IsMale);
@@ -95,6 +90,10 @@ namespace Assets.Scripts {
 
             //Console.WriteLine("Returning graph!");
             return g;
+        }
+
+        private static string NPCDescriptionToString(NPCPart.NPCPartDescription description) {
+            return Enum.GetName(typeof(NPCPart.NPCPartDescription), description);
         }
     }
 }

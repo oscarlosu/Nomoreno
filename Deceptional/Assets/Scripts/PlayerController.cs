@@ -54,7 +54,6 @@ namespace Assets.Scripts {
             //    poi.Conversation.ShownStatement = "I think we are done here"; // Placeholder for "ArrestStatement".
             //    poi.Conversation.Disable();
             //}
-
             NextDay();
         }
         public void Accuse() { CurrentInterrogationTarget.Conversation.Next(false); }
