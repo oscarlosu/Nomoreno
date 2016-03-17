@@ -160,6 +160,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler
         }
         if(!found)
         {
+            //CanMingle = true;
             StartCoroutine(Waiting());
             Debug.Log("Mingle cancelled");
             yield break;
