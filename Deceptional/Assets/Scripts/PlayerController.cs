@@ -2,14 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Assets.Scripts {
     public class PlayerController {
 
         #region Static fields & properties
-        public static void Construct() { Instance = new PlayerController(); }
-
-        public static PlayerController Instance { get; private set; }
+        private static PlayerController instance;
+        public static PlayerController Instance
+        {
+            get
+            {
+                if(instance == null)
+                {
+                    instance = new PlayerController();
+                }
+                return instance;
+            }
+        }
         #endregion
 
         #region Constructer
@@ -20,6 +30,7 @@ namespace Assets.Scripts {
 
         #region Instance fields & properties
         public NPC CurrentInterrogationTarget;
+        public NPC SelectedNPC;
         public bool UseRealTime;
 
         private int interactionCount;
@@ -29,12 +40,17 @@ namespace Assets.Scripts {
         #endregion
 
         #region Instance methods
-        public void Call(NPC target) {
+        public void Call() {
             if (CurrentInterrogationTarget != null)
+            {
                 Dismiss();
-
-            CurrentInterrogationTarget = target;
-            CurrentInterrogationTarget.GoToInterrogation();
+            }                
+            else if(CurrentInterrogationTarget != SelectedNPC)
+            {
+                CurrentInterrogationTarget = SelectedNPC;
+                SelectedNPC = null;
+                CurrentInterrogationTarget.GoToInterrogation();
+            }
         }
 
         public void DisplayConversation() {

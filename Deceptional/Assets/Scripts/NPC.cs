@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using Assets.Scripts;
 
 public class NPC : MonoBehaviour, IPointerClickHandler
 {
@@ -63,8 +64,8 @@ public class NPC : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("Clicked on " + name);
-}
+        PlayerController.Instance.SelectedNPC = this;
+    }
 
 
     // Use this for initialization
