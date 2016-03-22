@@ -41,6 +41,9 @@ namespace Assets.Scripts {
         public GameObject NPCS;
         public TextMesh NewDayTextMesh;
         public TextMesh StatementTextMesh;
+        public Transform ClockHourHandle;
+        public Transform ClockMinuteHandle;
+        public GameObject NewDayLabelHolder;
 
         private int interactionCount;
         private int currentTime;
@@ -53,9 +56,9 @@ namespace Assets.Scripts {
         public void Start() {
             currentDay = 0;
             // Generate NPCs
-            // TODO (remember to make all NPCs children of NPCS GameObject)
+            // TODO (remember to make all NPCs children of NPCS GameObject)            
             // Generate new day
-            NextDay();
+            StartCoroutine(NextDay());
         }
 
         public void Update() {
@@ -125,7 +128,7 @@ namespace Assets.Scripts {
                 CurrentInterrogationTarget.Mood = true;
             }
             // Start new day
-            NextDay();
+            StartCoroutine(NextDay());
         }
         public void Accuse() {
             CurrentInterrogationTarget.Conversation.Next(false);
@@ -135,16 +138,42 @@ namespace Assets.Scripts {
         }
         public void Dismiss() {
             if(CurrentInterrogationTarget != null) {
+                UpdateTime();
                 CurrentInterrogationTarget.GoToWaiting();
                 CurrentInterrogationTarget = null;
                 HideConversation();
                 if (UseRealTime && currentTime == 0)
-                    NextDay();
+                    StartCoroutine(NextDay());
                 else if (!UseRealTime && interactionCount == 0)
-                    NextDay();
+                    StartCoroutine(NextDay());
             }            
         }
 
+        private void UpdateTime() {
+            // Update interactions
+            interactionCount--;
+            // Animate clock
+            StartCoroutine(AnimateClock());
+        }
+
+        private IEnumerator AnimateClock() {
+            Vector3 hourRotation = ClockHourHandle.localEulerAngles;
+            Vector3 minuteRotation = ClockMinuteHandle.localEulerAngles;
+            // We want to rotate the hour handle to point to the next hour
+            // We also want the minute handle to rotate 360 degrees        
+            while (minuteRotation.y < 360.0f) {
+                hourRotation.y += (30.0f * Time.deltaTime);
+                ClockHourHandle.localEulerAngles = hourRotation;
+                minuteRotation.y += (360.0f * Time.deltaTime);
+                ClockMinuteHandle.localEulerAngles = minuteRotation;
+                yield return null;
+            }
+            hourRotation.y = (int)hourRotation.y;
+            ClockHourHandle.localEulerAngles = hourRotation;
+            minuteRotation.y = 0;
+            ClockMinuteHandle.localEulerAngles = minuteRotation;
+        }
+        
         private IEnumerator NextDay() {
             ++currentDay;
             // Hide scene
@@ -161,8 +190,10 @@ namespace Assets.Scripts {
             GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
             // Show new day message
             NewDayTextMesh.text = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
+            NewDayLabelHolder.SetActive(true);
             // Wait a bit
             yield return new WaitForSeconds(NewDayDelay);
+            NewDayLabelHolder.SetActive(false);
             // Show scene
             ShowScene();
         }
