@@ -375,6 +375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: No Name POI
+  IsMale: 0
   Index: 0
   HeadMeshFilter: {fileID: 3302486}
   HeadRenderer: {fileID: 2340658}
@@ -383,12 +384,14 @@ MonoBehaviour:
   LegsMeshFilter: {fileID: 3340842}
   LegsRenderer: {fileID: 2372956}
   InterrogationPosition: {x: 0, y: 0.1, z: -11.35}
-  BehaviourChangeChance: 1
+  BehaviourChangeChance: 0.3
   MinglingDistance: 3
   MinglingDuration: 2
   WaitingRoomMin: {x: 8.948, y: 0.1, z: -8.629}
   WaitingRoomMax: {x: -8.764, y: 0.1, z: 8.765}
   MingleRoamChanceRatio: 0.5
+  CanMingle: 0
+  MaxSelectionAttempts: 10
 --- !u!136 &13615480
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -396,7 +399,7 @@ CapsuleCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 185950}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.5
   m_Height: 2.2
