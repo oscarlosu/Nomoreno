@@ -10,36 +10,10 @@ namespace Assets.Scripts {
         #region Fields & properties
         private static Random r = new Random();
 
-        private static List<string> colors = new List<string>() { "black", "white", "yellow", "red", "green", "blue" };
-
-        #region Names
-        private static List<string> maleFirsts = new List<string>() {
-            "Rudolph", "Davis", "Frank", "August", "Jeremy", "John", "Jacob", "Claude",
-            "Joseph", "Michael", "Elias", "Oliver", "Jimmy", "Amon", "Bart", "Henry",
-            "Giles", "Sam", "Mike", "Tobias"
-        };
-
-        private static List<string> maleSurs = new List<string>() {
-            "Dudley", "Rowley", "Shelton", "Wylde", "Kerley", "Odlam", "Bruslin", "Coogan", "Coffey",
-            "Montgomery", "Despard", "Gantley", "Shields", "Paxton", "McHugh", "Footter", "Pilkington", 
-            "Renehan", "Lyon", "Coughlin", "Goodfellow", "Cookman", "Wickfield"
-        };
-
-        private static List<string> femaleFirsts = new List<string>() {
-            "Agatha", "Ann", "Maria", "Sue", "Mary", "Lilly", "Molly", "Anna", "Abby", "Becky", "Jennie",
-            "Ginny", "Joanna", "Maxine", "Lorraine", "Cynthia", "Lenora", "Allie", "Natalie", "Josephine",
-            "Theodosia", "Dahlia", "Gertie"
-        };
-
-        private static List<string> femaleSurs = new List<string>() {
-            "Kain", "Cotton", "Wickham", "Costello", "Oxenforde", "Nayler", "Morrell", "Gouran", "West",
-            "Pinker", "Mullane", "Edgerton", "Teelong", "Rason", "Houghlin", "Tottenham", "Birmingham",
-            "Greypartridge", "Hewitson", "Colligan", "Heferord", "Reynolds", "McGlinn"
-        };
-        #endregion
+        private static bool useCockney;
 
         #region Clue templates
-        private static List<string> clueTemplates = new List<string>() {
+        private static List<string> cockneyClueTemplates = new List<string>() {
             "Gawdon Bennet! I know that [Z] ran in ter da murderer when [Q[2]] was 'eadin' aaaht fer work, yew might wan' ter talk wiv [Q[2]]. OK?",
             "When I opened me door dis mornin' I was shoved back in by a big [Q[1]], I saw [Q[2]] 'ad a [X] [Y].",
             "Blimey! [Z] said [Q[2]] was puttin' up [Q[3]] laundry an' saw da murderer, but I fnk [Q[2]] just wan' attenshun. Nuff said, yeah?",
@@ -55,7 +29,34 @@ namespace Assets.Scripts {
             "I was comin' aaaht ov da pub ter take a piss, when I noticed dis big [Q[1]] passin' by lookin' shady. I greeted [Q[5]], but da dow' said nothing. [Q[2]] 'ad a [X] [Y] on. Know what I mean?",
             "[Q[4]] are liars... All ov 'em, they cannot be trusted. Just take [Z] fer instance, [Q[2]] just like ter be da cen'er ov attenshun., innit.",
             "I was groomin' da 'orse when somethin' scared 'em, I looked around an' saw a [Q[1]] standin' over [Q[1]]. I turned ter calm da 'orse, when I looked again there was only one [Q[1]] lyin' facedown in da street. The uvver [Q[1]] 'ad [X] [Y].",
-            "I was walkin' me dog, an' was just comin' back from da park. There was not a lot ov people, but I fnk I saw [Z] comin' 'ome from da pub."
+            "I was walkin' me dog, an' was just comin' back from da park. There was not a lot ov people, but I fnk I saw [Z] comin' 'ome from da pub.",
+            "I 'eard abaaaht da murder from [Z], [Q[2]] told me [Q[2]] saw da murderer an' what da murderer looked [Q[5]] straight in da eye... But I'm not sure abaaaht what part. OK?",
+            "Awright geeezzaa! Don't talk ter me, talk ter [Z] [Q[2]] is braggin' abaaaht almost catchin' da murderer. Sorted mate.",
+            "Lawd above! I almost caught da murder when I saw [Q[5]] killin' da [Q[1]], but [Q[2]] was an' all fast fer me.",
+            "I saw da [Q[1]] fall away from da murderer, an' then [Q[2]] started bleeding... A lot... I fain'ed, cannot stand da sight ov blood. I saw so much red, but I fnk [Q[3]] coat was really [X]. Sorted mate."
+        };
+
+        private static List<string> englishClueTemplates = new List<string>() {
+            "I know that [Z] ran into the murderer when  [Q[2]] was heading out for work, you might want to talk with [Q[2]].",
+            "When I open my door this morning I was shoved back in by a big [Q[1]], I saw [Q[2]] had a [X] [Y].",
+            "[Z] said [Q[2]] was putting up [Q[3]] laundry and saw the murderer, but I think [Q[2]] just want attention.",
+            "When I got up this morning someone had crashed into my flowers, there was a [X] piece of cloth stuck to them.",
+            "Why are you asking me? I did not do anything. But I am not so sure about [Z], [Q[2]] just seem so shady.",
+            "I was emptying the night pot, and I saw two [Q[4]] struggling in the street, the [Q[1]] standing over the other had a [X] [Y]. But I did not bother to get involved.",
+            "I saw the murder happen! I was so scared, I hid beneath  the windowsill, I was shaking! I peaked up and saw a [X] [Y] turning, and quickly ducked down again!",
+            "I saw [Z] coming away from around where the murder happened, [Q[2]] was white as a ghost. [Q[2]] must have seen something.",
+            "Now I do not put much value in gossip, but I heard [Z] cannot help, [Q[2]] always lies for the fun of it!",
+            "When I heard about the murder, I immediately thought that [Z] would had seen it, since [Q[2]] usually walks [Q[3]] dog around that time.",
+            "I heard that [Z] actually searched the victim for valuables before the police arrived, [Q[2]] is such a immoral sneak!",
+            "I saw nothing! You can ask [Z] cause I was warming [Q[2]] bed. Homeless [Z] might have seen something if [Q[2]] was sober enough to see straight.",
+            "I was coming out of the pub to take a piss, when I noticed this big [Q[1]] passing by looking shady. I greeted [Q[5]], but the dolt said nothing. [Q[2]] had a [X] [Y] on.",
+            "[Q[4]] are liars... all of them, they cannot be trusted. Just take [Z] for instance, [Q[2]] just like to be the center of attention.",
+            "I was grooming the horse when something scared them, I looked around and saw a [Q[1]] standing over [Q[1]]. I turned to calm the horse, when I looked again there was only one [Q[1]] lying facedown in the street. The other [Q[1]] had [X] [Y].",
+            "I was walking my dog, and was just coming back from the park. There was not a lot of people, but I think I saw [Z]coming home from the pub.",
+            "I heard about the murder from [Z], [Q[2]] told me [Q[2]] saw the murderer and that the murderer looked [Q[5]] straight in the eye... But I'm not sure about that part.",
+            "Don't talk to me, talk to [Z] [Q[2]] is bragging about almost catching the murderer.",
+            "I almost caught the murder when I saw [Q[5]] killing the [Q[1]], but [Q[2]] was too fast for me.",
+            "I saw the [Q[1]] fall away from the murderer, and then [Q[2]] started bleeding... a lot... I fainted, cannot stand the sight of blood. I saw so much red, but I think [Q[3]] coat was really [X]."
         };
         #endregion
 
@@ -70,13 +71,21 @@ namespace Assets.Scripts {
         #region Private methods
         private static string GetClueTemplate(bool isDescriptive) {
             Regex descriptivePattern = new Regex(@"(\[Y\])");
-            List<string> descriptiveClues = clueTemplates.Where(s => descriptivePattern.IsMatch(s)).ToList();
-            List<string> nonDescriptiveClues = clueTemplates.Except(descriptiveClues).ToList();
+            List<string> usedList = useCockney ? cockneyClueTemplates : englishClueTemplates;
+            List<string> descriptiveClues = usedList.Where(s => descriptivePattern.IsMatch(s)).ToList();
+            List<string> nonDescriptiveClues = usedList.Except(descriptiveClues).ToList();
 
             int clueIdx = isDescriptive ? r.Next(descriptiveClues.Count) : r.Next(nonDescriptiveClues.Count);
             string clue = isDescriptive ? descriptiveClues[clueIdx] : nonDescriptiveClues[clueIdx];
 
             return clue;
+        }
+        
+        private static string CocknifyPronoun(string pronoun) {
+            if (pronoun == "he" || pronoun == "his" || pronoun == "him" || pronoun == "hers" || pronoun == "her")
+                return pronoun.Replace("h", "'");
+            else
+                return pronoun;
         }
         #endregion
 
@@ -101,8 +110,9 @@ namespace Assets.Scripts {
             string usedPronoun = "";
             foreach (Match m in matches) {
                 if (m.Groups[4].Success) {
-                    int pronounIdx = Int32.Parse(Regex.Match(m.Groups[4].Value, @"\d+").Value);
+                    int pronounIdx = int.Parse(Regex.Match(m.Groups[4].Value, @"\d+").Value);
                     usedPronoun = isMale ? malePronouns[pronounIdx - 1] : femalePronouns[pronounIdx - 1];
+                    usedPronoun = useCockney ? CocknifyPronoun(usedPronoun) : usedPronoun;
                     clueBuilder.Replace(m.Groups[4].Value, usedPronoun);
                 }
             }
@@ -113,17 +123,6 @@ namespace Assets.Scripts {
             clueBuilder.Replace(@"[Z]", npcName);
 
             return clueBuilder.ToString();
-        }
-
-        public static string GetRandomName(bool isMale) { 
-            var name = isMale ? 
-                maleFirsts[r.Next(maleFirsts.Count)] + " " + maleSurs[r.Next(maleSurs.Count)] :
-                femaleFirsts[r.Next(femaleFirsts.Count)] + " " + femaleSurs[r.Next(femaleSurs.Count)];
-            return name;
-        }
-
-        public static string GetRandomColor() {
-            return colors[r.Next(colors.Count)];
         }
     }
 }
