@@ -89,5 +89,8 @@
     <Compile Include="Assets\Scripts\RigTester.cs" />
     <Compile Include="Assets\Scripts\TestOverlapSphere.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Shaders\3DText.shader" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
