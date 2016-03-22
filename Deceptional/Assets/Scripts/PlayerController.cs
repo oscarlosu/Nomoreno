@@ -1,94 +1,199 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 
 namespace Assets.Scripts {
-    public class PlayerController {
-
-        #region Static fields & properties
-        private static PlayerController instance;
-        public static PlayerController Instance
-        {
-            get
-            {
-                if(instance == null)
-                {
-                    instance = new PlayerController();
+    public class PlayerController : MonoBehaviour {
+        /// <summary>
+        /// Provides a singleton access.
+        /// Since we want to be able to define parameters in the inspector, 
+        /// this class is a Monobehaviour as well and there should be a 
+        /// Game Object in the scene with this script and the appropriate parameter
+        /// values set.
+        /// </summary>
+        private static PlayerController instance = null;
+        public static PlayerController Instance {
+            get {
+                if (instance == null) {
+                    instance = (PlayerController)FindObjectOfType(typeof(PlayerController));
+                    if (instance == null)
+                        instance = (new GameObject("PlayerController")).AddComponent<PlayerController>();
                 }
                 return instance;
             }
         }
-        #endregion
-
-        #region Constructer
-        private PlayerController() {
-
-        }
-        #endregion
 
         #region Instance fields & properties
         public NPC CurrentInterrogationTarget;
         public NPC SelectedNPC;
         public bool UseRealTime;
+        public int DailyInteracions;
+        public int DayDuration;
+        public int NumberOfNPCS;
+        public int NumberOfDescriptiveClues;
+        public int NewDayDelay;
+
+        public GameObject CallInButton;
+        public GameObject DismissButton;
+        public GameObject NPCS;
+        public TextMesh NewDayTextMesh;
+        public TextMesh StatementTextMesh;
 
         private int interactionCount;
-        private int dailyInteracions;
         private int currentTime;
-        private int dayDuration;
+        private int currentDay;
+
         #endregion
 
         #region Instance methods
-        public void Call() {
-            if (CurrentInterrogationTarget != null)
-            {
-                Dismiss();
-            }                
-            else if(CurrentInterrogationTarget != SelectedNPC)
-            {
-                CurrentInterrogationTarget = SelectedNPC;
-                SelectedNPC = null;
-                CurrentInterrogationTarget.GoToInterrogation();
+
+        public void Start() {
+            currentDay = 0;
+            // Generate NPCs
+            // TODO (remember to make all NPCs children of NPCS GameObject)
+            // Generate new day
+            NextDay();
+        }
+
+        public void Update() {
+            if (Input.GetButtonDown("Fire1")) {                
+                // Cast ray and if it hits an NPC, select it
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, 100)) {
+                    NPC clicked = hit.transform.gameObject.GetComponent<NPC>();
+                    if (clicked != null) {
+                        SelectedNPC = clicked;
+                    }
+                } else {
+                    // Deselect on click
+                    SelectedNPC = null;
+                }                
             }
+            HandleButtons();
+        }
+
+        private void HandleButtons() {
+            if(CurrentInterrogationTarget == null) {
+                // Show call in
+                CallInButton.SetActive(true);
+                DismissButton.SetActive(false);
+            } else if(SelectedNPC == null) {
+                // Show dismiss
+                CallInButton.SetActive(false);
+                DismissButton.SetActive(true);
+            } else if(CurrentInterrogationTarget == SelectedNPC) {
+                // Show dismiss
+                CallInButton.SetActive(false);
+                DismissButton.SetActive(true);
+            } else if(CurrentInterrogationTarget != SelectedNPC) {
+                // Show call in
+                CallInButton.SetActive(true);
+                DismissButton.SetActive(false);
+            }
+        }
+        public void CallIn() {
+            // Dismiss whoever is in the interrogation room
+            Dismiss();
+            // Set current interrogation target
+            CurrentInterrogationTarget = SelectedNPC;
+            // Make NPC go to interrogation room
+            CurrentInterrogationTarget.GoToInterrogation();
         }
 
         public void DisplayConversation() {
-            // Set UI text to CurrentInterrogationTarget.Conversation.Statement
+            string statement = CurrentInterrogationTarget.Conversation.ShownStatement;
+            // Get statement with line breaking
+            // TODO
+            // Put statement in text mesh
+            StatementTextMesh.text = statement;
+        }
+
+        private void HideConversation() {
+            StatementTextMesh.text = "";
         }
 
         public void Arrest() {
-            // Check if victorious. Else ->
-            // Make NPC angry + Make invulnerable.
-            NPC currentInterrogationNPC = CurrentInterrogationTarget.GetComponent<NPC>();
-            if (currentInterrogationNPC.IsKiller) { /* Run Victory */ }
-            else currentInterrogationNPC.Mood = false;
-
-            // Disables NPCS. 
-            // (Obsolete, should skip to next day).
-            //foreach (NPC poi in NPCList.Instance) {
-            //    poi.Conversation.ShownStatement = "I think we are done here"; // Placeholder for "ArrestStatement".
-            //    poi.Conversation.Disable();
-            //}
+            // CHeck if the acccused NPC is the killer
+            if (CurrentInterrogationTarget.IsKiller) {
+                // Victory
+                StatementTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name;
+            } else {
+                CurrentInterrogationTarget.Mood = true;
+            }
+            // Start new day
             NextDay();
         }
-        public void Accuse() { CurrentInterrogationTarget.Conversation.Next(false); }
-        public void Question() { CurrentInterrogationTarget.Conversation.Next(true); }
-        public void Dismiss() {
-            CurrentInterrogationTarget.GoToWaiting();
-            CurrentInterrogationTarget = null;
-            if (UseRealTime && currentTime == 0)
-                NextDay();
-            else if (!UseRealTime && interactionCount == 0)
-                NextDay();
+        public void Accuse() {
+            CurrentInterrogationTarget.Conversation.Next(false);
         }
-        
-        public void NextDay() {
-            currentTime = dayDuration;
-            interactionCount = dailyInteracions;
-            // Hard-reset the scene.
-            // Disable scene.
-            // Murder new witness.
+        public void Question() {
+            CurrentInterrogationTarget.Conversation.Next(true);
+        }
+        public void Dismiss() {
+            if(CurrentInterrogationTarget != null) {
+                CurrentInterrogationTarget.GoToWaiting();
+                CurrentInterrogationTarget = null;
+                HideConversation();
+                if (UseRealTime && currentTime == 0)
+                    NextDay();
+                else if (!UseRealTime && interactionCount == 0)
+                    NextDay();
+            }            
+        }
+
+        private IEnumerator NextDay() {
+            ++currentDay;
+            // Hide scene
+            HideScene();
+            // Reset current time and interaction count
+            currentTime = DayDuration;
+            interactionCount = DailyInteracions;
+            // Clear references to NPCs
+            CurrentInterrogationTarget = null;
+            SelectedNPC = null;
+            // Murder new witness
+            string victimName = MurderWitness();
+            // Generate conversations
+            GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
+            // Show new day message
+            NewDayTextMesh.text = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
+            // Wait a bit
+            yield return new WaitForSeconds(NewDayDelay);
+            // Show scene
+            ShowScene();
+        }
+
+        private void HideScene() {
+            NPCS.SetActive(false);
+        }
+
+        private void ShowScene() {
+            NPCS.SetActive(true);
+        }
+
+        private string MurderWitness() {
+            string name = "Nobody";
+            // Only murder if there is more than one NPC
+            if (NPC.NPCList.Count > 1) {
+                // Find an NPC that is not the killer
+                int index;
+                NPC target;
+                do {
+                    index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
+                    target = NPC.NPCList[index];
+                } while (NPC.NPCList[index].IsKiller);
+                // Save victim's name
+                name = target.Name;
+                // Remove from list
+                NPC.NPCList.RemoveAt(index);
+                // Destroy game object
+                Destroy(target.gameObject);
+            }
+            return name;
         }
         #endregion
     }

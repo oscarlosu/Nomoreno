@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using Assets.Scripts;
 
-public class NPC : MonoBehaviour, IPointerClickHandler
+public class NPC : MonoBehaviour
 {
     private static List<NPC> npcList;
     public static List<NPC> NPCList
@@ -25,9 +25,16 @@ public class NPC : MonoBehaviour, IPointerClickHandler
     *  Index of this NPC in NPCList
     *
     */
-    public int Index;
+    public int Index {
+        get {
+            return NPC.NPCList.IndexOf(this);
+        }
+    }
     public Conversation Conversation { get; set; }
 
+    /// <summary>
+    /// False means they will talk with the detective, true means they will refuse to talk to him
+    /// </summary>
     public bool Mood { get; set; }
     //public bool Mood;
 
@@ -62,11 +69,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler
     public bool CanMingle;
     public int MaxSelectionAttempts;
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        PlayerController.Instance.SelectedNPC = this;
-    }
-
 
     // Use this for initialization
     void Start()
@@ -75,10 +77,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler
         // Get references to components
         navAgent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-        // Save index and add self to NPCList
-        Index = NPC.NPCList.Count;
+        // Add self to list
         NPC.NPCList.Add(this);
-
+        Mood = false;
         CanMingle = true;
         // NPCs always start waiting
         StartCoroutine(Waiting());
@@ -287,7 +288,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler
         // Set animation state
         anim.SetBool("Walk", false);
         // Inform Player Controller of arrival
-        Assets.Scripts.PlayerController.Instance.DisplayConversation();
+        PlayerController.Instance.DisplayConversation();
         yield return null;
     }
 
