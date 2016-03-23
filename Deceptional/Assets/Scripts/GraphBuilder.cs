@@ -23,6 +23,7 @@ namespace Assets.Scripts {
             g.Nodes.Add(killerNode);
 
             //Console.WriteLine("Adding descriptive nodes...");
+            var nonKillers = NPC.NPCList.Where(npc => !npc.IsKiller).ToList();
             for (int i = 0; i < descriptiveCount; i++) {
                 var descriptiveNode = new Node() { 
                     IsDescriptive = true,
@@ -37,12 +38,13 @@ namespace Assets.Scripts {
                     default: throw new Exception("Random generator tried to access non-existant clothing.");
                 }
 
-                descriptiveNode.NPC = NPC.NPCList.Where(npc => !npc.IsKiller).FirstOrDefault();
+                descriptiveNode.NPC = nonKillers.FirstOrDefault();
                 g.Nodes.Add(descriptiveNode);
+                nonKillers.Remove(descriptiveNode.NPC);
             }
 
             //Console.WriteLine("Adding remaining nodes...");
-            while (g.Nodes.Count <= nodeCount) {
+            while (g.Nodes.Count < nodeCount) {
                 var restNode = new Node();
                 restNode.NPC = NPC.NPCList.Where(npc => !g.Nodes.Any(node => node.NPC.Equals(npc))).FirstOrDefault();
                 g.Nodes.Add(restNode);
