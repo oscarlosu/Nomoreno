@@ -6,5 +6,5 @@ public class Cell : MonoBehaviour {
     public List<Cell> Adjacent;
     public bool Free;
 
-    public void On
+
 }
