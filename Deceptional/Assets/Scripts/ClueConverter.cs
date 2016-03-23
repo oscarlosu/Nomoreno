@@ -44,7 +44,6 @@ namespace Assets.Scripts {
             "[D] Awright geeezzaa! I saw da murder 'appen! I was so scared, I 'id benearf da windowsill, I was shaking! I peaked up an' saw a [X] [Y] turning, an' quickly ducked down again! Sorted mate.",
             "[D] I was comin' aaaht ov da pub ter take a piss, when I noticed dis big [Q[1]] passin' by lookin' shady. I greeted [Q[5]], but da dow' said nothing. [Q[2]] 'ad a [X] [Y] on. Know what I mean?",
             "[D] I was groomin' da 'orse when somethin' scared 'em, I looked around an' saw a [Q[1]] standin' over [Q[1]]. I turned ter calm da 'orse, when I looked again there was only one [Q[1]] lyin' facedown in da street. The uvver [Q[1]] 'ad [X] [Y].",
-            "[D] I saw a [Q[1]] fall backwards from da murderer, an' then [Q[2]] started bleeding... A lot... I fain'ed, cannot stand da sight ov blood. I saw so much red, but I fnk [Q[3]] coat was really [X]. Sorted mate.",
             "[D] I was openin' me shop, I 'eard some commoshun in da street, when I wen' ter look I just saw a glimpse ov da murderer's [Y] which was [X]."
         };
 

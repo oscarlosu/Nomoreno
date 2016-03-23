@@ -15,6 +15,7 @@ namespace Assets.Scripts {
             // Add Boolean Nodes..?
             Graph g = new Graph();
 
+            // Adding Killer Node
             var killerNode = new Node();
             killerNode.NPC = NPC.NPCList.FirstOrDefault(npc => npc.IsKiller);
             killerNode.IsKiller = true;
@@ -41,20 +42,16 @@ namespace Assets.Scripts {
             }
 
             //Console.WriteLine("Adding remaining nodes...");
-            for (int i = descriptiveCount; i < nodeCount; i++) {
+            while (g.Nodes.Count < nodeCount) {
                 var restNode = new Node();
                 g.Nodes.Add(restNode);
+                restNode.NPC = NPC.NPCList.Where(npc => !g.Nodes.Any(node => node.NPC.Equals(npc))).FirstOrDefault();
             }
 
             //Console.WriteLine("Setting up remaining nodes...");
             foreach (Node restNode in g.Nodes.Where(n => !n.IsVisited)) {
-                restNode.NPC = g.Nodes.Where(node => !node.IsVisited).Select(node => node.NPC).FirstOrDefault();
-                restNode.IsVisited = true;
-
-                Node targetNode = null;
-                while (restNode != targetNode) 
-                    targetNode = g.Nodes[r.Next(g.Nodes.Count)];
-                restNode.TargetNode = targetNode;
+                do restNode.TargetNode = g.Nodes[r.Next(g.Nodes.Count)];
+                while (restNode == restNode.TargetNode);
 
                 string clothingColor = "<COLOR_ERROR>";
                 switch (r.Next(3)) {
@@ -63,6 +60,7 @@ namespace Assets.Scripts {
                     case 2: clothingColor = NPCDescriptionToString(restNode.TargetNode.NPC.Legs.Description); break;
                     default: throw new Exception("Random generator tried to access non-existant clothing.");
                 }
+
                 restNode.Clue = ClueConverter.ConstructClue(clothingColor, restNode.TargetNode.NPC.Name, restNode.TargetNode.NPC.IsMale);
             }
 
