@@ -42,10 +42,10 @@ namespace Assets.Scripts {
             }
 
             //Console.WriteLine("Adding remaining nodes...");
-            while (g.Nodes.Count < nodeCount) {
+            while (g.Nodes.Count <= nodeCount) {
                 var restNode = new Node();
-                g.Nodes.Add(restNode);
                 restNode.NPC = NPC.NPCList.Where(npc => !g.Nodes.Any(node => node.NPC.Equals(npc))).FirstOrDefault();
+                g.Nodes.Add(restNode);
             }
 
             //Console.WriteLine("Setting up remaining nodes...");

@@ -60,7 +60,9 @@ namespace Assets.Scripts {
                         if (!refN.IsDescriptive) refN.Clue = ClueConverter.ConstructClue(false, n.NPC.Name, n.NPC.IsMale);
             }
 
+            int i = 0;
             foreach (NPC npc in NPC.NPCList) {
+                i++;
                 var truthNode = TruthGraph.Nodes.FirstOrDefault(node => node.NPC.Equals(npc));
                 var lieNode = LieGraph.Nodes.FirstOrDefault(node => node.NPC.Equals(npc));
 
