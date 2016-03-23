@@ -158,7 +158,8 @@ namespace Assets.Scripts {
             // Murder new witness
             string victimName = MurderWitness();
             // Generate conversations
-            GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
+            ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
+            ConversationHandler.SetupConversations(0.2);
             // Show new day message
             NewDayTextMesh.text = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
             // Wait a bit

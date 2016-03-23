@@ -7,9 +7,7 @@ namespace Assets.Scripts {
     public class NPCHandler {
         private static Random r = new Random();
 
-        #region Static lists
-        private static List<string> colors = new List<string>() { "black", "white", "yellow", "red", "green", "blue" };
-        
+        #region Static lists        
         private static List<string> maleFirsts = new List<string>() {
             "Rudolph", "Davis", "Frank", "August", "Jeremy", "John", "Jacob", "Claude",
             "Joseph", "Michael", "Elias", "Oliver", "Jimmy", "Amon", "Bart", "Henry",
@@ -34,18 +32,22 @@ namespace Assets.Scripts {
             "Greypartridge", "Hewitson", "Colligan", "Heferord", "Reynolds", "McGlinn"
         };
         #endregion
-
-        public NPCHandler() {
-
+        
+        [Obsolete("MurderWitness method accessible in PlayerController.")]
+        public void MurderRandomWitness() {
+            var allWitnesses = NPC.NPCList.Where(npc => !npc.IsKiller);
+            var randomWitness = allWitnesses.ToList()[r.Next(allWitnesses.Count())];
+            NPC.NPCList.Remove(randomWitness);
+            UnityEngine.Object.Destroy(randomWitness.gameObject);
         }
 
-        public void MurderRandomWitness() {
-
+        public void GenerateMultipleWitnesses(int count) {
+            while (--count >= 0) GenerateRandomWitness();
         }
 
         public void GenerateRandomWitness() {
             var newNPC = NPC.DefaultNPC;
-            // Setup NPC position
+            // TODO: Setup NPC position
             var npcScript = newNPC.GetComponent<NPC>();
 
             bool npcGender = Convert.ToBoolean(r.Next(0, 2));
@@ -53,26 +55,23 @@ namespace Assets.Scripts {
             npcScript.Name = GetRandomName(npcGender);
 
             NPCPart.NPCPartDescription randomDesc;
-            randomDesc = (NPCPart.NPCPartDescription)r.Next(0, 5);
+            var maxValue = Enum.GetValues(typeof(NPCPart.NPCPartDescription)).Length;
+            randomDesc = (NPCPart.NPCPartDescription)r.Next(maxValue);
             var newHead = new NPCPart(NPCPart.NPCPartType.Hat, randomDesc);
-            randomDesc = (NPCPart.NPCPartDescription)r.Next(0, 5);
+            randomDesc = (NPCPart.NPCPartDescription)r.Next(maxValue);
             var newTorso = new NPCPart(NPCPart.NPCPartType.Shirt, randomDesc);
-            randomDesc = (NPCPart.NPCPartDescription)r.Next(0, 5);
+            randomDesc = (NPCPart.NPCPartDescription)r.Next(maxValue);
             var newLegs = new NPCPart(NPCPart.NPCPartType.Pants, randomDesc);
             npcScript.Assemble(newHead, newLegs, newTorso);
 
             NPC.NPCList.Add(npcScript);
         }
 
-        private static string GetRandomName(bool isMale) {
+        public static string GetRandomName(bool isMale) {
             var name = isMale ?
                 maleFirsts[r.Next(maleFirsts.Count)] + " " + maleSurs[r.Next(maleSurs.Count)] :
                 femaleFirsts[r.Next(femaleFirsts.Count)] + " " + femaleSurs[r.Next(femaleSurs.Count)];
             return name;
-        }
-
-        private static string GetRandomColor() {
-            return colors[r.Next(colors.Count)];
         }
     }
 }
