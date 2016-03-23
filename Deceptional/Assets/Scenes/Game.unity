@@ -745,7 +745,7 @@ Prefab:
       objectReference: {fileID: 260934227}
     - target: {fileID: 11403454, guid: 8cfae813ff314164fa2c13d09d7379bf, type: 2}
       propertyPath: MingleRoamChanceRatio
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11403454, guid: 8cfae813ff314164fa2c13d09d7379bf, type: 2}
       propertyPath: BehaviourChangeChance
@@ -1924,7 +1924,7 @@ GameObject:
   - 4: {fileID: 1413495105}
   m_Layer: 0
   m_Name: NPCS
-  m_TagString: Untagged
+  m_TagString: NPCParent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

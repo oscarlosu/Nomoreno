@@ -2,10 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Assets.Scripts {
-    public class NPCHandler {
-        private static Random r = new Random();
+    public static class NPCHandler {
+        private static System.Random r = new System.Random();
+
+        private static GameObject npcParent;
+        public static GameObject NPCParent {
+            get {
+                if(npcParent == null) {
+                    npcParent = GameObject.FindGameObjectWithTag("NPCParent");
+                }
+                return npcParent;
+            }
+        }
 
         #region Static lists        
         private static List<string> maleFirsts = new List<string>() {
@@ -34,21 +45,30 @@ namespace Assets.Scripts {
         #endregion
         
         [Obsolete("MurderWitness method accessible in PlayerController.")]
-        public void MurderRandomWitness() {
+        public static void MurderRandomWitness() {
             var allWitnesses = NPC.NPCList.Where(npc => !npc.IsKiller);
             var randomWitness = allWitnesses.ToList()[r.Next(allWitnesses.Count())];
             NPC.NPCList.Remove(randomWitness);
             UnityEngine.Object.Destroy(randomWitness.gameObject);
         }
 
-        public void GenerateMultipleWitnesses(int count) {
-            while (--count >= 0) GenerateRandomWitness();
+        public static void GenerateMultipleWitnesses(int count) {
+            while (--count > 0) GenerateRandomWitness();
+            GenerateKiller();
         }
 
-        public void GenerateRandomWitness() {
+        public static void GenerateKiller() {
+            GameObject killerGO = GenerateRandomWitness();
+            killerGO.GetComponent<NPC>().IsKiller = true;
+        }
+
+        public static GameObject GenerateRandomWitness() {
+            // Instantiate new npc, set position, set parent
             var newNPC = NPC.DefaultNPC;
-            // TODO: Setup NPC position
+            newNPC.transform.position = NPC.RandomVector3(NPC.WaitingRoomMin, NPC.WaitingRoomMax);
+            newNPC.transform.SetParent(NPCHandler.NPCParent.transform);
             var npcScript = newNPC.GetComponent<NPC>();
+
 
             bool npcGender = Convert.ToBoolean(r.Next(0, 2));
             npcScript.IsMale = npcGender;
@@ -65,6 +85,7 @@ namespace Assets.Scripts {
             npcScript.Assemble(newHead, newLegs, newTorso);
 
             NPC.NPCList.Add(npcScript);
+            return newNPC;
         }
 
         public static string GetRandomName(bool isMale) {
