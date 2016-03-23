@@ -66,8 +66,8 @@ public class NPC : MonoBehaviour
 
     public float MinglingDistance;
     public float MinglingDuration;
-    public Vector3 WaitingRoomMin;
-    public Vector3 WaitingRoomMax;
+    public static Vector3 WaitingRoomMin = new Vector3(8.948f, 0.1f, -8.625f);
+    public static Vector3 WaitingRoomMax = new Vector3(-8.764f, 0.1f, 8.765f);
     [Tooltip("The higher the value, the higher the chance to Mingle and the lower the chance to Roam. [0, 1]")]
     public float MingleRoamChanceRatio;
 
@@ -217,7 +217,7 @@ public class NPC : MonoBehaviour
         // End
     }
 
-    private Vector3 RandomVector3(Vector3 min, Vector3 max)
+    public static Vector3 RandomVector3(Vector3 min, Vector3 max)
     {
         float minX = Mathf.Min(min.x, max.x);
         float maxX = Mathf.Max(min.x, max.x);

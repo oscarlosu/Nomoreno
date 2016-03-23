@@ -55,8 +55,8 @@ namespace Assets.Scripts {
 
         public void Start() {
             currentDay = 0;
-            // Generate NPCs
-            // TODO (remember to make all NPCs children of NPCS GameObject)            
+            // Generate NPCs 
+            NPCHandler.GenerateMultipleWitnesses(NumberOfNPCS);
             // Generate new day
             StartCoroutine(NextDay());
         }
@@ -120,7 +120,7 @@ namespace Assets.Scripts {
         }
 
         public void Arrest() {
-            // CHeck if the acccused NPC is the killer
+            // Check if the acccused NPC is the killer
             if (CurrentInterrogationTarget.IsKiller) {
                 // Victory
                 StatementTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name;

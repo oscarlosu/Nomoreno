@@ -97,8 +97,8 @@ namespace Assets.Scripts {
                 case ClueIdentifier.Descriptive:    relevantClues = templateList.Where(s => cluePattern.Match(s).Groups[3].Success).ToList(); break;
                 default: relevantClues = templateList; break;
             }
-            
-            return relevantClues[r.Next(relevantClues.Count)];
+            int index = r.Next(relevantClues.Count);
+            return relevantClues[index];
         }
         
         private static string CocknifyPronoun(string pronoun) {

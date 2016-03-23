@@ -376,7 +376,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: No Name POI
   IsMale: 0
-  Index: 0
   HeadMeshFilter: {fileID: 3302486}
   HeadRenderer: {fileID: 2340658}
   TorsoMeshFilter: {fileID: 3310492}
@@ -387,9 +386,7 @@ MonoBehaviour:
   BehaviourChangeChance: 0.3
   MinglingDistance: 3
   MinglingDuration: 2
-  WaitingRoomMin: {x: 8.948, y: 0.1, z: -8.629}
-  WaitingRoomMax: {x: -8.764, y: 0.1, z: 8.765}
-  MingleRoamChanceRatio: 0.5
+  MingleRoamChanceRatio: 0
   CanMingle: 0
   MaxSelectionAttempts: 10
 --- !u!136 &13615480
