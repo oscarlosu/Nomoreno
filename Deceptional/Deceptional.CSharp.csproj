@@ -77,11 +77,13 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\ButtonController.cs" />
     <Compile Include="Assets\Scripts\ButtonTester.cs" />
+    <Compile Include="Assets\Scripts\Cell.cs" />
     <Compile Include="Assets\Scripts\ClueConverter.cs" />
     <Compile Include="Assets\Scripts\Conversation.cs" />
     <Compile Include="Assets\Scripts\ConversationHandler.cs" />
     <Compile Include="Assets\Scripts\Graph.cs" />
     <Compile Include="Assets\Scripts\GraphBuilder.cs" />
+    <Compile Include="Assets\Scripts\Grid.cs" />
     <Compile Include="Assets\Scripts\NPC.cs" />
     <Compile Include="Assets\Scripts\NPCHandler.cs" />
     <Compile Include="Assets\Scripts\NPCPart.cs" />
