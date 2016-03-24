@@ -20,18 +20,26 @@ public class Grid : MonoBehaviour {
 
     public float CellSideLength;
     private float ErrorMargin = 0.5f;
-	// Use this for initialization
-	void Start () {
 	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public void FreeCell(Cell cell) {
+        if(cell != null) {
+            cell.Free = true;
+            FreeCells.Add(cell);
+        }        
+    }
+    public Cell GetRandomCell() {
+        Cell cell = null;
+        if (FreeCells.Count > 0) {
+            int index = Random.Range(0, FreeCells.Count);
+            cell = FreeCells[index];
+            FreeCells.RemoveAt(index);
+            cell.Free = false;
+        }
+        return cell;
+    }
 
-
-    public void FindAdjacentCells() {
+    public void SetupGrid() {
+        // Find adjacent cells
         // Find Cells
         Cell[] cellArray = transform.GetComponentsInChildren<Cell>();
         List<Cell> cells = new List<Cell>(cellArray);
@@ -54,6 +62,8 @@ public class Grid : MonoBehaviour {
                 }
             }
         }
-
+        // Populate lists
+        Cells = sortedCells;
+        FreeCells = sortedCells;
     }
 }

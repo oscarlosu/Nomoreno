@@ -8,8 +8,8 @@ public class GridEditor : Editor {
         DrawDefaultInspector();
 
         Grid myScript = (Grid)target;
-        if (GUILayout.Button("Find Adjacent Cells")) {
-            myScript.FindAdjacentCells();
+        if (GUILayout.Button("Ship it!")) {
+            myScript.SetupGrid();
         }
     }
 }

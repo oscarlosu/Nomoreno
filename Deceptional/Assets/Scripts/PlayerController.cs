@@ -26,6 +26,8 @@ namespace Assets.Scripts {
             }
         }
 
+        public static GameObject NPCParent;
+
         #region Instance fields & properties
         public NPC CurrentInterrogationTarget;
         public NPC SelectedNPC;
@@ -34,7 +36,7 @@ namespace Assets.Scripts {
         public int DayDuration;
         public int NumberOfNPCS;
         public int NumberOfDescriptiveClues;
-        public int NewDayDelay;
+        
 
         public GameObject CallInButton;
         public GameObject DismissButton;
@@ -49,16 +51,24 @@ namespace Assets.Scripts {
         private int currentTime;
         private int currentDay;
 
+        public int NextDayDelay;
+        public int PreNextDayDelay;
+
         #endregion
 
         #region Instance methods
 
         public void Start() {
             currentDay = 0;
+            // Initialize NPCParent
+            PlayerController.NPCParent = GameObject.FindGameObjectWithTag("NPCParent");
+            // Disable NPCParent
+            PlayerController.NPCParent.SetActive(false);
             // Generate NPCs 
             NPCHandler.GenerateMultipleWitnesses(NumberOfNPCS);
             // Generate new day
             StartCoroutine(NextDay());
+            
         }
 
         public void Update() {
@@ -99,6 +109,7 @@ namespace Assets.Scripts {
             }
         }
         public void CallIn() {
+            if (SelectedNPC == null) return;
             // Dismiss whoever is in the interrogation room
             Dismiss();
             // Set current interrogation target
@@ -112,7 +123,8 @@ namespace Assets.Scripts {
             // Get statement with line breaking
             // TODO
             // Put statement in text mesh
-            StatementTextMesh.text = statement;
+            // BreakLine should maybe be moved such that clue is inherently seperated correctly.
+            StatementTextMesh.text = TextWrapper.BreakLine(statement);
         }
 
         private void HideConversation() {
@@ -132,7 +144,8 @@ namespace Assets.Scripts {
         }
         public void Accuse() {
             CurrentInterrogationTarget.Conversation.Next(false);
-            StatementTextMesh.text = CurrentInterrogationTarget.Conversation.ShownStatement;
+            // BreakLine should maybe be moved such that clue is inherently seperated correctly.
+            StatementTextMesh.text = TextWrapper.BreakLine(CurrentInterrogationTarget.Conversation.ShownStatement);
         }
 
         public void Dismiss() {
@@ -174,6 +187,13 @@ namespace Assets.Scripts {
         }
         
         private IEnumerator NextDay() {
+            yield return new WaitForSeconds(PreNextDayDelay);
+            if(CurrentInterrogationTarget != null) {
+                Cell cell = Grid.Instance.GetRandomCell();
+                CurrentInterrogationTarget.currentCell = cell;
+                CurrentInterrogationTarget.transform.position = cell.transform.position;
+            }
+            HideConversation();
             ++currentDay;
             // Hide scene
             HideScene();
@@ -192,7 +212,7 @@ namespace Assets.Scripts {
             NewDayTextMesh.text = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
             NewDayLabelHolder.SetActive(true);
             // Wait a bit
-            yield return new WaitForSeconds(NewDayDelay);
+            yield return new WaitForSeconds(NextDayDelay);
             NewDayLabelHolder.SetActive(false);
             // Show scene
             ShowScene();
