@@ -33,11 +33,10 @@ public class Conversation
         PushStatement(lieStatement);
     }
 
-    public void Next(bool choice) {
-        if (!isDisabled) { 
+    public bool Next(bool choice) {
+        if (!isDisabled)
             ShownStatement = SecondStatement;
-            ActualClue = SecondStatementClue;
-        }
+        return IsTrue == choice;
     }
 
     public void Disable() { isDisabled = true; }
