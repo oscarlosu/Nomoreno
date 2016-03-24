@@ -98,13 +98,13 @@ public class NPC : MonoBehaviour
         this.Legs = legs;
         // Load meshes and materials
         // Head
-        HeadMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Head.Type.ToString());
+        //HeadMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Head.Type.ToString());
         HeadRenderer.material = Resources.Load<Material>("Materials/" + this.Head.Description.ToString());
         // Torso
-        TorsoMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Torso.Type.ToString());
+        //TorsoMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Torso.Type.ToString());
         TorsoRenderer.material = Resources.Load<Material>("Materials/" + this.Torso.Description.ToString());
         // Legs
-        LegsMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Legs.Type.ToString());
+        //LegsMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Legs.Type.ToString());
         LegsRenderer.material = Resources.Load<Material>("Materials/" + this.Legs.Description.ToString());
     }
 

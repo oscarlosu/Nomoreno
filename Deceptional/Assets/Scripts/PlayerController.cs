@@ -132,10 +132,9 @@ namespace Assets.Scripts {
         }
         public void Accuse() {
             CurrentInterrogationTarget.Conversation.Next(false);
+            StatementTextMesh.text = CurrentInterrogationTarget.Conversation.ShownStatement;
         }
-        public void Question() {
-            CurrentInterrogationTarget.Conversation.Next(true);
-        }
+
         public void Dismiss() {
             if(CurrentInterrogationTarget != null) {
                 UpdateTime();
@@ -188,7 +187,7 @@ namespace Assets.Scripts {
             string victimName = MurderWitness();
             // Generate conversations
             ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
-            ConversationHandler.SetupConversations(0.2);
+            ConversationHandler.SetupConversations(0.8);
             // Show new day message
             NewDayTextMesh.text = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
             NewDayLabelHolder.SetActive(true);
