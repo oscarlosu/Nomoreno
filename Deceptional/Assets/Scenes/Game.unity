@@ -209,16 +209,11 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 151669317}
-  m_Text: 'Day X
-
-
-    [POI Name] has
-
-    been murdered.'
+  m_Text: 
   m_OffsetZ: 0
   m_CharacterSize: 0.06
   m_LineSpacing: 1
-  m_Anchor: 0
+  m_Anchor: 4
   m_Alignment: 1
   m_TabSize: 4
   m_FontSize: 200

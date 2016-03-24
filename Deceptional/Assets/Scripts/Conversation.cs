@@ -18,9 +18,10 @@ public class Conversation
         PushStatement(lieStatement);
     }
 
-    public void Next(bool choice) {
+    public bool Next(bool choice) {
         if (!isDisabled)
-            ShownStatement = SecondStatement; 
+            ShownStatement = SecondStatement;
+        return IsTrue == choice;
     }
 
     public void Disable() { isDisabled = true; }

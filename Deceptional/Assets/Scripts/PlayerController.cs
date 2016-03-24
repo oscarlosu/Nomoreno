@@ -119,16 +119,24 @@ namespace Assets.Scripts {
         }
 
         public void DisplayConversation() {
+            // Get statement and break into lines
             string statement = CurrentInterrogationTarget.Conversation.ShownStatement;
-            // Get statement with line breaking
-            // TODO
-            // Put statement in text mesh
-            // BreakLine should maybe be moved such that clue is inherently seperated correctly.
-            StatementTextMesh.text = TextWrapper.BreakLine(statement);
+            statement = TextWrapper.BreakLine(statement);
+            StartCoroutine(CoDisplayConversation(statement, StatementTextMesh));
+        }
+
+        private IEnumerator CoDisplayConversation(string text, TextMesh textField) {
+            // Show letters one at a time
+            textField.text = "";
+            for(int i = 0; i < text.Length; ++i) {
+                textField.text += text[i];
+                yield return null;
+            }            
         }
 
         private void HideConversation() {
-            StatementTextMesh.text = "";
+            StopCoroutine("CoDisplayConversation");
+            StatementTextMesh.text = "";            
         }
 
         public void Arrest() {
@@ -143,9 +151,12 @@ namespace Assets.Scripts {
             StartCoroutine(NextDay());
         }
         public void Accuse() {
-            CurrentInterrogationTarget.Conversation.Next(false);
-            // BreakLine should maybe be moved such that clue is inherently seperated correctly.
-            StatementTextMesh.text = TextWrapper.BreakLine(CurrentInterrogationTarget.Conversation.ShownStatement);
+            // Make NPC angry if you wrongfully accuse them of lying
+            if(!CurrentInterrogationTarget.Conversation.Next(false)) {
+                CurrentInterrogationTarget.Mood = true;
+            }
+            // Display next text lerping it
+            StartCoroutine(CoDisplayConversation(CurrentInterrogationTarget.Conversation.ShownStatement, StatementTextMesh));
         }
 
         public void Dismiss() {
@@ -207,16 +218,20 @@ namespace Assets.Scripts {
             string victimName = MurderWitness();
             // Generate conversations
             ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
-            ConversationHandler.SetupConversations(0.8);
+            ConversationHandler.SetupConversations(0.8f);
             // Show new day message
-            NewDayTextMesh.text = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
+            string nextDayText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
             NewDayLabelHolder.SetActive(true);
+            // Show letters one at a time
+            StartCoroutine(CoDisplayConversation(nextDayText, NewDayTextMesh));
             // Wait a bit
             yield return new WaitForSeconds(NextDayDelay);
             NewDayLabelHolder.SetActive(false);
             // Show scene
             ShowScene();
         }
+
+
 
         private void HideScene() {
             NPCS.SetActive(false);
