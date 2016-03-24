@@ -83,7 +83,7 @@ public class NPC : MonoBehaviour
         navAgent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
         // Add self to list
-        NPC.NPCList.Add(this);
+        //NPC.NPCList.Add(this);
         Mood = false;
         CanMingle = true;
         // NPCs always start waiting
