@@ -8,15 +8,7 @@ namespace Assets.Scripts {
     public static class NPCHandler {
         private static System.Random r = new System.Random();
 
-        private static GameObject npcParent;
-        public static GameObject NPCParent {
-            get {
-                if(npcParent == null) {
-                    npcParent = GameObject.FindGameObjectWithTag("NPCParent");
-                }
-                return npcParent;
-            }
-        }
+        
 
         #region Static lists        
         private static List<string> maleFirsts = new List<string>() {
@@ -53,6 +45,7 @@ namespace Assets.Scripts {
         }
 
         public static void GenerateMultipleWitnesses(int count) {
+            PlayerController.NPCParent.SetActive(false);
             while (--count > 0) GenerateRandomWitness();
             GenerateKiller();
         }
@@ -67,11 +60,8 @@ namespace Assets.Scripts {
             var npcGO = NPC.DefaultNPC;
             NPC npc = npcGO.GetComponent<NPC>();
             // Make NPCS game object as parent
-            npcGO.transform.SetParent(NPCHandler.NPCParent.transform);
-            // Place npc on random empty position
-            Cell cell = Grid.Instance.GetRandomCell();
-            npc.currentCell = cell;
-            npcGO.transform.position = cell.transform.position;            
+            npcGO.transform.SetParent(PlayerController.NPCParent.transform);
+                      
 
             // Set gender and name
             bool npcGender = Convert.ToBoolean(r.Next(0, 2));

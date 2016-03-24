@@ -22,8 +22,10 @@ public class Grid : MonoBehaviour {
     private float ErrorMargin = 0.5f;
 	
     public void FreeCell(Cell cell) {
-        cell.Free = true;
-        FreeCells.Add(cell);
+        if(cell != null) {
+            cell.Free = true;
+            FreeCells.Add(cell);
+        }        
     }
     public Cell GetRandomCell() {
         Cell cell = null;

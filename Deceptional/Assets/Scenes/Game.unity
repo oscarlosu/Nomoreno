@@ -358,7 +358,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &260934226
 Transform:
   m_ObjectHideFlags: 0
@@ -378,7 +378,7 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 260934225}
-  m_Text: Statement goes here.
+  m_Text: 
   m_OffsetZ: 0
   m_CharacterSize: 0.05
   m_LineSpacing: 1
@@ -2477,13 +2477,13 @@ Prefab:
       value: 
       objectReference: {fileID: 260934227}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
-      propertyPath: ClockMinuteHandle
-      value: 
-      objectReference: {fileID: 1237338129}
-    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: ClockHourHandle
       value: 
       objectReference: {fileID: 1976082886}
+    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
+      propertyPath: ClockMinuteHandle
+      value: 
+      objectReference: {fileID: 1237338129}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: NewDayLabelHolder
       value: 

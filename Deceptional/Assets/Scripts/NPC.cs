@@ -78,7 +78,7 @@ public class NPC : MonoBehaviour
 
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         //Debug.Log("Mono " + GetInstanceID());
         // Get references to components
@@ -87,9 +87,17 @@ public class NPC : MonoBehaviour
         // Add self to list
         //NPC.NPCList.Add(this);
         Mood = false;
+        
+    }
+    void OnEnable() {
         CanMingle = true;
+        // Place npc on random empty position
+        Grid.Instance.FreeCell(currentCell);
+        currentCell = Grid.Instance.GetRandomCell();
+        transform.position = currentCell.transform.position;
         // NPCs always start waiting
         StartCoroutine(Waiting());
+        
     }
 
     public void Assemble(NPCPart head, NPCPart torso, NPCPart legs)
@@ -274,7 +282,10 @@ public class NPC : MonoBehaviour
         Debug.Log("GoToInterrogation");
         CanMingle = false;
         // Set animator state
-        anim.SetBool("Walk", true);        
+        anim.SetBool("Walk", true);
+        // Free cell
+        Grid.Instance.FreeCell(currentCell);
+        currentCell = null;
         // Navigate to interrogation room
         navAgent.SetDestination(InterrogationPosition);
         // Wait until target is reached
