@@ -140,23 +140,27 @@ namespace Assets.Scripts {
         }
 
         public void Arrest() {
-            // Check if the acccused NPC is the killer
-            if (CurrentInterrogationTarget.IsKiller) {
-                // Victory
-                StatementTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name;
-            } else {
-                CurrentInterrogationTarget.Mood = true;
-            }
-            // Start new day
-            StartCoroutine(NextDay());
+            if(CurrentInterrogationTarget != null) {
+                // Check if the acccused NPC is the killer
+                if (CurrentInterrogationTarget.IsKiller) {
+                    // Victory
+                    StatementTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name;
+                } else {
+                    CurrentInterrogationTarget.Mood = true;
+                }
+                // Start new day
+                StartCoroutine(NextDay());
+            }            
         }
         public void Accuse() {
-            // Make NPC angry if you wrongfully accuse them of lying
-            if(!CurrentInterrogationTarget.Conversation.Next(false)) {
-                CurrentInterrogationTarget.Mood = true;
+            if (CurrentInterrogationTarget != null) {
+                // Make NPC angry if you wrongfully accuse them of lying
+                if (!CurrentInterrogationTarget.Conversation.Next(false)) {
+                    CurrentInterrogationTarget.Mood = true;
+                }
+                // Display next text lerping it
+                StartCoroutine(CoDisplayConversation(TextWrapper.BreakLine(CurrentInterrogationTarget.Conversation.ShownStatement), StatementTextMesh));
             }
-            // Display next text lerping it
-            StartCoroutine(CoDisplayConversation(CurrentInterrogationTarget.Conversation.ShownStatement, StatementTextMesh));
         }
 
         public void Dismiss() {
