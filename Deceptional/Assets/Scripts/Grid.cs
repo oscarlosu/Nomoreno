@@ -31,7 +31,8 @@ public class Grid : MonoBehaviour {
 	}
 
 
-    public void FindAdjacentCells() {
+    public void SetupGrid() {
+        // Find adjacent cells
         // Find Cells
         Cell[] cellArray = transform.GetComponentsInChildren<Cell>();
         List<Cell> cells = new List<Cell>(cellArray);
@@ -54,6 +55,8 @@ public class Grid : MonoBehaviour {
                 }
             }
         }
-
+        // Populate lists
+        Cells = sortedCells;
+        FreeCells = sortedCells;
     }
 }
