@@ -20,14 +20,14 @@ public class Conversation
 
     public void Next(bool choice) {
         if (!isDisabled)
-            ShownStatement += "\n(Liar)\n" + SecondStatement; 
+            ShownStatement = SecondStatement; 
     }
 
     public void Disable() { isDisabled = true; }
     
     public void PushStatement(string newStatement) {
         SecondStatement = FirstStatement;
-        FirstStatement = newStatement;
+        ShownStatement = FirstStatement = newStatement;
         IsTrue = false;
     }
 }

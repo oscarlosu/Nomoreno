@@ -99,6 +99,7 @@ namespace Assets.Scripts {
             }
         }
         public void CallIn() {
+            if (SelectedNPC == null) return;
             // Dismiss whoever is in the interrogation room
             Dismiss();
             // Set current interrogation target
@@ -112,7 +113,8 @@ namespace Assets.Scripts {
             // Get statement with line breaking
             // TODO
             // Put statement in text mesh
-            StatementTextMesh.text = statement;
+            // BreakLine should maybe be moved such that clue is inherently seperated correctly.
+            StatementTextMesh.text = TextWrapper.BreakLine(statement);
         }
 
         private void HideConversation() {
@@ -132,7 +134,8 @@ namespace Assets.Scripts {
         }
         public void Accuse() {
             CurrentInterrogationTarget.Conversation.Next(false);
-            StatementTextMesh.text = CurrentInterrogationTarget.Conversation.ShownStatement;
+            // BreakLine should maybe be moved such that clue is inherently seperated correctly.
+            StatementTextMesh.text = TextWrapper.BreakLine(CurrentInterrogationTarget.Conversation.ShownStatement);
         }
 
         public void Dismiss() {
