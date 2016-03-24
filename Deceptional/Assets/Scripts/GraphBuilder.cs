@@ -31,14 +31,29 @@ namespace Assets.Scripts {
                     TargetNode = g.Nodes[0]
                 };
 
+                NPCPart.NPCPartType cluePartType;
                 switch (r.Next(3)) {
-                    case 0: descriptiveNode.Clue = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Head.Description), "hat", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale); break;
-                    case 1: descriptiveNode.Clue = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Torso.Description), "shirt", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale); break;
-                    case 2: descriptiveNode.Clue = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Legs.Description), "pants", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale); break;
+                    case 0:
+                        descriptiveNode.Clue = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Head.Description), "hat", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale);
+                        cluePartType = NPCPart.NPCPartType.Hat;
+                        break;
+                    case 1:
+                        descriptiveNode.Clue = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Torso.Description), "shirt", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale);
+                        cluePartType = NPCPart.NPCPartType.Shirt;
+                        break;
+                    case 2:
+                        descriptiveNode.Clue = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Legs.Description), "pants", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale);
+                        cluePartType = NPCPart.NPCPartType.Pants;
+                        break;
                     default: throw new Exception("Random generator tried to access non-existant clothing.");
                 }
 
+
                 descriptiveNode.NPC = nonKillers.FirstOrDefault();
+
+                // Create Clue object for Node
+                descriptiveNode.NodeClue = new Clue(descriptiveNode.Clue, descriptiveNode.TargetNode.NPC, ClueIdentifier.Descriptive, cluePartType);
+
                 g.Nodes.Add(descriptiveNode);
                 nonKillers.Remove(descriptiveNode.NPC);
             }
@@ -56,14 +71,25 @@ namespace Assets.Scripts {
                 while (restNode == restNode.TargetNode);
 
                 string clothingColor = "<COLOR_ERROR>";
+                NPCPart.NPCPartType restNPCPartType;
                 switch (r.Next(3)) {
-                    case 0: clothingColor = NPCDescriptionToString(restNode.TargetNode.NPC.Head.Description); break;
-                    case 1: clothingColor = NPCDescriptionToString(restNode.TargetNode.NPC.Torso.Description); break;
-                    case 2: clothingColor = NPCDescriptionToString(restNode.TargetNode.NPC.Legs.Description); break;
+                    case 0:
+                        clothingColor = NPCDescriptionToString(restNode.TargetNode.NPC.Head.Description);
+                        restNPCPartType = NPCPart.NPCPartType.Hat;
+                        break;
+                    case 1:
+                        clothingColor = NPCDescriptionToString(restNode.TargetNode.NPC.Torso.Description);
+                        restNPCPartType = NPCPart.NPCPartType.Shirt;
+                        break;
+                    case 2:
+                        clothingColor = NPCDescriptionToString(restNode.TargetNode.NPC.Legs.Description);
+                        restNPCPartType = NPCPart.NPCPartType.Pants;
+                        break;
                     default: throw new Exception("Random generator tried to access non-existant clothing.");
                 }
 
                 restNode.Clue = ClueConverter.ConstructClue(clothingColor, restNode.TargetNode.NPC.Name, restNode.TargetNode.NPC.IsMale);
+                restNode.NodeClue = new Clue(restNode.Clue, restNode.TargetNode.NPC, ClueIdentifier.Informational, restNPCPartType);
             }
 
             // Set up killerNode.Clue
@@ -71,13 +97,24 @@ namespace Assets.Scripts {
             var restNodes = g.Nodes.Where(n => !n.IsDescriptive && !n.IsKiller).ToList();
             g.Nodes[0].TargetNode = restNodes[r.Next(restNodes.Count)];
             string kTargetClothingColor = "<COLOR_ERROR>";
+            NPCPart.NPCPartType npcPartType;
             switch (r.Next(3)) {
-                case 0: kTargetClothingColor = NPCDescriptionToString(g.Nodes[0].TargetNode.NPC.Head.Description); break;
-                case 1: kTargetClothingColor = NPCDescriptionToString(g.Nodes[0].TargetNode.NPC.Torso.Description); break;
-                case 2: kTargetClothingColor = NPCDescriptionToString(g.Nodes[0].TargetNode.NPC.Legs.Description); break;
+                case 0:
+                    kTargetClothingColor = NPCDescriptionToString(g.Nodes[0].TargetNode.NPC.Head.Description);
+                    npcPartType = NPCPart.NPCPartType.Hat;
+                    break;
+                case 1:
+                    kTargetClothingColor = NPCDescriptionToString(g.Nodes[0].TargetNode.NPC.Torso.Description);
+                    npcPartType = NPCPart.NPCPartType.Shirt;
+                    break;
+                case 2:
+                    kTargetClothingColor = NPCDescriptionToString(g.Nodes[0].TargetNode.NPC.Legs.Description);
+                    npcPartType = NPCPart.NPCPartType.Pants;
+                    break;
                 default: throw new Exception("Random generator tried to access non-existant clothing.");
             }
             g.Nodes[0].Clue = ClueConverter.ConstructClue(kTargetClothingColor, g.Nodes[0].TargetNode.NPC.Name, g.Nodes[0].TargetNode.NPC.IsMale);
+            g.Nodes[0].NodeClue = new Clue(g.Nodes[0].Clue, g.Nodes[0].TargetNode.NPC, ClueIdentifier.Informational, npcPartType);
 
             //Console.WriteLine("Setting up reference lookup...");
             foreach (Node n in g.Nodes) { 

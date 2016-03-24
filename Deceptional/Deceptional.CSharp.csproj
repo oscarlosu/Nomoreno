@@ -80,7 +80,9 @@
     <Compile Include="Assets\Scripts\ButtonController.cs" />
     <Compile Include="Assets\Scripts\ButtonTester.cs" />
     <Compile Include="Assets\Scripts\Cell.cs" />
+    <Compile Include="Assets\Scripts\Clue.cs" />
     <Compile Include="Assets\Scripts\ClueConverter.cs" />
+    <Compile Include="Assets\Scripts\ClueIdentifier.cs" />
     <Compile Include="Assets\Scripts\Conversation.cs" />
     <Compile Include="Assets\Scripts\ConversationHandler.cs" />
     <Compile Include="Assets\Scripts\Graph.cs" />
