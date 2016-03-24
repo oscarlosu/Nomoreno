@@ -76,6 +76,8 @@ public class NPC : MonoBehaviour
 
     public Cell currentCell;
 
+    public TextMesh NameLabel;
+
 
     // Use this for initialization
     void Awake()
