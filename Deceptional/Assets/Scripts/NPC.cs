@@ -74,6 +74,8 @@ public class NPC : MonoBehaviour
     public bool CanMingle;
     public int MaxSelectionAttempts;
 
+    public Cell currentCell;
+
 
     // Use this for initialization
     void Start()
@@ -201,8 +203,10 @@ public class NPC : MonoBehaviour
         Debug.Log("Roam");
         CanMingle = true;
         // Select destination
-        Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
-        navAgent.SetDestination(result);
+        //Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
+        Grid.Instance.FreeCell(currentCell);
+        currentCell = Grid.Instance.GetRandomCell();
+        navAgent.SetDestination(currentCell.transform.position);
         // Set animator state
         anim.SetBool("Walk", true);
         // Wait until target is reached
@@ -217,18 +221,6 @@ public class NPC : MonoBehaviour
         // End
     }
 
-    public static Vector3 RandomVector3(Vector3 min, Vector3 max)
-    {
-        float minX = Mathf.Min(min.x, max.x);
-        float maxX = Mathf.Max(min.x, max.x);
-        float minY = Mathf.Min(min.y, max.y);
-        float maxY = Mathf.Max(min.y, max.y);
-        float minZ = Mathf.Min(min.z, max.z);
-        float maxZ = Mathf.Max(min.z, max.z);
-        return new Vector3(Random.Range(minX, maxX),
-                           Random.Range(minY, maxY),
-                           Random.Range(minZ, maxZ));
-    }
 
     public void WaitForMingle(NPC other)
     {
@@ -310,11 +302,13 @@ public class NPC : MonoBehaviour
         Debug.Log("GoToWaiting");
         CanMingle = false;
         // Select destination in waiting room
-        Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
+        //Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
+        currentCell = Grid.Instance.GetRandomCell();
+        navAgent.SetDestination(currentCell.transform.position);
         // Set animation state
         anim.SetBool("Walk", true);
         // Navigate to waiting room
-        navAgent.SetDestination(result);
+        navAgent.SetDestination(currentCell.transform.position);
         // Wait until target is reached
         do
         {
