@@ -8,15 +8,7 @@ namespace Assets.Scripts {
     public static class NPCHandler {
         private static System.Random r = new System.Random();
 
-        private static GameObject npcParent;
-        public static GameObject NPCParent {
-            get {
-                if(npcParent == null) {
-                    npcParent = GameObject.FindGameObjectWithTag("NPCParent");
-                }
-                return npcParent;
-            }
-        }
+        
 
         #region Static lists        
         private static List<string> maleFirsts = new List<string>() {
@@ -53,6 +45,7 @@ namespace Assets.Scripts {
         }
 
         public static void GenerateMultipleWitnesses(int count) {
+            PlayerController.NPCParent.SetActive(false);
             while (--count > 0) GenerateRandomWitness();
             GenerateKiller();
         }
@@ -63,17 +56,18 @@ namespace Assets.Scripts {
         }
 
         public static GameObject GenerateRandomWitness() {
-            // Instantiate new npc, set position, set parent
-            var newNPC = NPC.DefaultNPC;
-            newNPC.transform.position = NPC.RandomVector3(NPC.WaitingRoomMin, NPC.WaitingRoomMax);
-            newNPC.transform.SetParent(NPCHandler.NPCParent.transform);
-            var npcScript = newNPC.GetComponent<NPC>();
+            // Instantiate new npc from prefab, get NPC script
+            var npcGO = NPC.DefaultNPC;
+            NPC npc = npcGO.GetComponent<NPC>();
+            // Make NPCS game object as parent
+            npcGO.transform.SetParent(PlayerController.NPCParent.transform);
+                      
 
-
+            // Set gender and name
             bool npcGender = Convert.ToBoolean(r.Next(0, 2));
-            npcScript.IsMale = npcGender;
-            npcScript.Name = GetRandomName(npcGender);
-
+            npc.IsMale = npcGender;
+            npc.Name = GetRandomName(npcGender);
+            
             NPCPart.NPCPartDescription randomDesc;
             var maxValue = Enum.GetValues(typeof(NPCPart.NPCPartDescription)).Length;
             randomDesc = (NPCPart.NPCPartDescription)r.Next(maxValue);
@@ -82,10 +76,11 @@ namespace Assets.Scripts {
             var newTorso = new NPCPart(NPCPart.NPCPartType.Shirt, randomDesc);
             randomDesc = (NPCPart.NPCPartDescription)r.Next(maxValue);
             var newLegs = new NPCPart(NPCPart.NPCPartType.Pants, randomDesc);
+
             npcScript.Assemble(newHead, newTorso, newLegs);
 
-            NPC.NPCList.Add(npcScript);
-            return newNPC;
+            NPC.NPCList.Add(npc);
+            return npcGO;
         }
 
         public static string GetRandomName(bool isMale) {

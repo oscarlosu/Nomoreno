@@ -46,12 +46,16 @@ MonoBehaviour:
   DayDuration: 0
   NumberOfNPCS: 20
   NumberOfDescriptiveClues: 3
-  NewDayDelay: 5
   CallInButton: {fileID: 0}
   DismissButton: {fileID: 0}
   NPCS: {fileID: 0}
   NewDayTextMesh: {fileID: 0}
   StatementTextMesh: {fileID: 0}
+  ClockHourHandle: {fileID: 0}
+  ClockMinuteHandle: {fileID: 0}
+  NewDayLabelHolder: {fileID: 0}
+  NextDayDelay: 3
+  PreNextDayDelay: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
