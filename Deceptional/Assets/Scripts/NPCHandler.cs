@@ -82,7 +82,7 @@ namespace Assets.Scripts {
             var newTorso = new NPCPart(NPCPart.NPCPartType.Shirt, randomDesc);
             randomDesc = (NPCPart.NPCPartDescription)r.Next(maxValue);
             var newLegs = new NPCPart(NPCPart.NPCPartType.Pants, randomDesc);
-            npcScript.Assemble(newHead, newLegs, newTorso);
+            npcScript.Assemble(newHead, newTorso, newLegs);
 
             NPC.NPCList.Add(npcScript);
             return newNPC;

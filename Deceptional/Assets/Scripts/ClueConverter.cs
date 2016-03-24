@@ -5,12 +5,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Assets.Scripts {
-    public enum ClueIdentifier {
-        Accusatory,
-        Informational,
-        Descriptive
-    }
-
     public static class ClueConverter {
 
         #region Fields & properties
