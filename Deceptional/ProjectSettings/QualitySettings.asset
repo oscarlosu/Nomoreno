@@ -146,7 +146,7 @@ QualitySettings:
     shadowDistance: 150
     shadowNearPlaneOffset: 2
     shadowCascade2Split: 0.33333334
-    shadowCascade4Split: {x: 0.06666667, y: 0.2, z: 0.46666667}
+    shadowCascade4Split: {x: 0.06666667, y: 0.19999999, z: 0.46666664}
     blendWeights: 4
     textureQuality: 0
     anisotropicTextures: 2
@@ -163,7 +163,7 @@ QualitySettings:
     asyncUploadBufferSize: 4
     excludedTargetPlatforms: []
   m_PerPlatformDefaultQuality:
-    Android: 2
+    Android: 5
     BlackBerry: 2
     GLES Emulation: 5
     Nintendo 3DS: 5
@@ -176,10 +176,10 @@ QualitySettings:
     Tizen: 2
     WP8: 5
     Web: 5
-    WebGL: 3
+    WebGL: 5
     WiiU: 5
     Windows Store Apps: 5
     XBOX360: 5
     XboxOne: 5
-    iPhone: 2
+    iPhone: 5
     tvOS: 5

@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using Assets.Scripts;
 
-public class NPC : MonoBehaviour
-{
+public class NPC : MonoBehaviour, IPointerClickHandler {
     private static GameObject defaultNpc = Resources.Load<GameObject>(@"Prefabs\NPC");
     public static GameObject DefaultNPC {
         get { return Instantiate(defaultNpc); }
@@ -59,6 +58,7 @@ public class NPC : MonoBehaviour
 
     private NavMeshAgent navAgent;
     public Vector3 InterrogationPosition;
+    public Vector3 PoliceBoxPosition;
     private Animator anim;
 
     private NPC mingleTarget;
@@ -76,30 +76,36 @@ public class NPC : MonoBehaviour
 
     public Cell currentCell;
 
-    public TextMesh NameLabel;
+    public GameObject NameLabelHolder;
+
+    public Sprite Angry;
+    public Sprite Happy;
+    public Sprite Agree;
+    public Sprite Disagree;
+
+    public SpriteRenderer Emoji;
 
 
     // Use this for initialization
     void Awake()
     {
-        //Debug.Log("Mono " + GetInstanceID());
         // Get references to components
         navAgent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-        // Add self to list
-        //NPC.NPCList.Add(this);
         Mood = false;
-        
     }
+
     void OnEnable() {
         CanMingle = true;
         // Place npc on random empty position
         Grid.Instance.FreeCell(currentCell);
         currentCell = Grid.Instance.GetRandomCell();
         transform.position = currentCell.transform.position;
+
+        NameLabelHolder.transform.GetComponentInChildren<TextMesh>().text = Name;
+        NameLabelHolder.SetActive(false);
         // NPCs always start waiting
-        StartCoroutine(Waiting());
-        
+        StartCoroutine(Waiting());        
     }
 
     public void Assemble(NPCPart head, NPCPart torso, NPCPart legs)
@@ -120,6 +126,17 @@ public class NPC : MonoBehaviour
         LegsRenderer.material = Resources.Load<Material>("Materials/" + this.Legs.Description.ToString());
     }
 
+    public void OnPointerClick(PointerEventData eventData) {
+        PlayerController.Instance.SelectedNPC = this;
+    }
+
+    public void ShowNameLabel() {
+        NameLabelHolder.SetActive(true);
+    }
+    public void HideNameLabel() {
+        NameLabelHolder.SetActive(false);
+    }
+
     private IEnumerator HandleWalkAnimation()
     {
         // Start walk animation        
@@ -135,7 +152,7 @@ public class NPC : MonoBehaviour
     
     private IEnumerator Waiting()
     {
-        Debug.Log("Waiting");
+        //Debug.Log("Waiting");
         CanMingle = true;
         while (true)
         {
@@ -161,7 +178,7 @@ public class NPC : MonoBehaviour
     
     private IEnumerator Mingle()
     {
-        Debug.Log("Mingle");
+        //Debug.Log("Mingle");
         CanMingle = false;
         // Select target (make sure it is available)
         int index = Random.Range(0, NPC.NPCList.Count);
@@ -181,7 +198,24 @@ public class NPC : MonoBehaviour
         {
             //CanMingle = true;
             StartCoroutine(Waiting());
-            Debug.Log("Mingle cancelled");
+            //Debug.Log("Mingle cancelled");
+            yield break;
+        }
+        // Try to get free adjacent cell
+        Cell targetCell = currentCell;
+        found = false;
+        foreach(Cell c in target.currentCell.Adjacent) {
+            if(c.Free) {
+                targetCell = c;
+                Grid.Instance.TakeCell(targetCell);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            //CanMingle = true;
+            StartCoroutine(Waiting());
+            //Debug.Log("Mingle cancelled");
             yield break;
         }
         // Set animator state
@@ -189,7 +223,7 @@ public class NPC : MonoBehaviour
         // Inform target of mingling start
         target.WaitForMingle(this);
         // Navigate to target
-        navAgent.SetDestination(target.transform.position);
+        navAgent.SetDestination(targetCell.transform.position);
         // Wait until near enough to the target
         do
         {
@@ -198,19 +232,106 @@ public class NPC : MonoBehaviour
         // Set animator state
         anim.SetBool("Walk", false);
         // Display result of mingling
-        // TODO
+        Emoji.sprite = GetMingleResult(target);
+        Emoji.enabled = true;
         // Wait for mingling duration
         yield return new WaitForSeconds(MinglingDuration);
+        Emoji.enabled = false;
         // Inform target of mingling end
         // TODO: Unnecesary? <- Handled by  WaitForMingle
         // Start Roam coroutine
         StartCoroutine(Roam());
         // End
     }
+    
+    
+    private Sprite GetMingleResult(NPC other) {
+        if(IsAgree(other.Conversation.ActualClue)) {
+            return Agree;
+        } else if (IsDisagree(other.Conversation.ActualClue)) {
+            return Disagree;
+        } else if(IsHappy(other)) {
+            return Happy;
+        } else if(IsAngry(other)) {
+            return Angry;
+        }
+        return null;
+    }
+
+    private bool IsAgree(Clue other) {
+        if(Conversation.ActualClue.Identifier == other.Identifier) {
+            // Descriptive
+            if(Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive) {
+                // Talking about the same part
+                if (other.NPCPartType == Conversation.ActualClue.NPCPartType) {
+                    // Agreement on descriptive clue
+                    if (other.NPCDescription == Conversation.ActualClue.NPCDescription) {
+                        return true;
+                    }
+                    // Disagreement on descriptive clue
+                    else {
+                        return false;
+                    }
+                }
+            }
+            // Supportive or  Accusatory
+            else {
+                // Same target
+                if(Conversation.ActualClue.Target == other.Target) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+    private bool IsDisagree(Clue other) {
+        if (Conversation.ActualClue.Identifier == other.Identifier) {
+            // Descriptive
+            if (Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive) {
+                // Talking about the same part
+                if (other.NPCPartType == Conversation.ActualClue.NPCPartType) {
+                    // Agreement on descriptive clue
+                    if (other.NPCDescription == Conversation.ActualClue.NPCDescription) {
+                        return false;
+                    }
+                    // Disagreement on descriptive clue
+                    else {
+                        return true;
+                    }
+                }
+            }
+            // Supportive or  Accusatory
+            else {
+                return false;
+            }
+        } else if ((Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && other.Identifier == ClueIdentifier.Informational) ||
+                    (Conversation.ActualClue.Identifier == ClueIdentifier.Informational && other.Identifier == ClueIdentifier.Accusatory)) {
+            if (Conversation.ActualClue.Target == other.Target) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public bool IsHappy(NPC other) {
+        if(other.Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
+            other.Conversation.ActualClue.Target == this) {
+            return true;
+        }
+        return false;
+    }
+    public bool IsAngry(NPC other) {
+        if (other.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
+            other.Conversation.ActualClue.Target == this) {
+            return true;
+        }
+        return false;
+    }
 
     private IEnumerator Roam()
     {
-        Debug.Log("Roam");
+        //Debug.Log("Roam");
         CanMingle = true;
         // Select destination
         //Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
@@ -242,7 +363,7 @@ public class NPC : MonoBehaviour
 
     private IEnumerator CoWaitForMingle(NPC other)
     {
-        Debug.Log("WaitForMingle");
+        //Debug.Log("WaitForMingle");
         anim.SetBool("Walk", false);
         CanMingle = false;
         // Wait for other NPC to get near
@@ -253,11 +374,15 @@ public class NPC : MonoBehaviour
         // Face other NPC
         Quaternion rotation = transform.rotation;
         transform.LookAt(other.transform);
+        // Display result of mingling
+        Emoji.sprite = GetMingleResult(other);
+        Emoji.enabled = true;
         // Wait for other NPC to finish mingling
         // TODO: Is this good enough?
         yield return new WaitForSeconds(MinglingDuration);
         // Face original direction
         transform.rotation = rotation;
+        Emoji.enabled = false;
         // Start Waiting coroutine
         StartCoroutine(Waiting());
         // End
@@ -281,20 +406,21 @@ public class NPC : MonoBehaviour
 
     private IEnumerator CoGoToInterrogation()
     {
-        Debug.Log("GoToInterrogation");
+        //Debug.Log("GoToInterrogation");
         CanMingle = false;
         // Set animator state
         anim.SetBool("Walk", true);
         // Free cell
         Grid.Instance.FreeCell(currentCell);
         currentCell = null;
-        // Navigate to interrogation room
-        navAgent.SetDestination(InterrogationPosition);
+        // Navigate to police box
+        navAgent.SetDestination(PoliceBoxPosition);
         // Wait until target is reached
-        do
-        {
+        do {
             yield return null;
         } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
+        // Teleport to Interrogation room
+        navAgent.Warp(InterrogationPosition);
         // Set animation state
         anim.SetBool("Walk", false);
         // Inform Player Controller of arrival
@@ -312,11 +438,13 @@ public class NPC : MonoBehaviour
 
     private IEnumerator CoGoToWaiting()
     {
-        Debug.Log("GoToWaiting");
+        //Debug.Log("GoToWaiting");
         CanMingle = false;
         // Select destination in waiting room
         //Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
-        currentCell = Grid.Instance.GetRandomCell();
+        // Teleport to waiting room
+        navAgent.Warp(PoliceBoxPosition);
+        currentCell = Grid.Instance.GetRandomCell();        
         navAgent.SetDestination(currentCell.transform.position);
         // Set animation state
         anim.SetBool("Walk", true);

@@ -38,6 +38,11 @@ public class Grid : MonoBehaviour {
         return cell;
     }
 
+    public void TakeCell (Cell cell) {
+        FreeCells.Remove(cell);
+        cell.Free = false;
+    }
+
     public void SetupGrid() {
         // Find adjacent cells
         // Find Cells

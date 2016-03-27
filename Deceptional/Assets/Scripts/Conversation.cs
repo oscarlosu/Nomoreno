@@ -34,8 +34,9 @@ public class Conversation
     }
 
     public bool Next(bool choice) {
-        if (!isDisabled)
+        if (!isDisabled) {
             ShownStatement = SecondStatement;
+        }       
         return IsTrue == choice;
     }
 

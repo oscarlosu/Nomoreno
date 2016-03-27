@@ -29,8 +29,30 @@ namespace Assets.Scripts {
         public static GameObject NPCParent;
 
         #region Instance fields & properties
-        public NPC CurrentInterrogationTarget;
-        public NPC SelectedNPC;
+        private NPC cit;
+        public NPC CurrentInterrogationTarget {
+            get {
+                return cit;
+            }
+            set {
+                cit = value;
+            }
+        }
+        private NPC snpc;
+        public NPC SelectedNPC {
+            get {
+                return snpc;
+            }
+            set {
+                if(snpc != null) {
+                    snpc.HideNameLabel();
+                }
+                snpc = value;
+                if(snpc != null) {
+                    snpc.ShowNameLabel();
+                }
+            }
+        }
         public bool UseRealTime;
         public int DailyInteracions;
         public int DayDuration;
@@ -38,8 +60,8 @@ namespace Assets.Scripts {
         public int NumberOfDescriptiveClues;
         
 
-        public GameObject CallInButton;
-        public GameObject DismissButton;
+        public ButtonController CallInButton;
+        //public GameObject DismissButton;
         public GameObject NPCS;
         public TextMesh NewDayTextMesh;
         public TextMesh StatementTextMesh;
@@ -54,11 +76,13 @@ namespace Assets.Scripts {
         public int NextDayDelay;
         public int PreNextDayDelay;
 
+        public Camera InterrogationRoomCamera;
+
         #endregion
 
         #region Instance methods
 
-        public void Start() {
+        public void Awake() {
             currentDay = 0;
             // Initialize NPCParent
             PlayerController.NPCParent = GameObject.FindGameObjectWithTag("NPCParent");
@@ -72,40 +96,40 @@ namespace Assets.Scripts {
         }
 
         public void Update() {
+            /*
             if (Input.GetButtonDown("Fire1")) {                
                 // Cast ray and if it hits an NPC, select it
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = InterrogationRoomCamera.ScreenPointToRay(Input.mousePosition);
+                Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 10);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, 100)) {
                     NPC clicked = hit.transform.gameObject.GetComponent<NPC>();
-                    if (clicked != null) {
+                    if (clicked != null) {                      
                         SelectedNPC = clicked;
                     }
                 } else {
                     // Deselect on click
-                    SelectedNPC = null;
+                    SelectedNPC = null;                    
                 }                
             }
+            */
             HandleButtons();
         }
+       
 
         private void HandleButtons() {
             if(CurrentInterrogationTarget == null) {
                 // Show call in
-                CallInButton.SetActive(true);
-                DismissButton.SetActive(false);
+                CallInButton.ChangeButton("Call In", "CallIn");
             } else if(SelectedNPC == null) {
                 // Show dismiss
-                CallInButton.SetActive(false);
-                DismissButton.SetActive(true);
+                CallInButton.ChangeButton("Dismiss", "Dismiss");
             } else if(CurrentInterrogationTarget == SelectedNPC) {
                 // Show dismiss
-                CallInButton.SetActive(false);
-                DismissButton.SetActive(true);
+                CallInButton.ChangeButton("Dismiss", "Dismiss");
             } else if(CurrentInterrogationTarget != SelectedNPC) {
                 // Show call in
-                CallInButton.SetActive(true);
-                DismissButton.SetActive(false);
+                CallInButton.ChangeButton("Call In", "CallIn");
             }
         }
         public void CallIn() {
@@ -122,10 +146,11 @@ namespace Assets.Scripts {
             // Get statement and break into lines
             string statement = CurrentInterrogationTarget.Conversation.ShownStatement;
             statement = TextWrapper.BreakLine(statement);
-            StartCoroutine(CoDisplayConversation(statement, StatementTextMesh));
+            StatementTextMesh.gameObject.SetActive(true);
+            StartCoroutine(CoDisplayText(statement, StatementTextMesh));
         }
 
-        private IEnumerator CoDisplayConversation(string text, TextMesh textField) {
+        private IEnumerator CoDisplayText(string text, TextMesh textField) {
             // Show letters one at a time
             textField.text = "";
             for(int i = 0; i < text.Length; ++i) {
@@ -135,8 +160,9 @@ namespace Assets.Scripts {
         }
 
         private void HideConversation() {
-            StopCoroutine("CoDisplayConversation");
-            StatementTextMesh.text = "";            
+            StopCoroutine("CoDisplayText");
+            StatementTextMesh.text = "";
+            StatementTextMesh.gameObject.SetActive(false);
         }
 
         public void Arrest() {
@@ -159,7 +185,7 @@ namespace Assets.Scripts {
                     CurrentInterrogationTarget.Mood = true;
                 }
                 // Display next text lerping it
-                StartCoroutine(CoDisplayConversation(TextWrapper.BreakLine(CurrentInterrogationTarget.Conversation.ShownStatement), StatementTextMesh));
+                StartCoroutine(CoDisplayText(TextWrapper.BreakLine(CurrentInterrogationTarget.Conversation.ShownStatement), StatementTextMesh));
             }
         }
 
@@ -227,7 +253,7 @@ namespace Assets.Scripts {
             string nextDayText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
             NewDayLabelHolder.SetActive(true);
             // Show letters one at a time
-            StartCoroutine(CoDisplayConversation(nextDayText, NewDayTextMesh));
+            StartCoroutine(CoDisplayText(nextDayText, NewDayTextMesh));
             // Wait a bit
             yield return new WaitForSeconds(NextDayDelay);
             NewDayLabelHolder.SetActive(false);
