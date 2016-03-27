@@ -400,6 +400,8 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     {
         // Interrupt other coroutines
         StopAllCoroutines();
+        // Hide emoji
+        Emoji.enabled = false;
         // Start interrogation routine
         StartCoroutine(CoGoToInterrogation());        
     }
