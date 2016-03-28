@@ -105,7 +105,8 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Place npc on random empty position
         Grid.Instance.FreeCell(currentCell);
         currentCell = Grid.Instance.GetRandomCell();
-        transform.position = currentCell.transform.position;
+        //transform.position = currentCell.transform.position;
+        navAgent.Warp(currentCell.transform.position);
 
         NameLabelHolder.transform.GetComponentInChildren<TextMesh>().text = Name;
         NameLabelHolder.SetActive(false);
