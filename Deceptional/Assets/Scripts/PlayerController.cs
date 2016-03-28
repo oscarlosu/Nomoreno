@@ -141,7 +141,7 @@ namespace Assets.Scripts {
             // Display name on wall
             NameText.text = CurrentInterrogationTarget.Name + " says:";
             // Get statement and break into lines
-            string statement = CurrentInterrogationTarget.Conversation.ShownStatement;
+            string statement = CurrentInterrogationTarget.Conversation.ActualClue.Statement;
             statement = TextWrapper.BreakLine(statement);
             StatementTextMesh.gameObject.SetActive(true);
             Coroutine inst = StartCoroutine(CoDisplayText(statement, StatementTextMesh));

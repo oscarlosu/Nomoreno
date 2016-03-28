@@ -3,15 +3,14 @@ using Assets.Scripts;
 
 public class Conversation
 {
-
-    public string ShownStatement;
-    public string FirstStatement;
-    public string SecondStatement = "*Triggering intensifies*";
-
-    public Clue FirstStatementClue;
-    public Clue SecondStatementClue;
     public Clue ActualClue;
-    public bool IsTrue = true;
+    public Clue FirstStatementClue;
+    public Clue SecondStatementClue = new Clue("*Triggering intensifies*", null, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
+    private bool isTrue = true;
+    public bool IsTrue {
+        get { return isTrue; }
+        private set { isTrue = value; }
+    }
 
     private bool isDisabled;
 
@@ -23,43 +22,14 @@ public class Conversation
         PushStatement(lieStatement);
     }
 
-    [Obsolete]
-    public Conversation(string firstStatement, Clue firstStatementClue) {
-        ShownStatement = FirstStatement = firstStatement;
-        ActualClue = FirstStatementClue = firstStatementClue;
-    }
-    
-    [Obsolete]
-    public Conversation(string firstStatement) {
-        ShownStatement = FirstStatement = firstStatement;
-    }
-
-    [Obsolete]
-    public Conversation(string truthStatement, string lieStatement) : this(truthStatement) {
-        PushStatement(lieStatement);
-    }
-
     public bool Next(bool choice) {
         if (!isDisabled)
-            ShownStatement = SecondStatement;
+            ActualClue = SecondStatementClue;
 
         return IsTrue == choice;
     }
 
     public void Disable() { isDisabled = true; }
-
-    [Obsolete]
-    public void PushStatement(string newStatement) {
-        SecondStatement = FirstStatement;
-        ShownStatement = FirstStatement = newStatement;
-        IsTrue = false;
-    }
-
-    [Obsolete]
-    public void PushStatement(string newStatement, Clue newStatementClue) {
-        PushStatement(newStatement);
-        PushStatement(newStatementClue);
-    }
 
     public void PushStatement(Clue newStatement) {
         SecondStatementClue = FirstStatementClue;
