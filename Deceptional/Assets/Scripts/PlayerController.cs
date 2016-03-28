@@ -144,13 +144,11 @@ namespace Assets.Scripts {
             conversationCoroutines.Add(inst);
         }
 
-        private IEnumerator CoDisplayText(string text, TextMesh textField) {
-            int index = conversationCoroutines.Count;            
+        private IEnumerator CoDisplayText(string text, TextMesh textField) {            
             // Show letters one at a time
             textField.text = "";
             for(int i = 0; i < text.Length; ++i) {
                 textField.text += text[i];
-                Debug.Log("Coroutine " + index + " running");
                 yield return null;
             }            
         }
@@ -188,7 +186,6 @@ namespace Assets.Scripts {
                 // Hide text
                 HideConversation();
                 // Display next text lerping it
-                //StartCoroutine(CoDisplayText(TextWrapper.BreakLine(CurrentInterrogationTarget.Conversation.ShownStatement), StatementTextMesh));
                 DisplayConversation();
             }
         }
