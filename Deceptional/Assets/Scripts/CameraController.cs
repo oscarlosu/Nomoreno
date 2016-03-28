@@ -39,6 +39,7 @@ public class CameraController : MonoBehaviour {
                 Vector3 end = currentMousePos - center;                
                 transform.RotateAround(Vector3.zero, Vector3.up, CalculateAngle(start, end));
             }
+            RotationWithMouseWheel();
         }        
     }
 
@@ -54,7 +55,7 @@ public class CameraController : MonoBehaviour {
 
     void RotationWithMouseWheel() {
         if (!Mathf.Approximately(Input.mouseScrollDelta.y, 0.0f)) {
-            transform.RotateAround(Vector3.zero, Vector3.up, Input.mouseScrollDelta.y);
+            transform.RotateAround(Vector3.zero, Vector3.up, Input.mouseScrollDelta.y * 10);
         }
     }
 }

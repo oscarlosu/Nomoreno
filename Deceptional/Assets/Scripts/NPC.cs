@@ -84,6 +84,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     public Sprite Disagree;
 
     public SpriteRenderer Emoji;
+    private bool warped;
 
 
     // Use this for initialization
@@ -97,6 +98,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
 
     void OnEnable() {
         CanMingle = true;
+        warped = false;
         // Place npc on random empty position
         Grid.Instance.FreeCell(currentCell);
         currentCell = Grid.Instance.GetRandomCell();
@@ -152,7 +154,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     
     private IEnumerator Waiting()
     {
-        //Debug.Log("Waiting");
         CanMingle = true;
         while (true)
         {
@@ -178,7 +179,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     
     private IEnumerator Mingle()
     {
-        //Debug.Log("Mingle");
         CanMingle = false;
         // Select target (make sure it is available)
         int index = Random.Range(0, NPC.NPCList.Count);
@@ -196,9 +196,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         }
         if(!found)
         {
-            //CanMingle = true;
             StartCoroutine(Waiting());
-            //Debug.Log("Mingle cancelled");
             yield break;
         }
         // Try to get free adjacent cell
@@ -213,9 +211,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
             }
         }
         if (!found) {
-            //CanMingle = true;
             StartCoroutine(Waiting());
-            //Debug.Log("Mingle cancelled");
             yield break;
         }
         // Set animator state
@@ -331,7 +327,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
 
     private IEnumerator Roam()
     {
-        //Debug.Log("Roam");
         CanMingle = true;
         // Select destination
         //Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
@@ -363,7 +358,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
 
     private IEnumerator CoWaitForMingle(NPC other)
     {
-        //Debug.Log("WaitForMingle");
         anim.SetBool("Walk", false);
         CanMingle = false;
         // Wait for other NPC to get near
@@ -405,10 +399,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Start interrogation routine
         StartCoroutine(CoGoToInterrogation());        
     }
-
+    
     private IEnumerator CoGoToInterrogation()
     {
-        //Debug.Log("GoToInterrogation");
         CanMingle = false;
         // Set animator state
         anim.SetBool("Walk", true);
@@ -423,6 +416,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
         // Teleport to Interrogation room
         navAgent.Warp(InterrogationPosition);
+        warped = true;
         // Set animation state
         anim.SetBool("Walk", false);
         // Inform Player Controller of arrival
@@ -440,12 +434,12 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
 
     private IEnumerator CoGoToWaiting()
     {
-        //Debug.Log("GoToWaiting");
         CanMingle = false;
-        // Select destination in waiting room
-        //Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
         // Teleport to waiting room
-        navAgent.Warp(PoliceBoxPosition);
+        if(warped) {
+            navAgent.Warp(PoliceBoxPosition);
+            warped = false;
+        }        
         currentCell = Grid.Instance.GetRandomCell();        
         navAgent.SetDestination(currentCell.transform.position);
         // Set animation state
