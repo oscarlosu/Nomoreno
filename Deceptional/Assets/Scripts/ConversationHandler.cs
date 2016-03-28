@@ -15,9 +15,10 @@ namespace Assets.Scripts {
         public static void SetupConversations(double percentageLiars) {
             int liarCount = (int)((double)TruthGraph.Nodes.Where(n => !n.IsVisited).ToList().Count() * percentageLiars);
             
-            foreach (Node n in TruthGraph.Nodes)
-                n.NPC.Conversation = new Conversation(n.Clue);
-            
+            foreach (Node n in TruthGraph.Nodes) {
+                n.NPC.Conversation = new Conversation(n.Clue, n.NodeClue); // OLD IMPLEMENTATION, KEPT FOR SAFETY
+            }
+
             // GRAPH THINGS
             LieGraph = new Graph();
             var nonKillers = TruthGraph.Nodes.Where(node => !node.IsKiller).ToList();
@@ -97,8 +98,8 @@ namespace Assets.Scripts {
 
                 if (truthNode == null) { throw new Exception("TruthGraph does not contain clues for all NPCs."); }
 
-                npc.Conversation = new Conversation(truthNode.Clue);
-                if (lieNode != null) npc.Conversation.PushStatement(lieNode.Clue);
+                npc.Conversation = new Conversation(truthNode.Clue, truthNode.NodeClue);
+                if (lieNode != null) npc.Conversation.PushStatement(lieNode.Clue, lieNode.NodeClue);
             }
         }
     }

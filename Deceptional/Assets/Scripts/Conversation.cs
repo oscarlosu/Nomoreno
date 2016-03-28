@@ -22,6 +22,12 @@ public class Conversation
     public Conversation(Clue truthStatement, Clue lieStatement) : this(truthStatement) {
         PushStatement(lieStatement);
     }
+
+    [Obsolete]
+    public Conversation(string firstStatement, Clue firstStatementClue) {
+        ShownStatement = FirstStatement = firstStatement;
+        ActualClue = FirstStatementClue = firstStatementClue;
+    }
     
     [Obsolete]
     public Conversation(string firstStatement) {
@@ -47,6 +53,12 @@ public class Conversation
         SecondStatement = FirstStatement;
         ShownStatement = FirstStatement = newStatement;
         IsTrue = false;
+    }
+
+    [Obsolete]
+    public void PushStatement(string newStatement, Clue newStatementClue) {
+        PushStatement(newStatement);
+        PushStatement(newStatementClue);
     }
 
     public void PushStatement(Clue newStatement) {

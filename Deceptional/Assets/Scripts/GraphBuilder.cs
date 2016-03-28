@@ -6,6 +6,7 @@ namespace Assets.Scripts {
     public static class GraphBuilder {
         private static Random r = new Random();
 
+
         public static Graph BuildRandomGraph(int nodeCount, int descriptiveCount) {
             if (nodeCount < descriptiveCount) throw new ArgumentException("NodeCount cannot be less than DescriptiveCount.\n");
 

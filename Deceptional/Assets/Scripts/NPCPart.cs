@@ -4,8 +4,8 @@ using System.Collections;
 
 public class NPCPart
 {
-    public enum NPCPartType
-    {
+    public enum NPCPartType {
+        None,
         Pants,
         Shirt,
         Hat
