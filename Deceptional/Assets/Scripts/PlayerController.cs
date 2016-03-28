@@ -27,6 +27,7 @@ namespace Assets.Scripts {
         }
 
         public static int GeneratorSeed = 0;
+        public static bool UseFixedSeed;
 
         public static GameObject NPCParent;
 
@@ -324,7 +325,7 @@ namespace Assets.Scripts {
                 NPC target;
                 do {
                     //index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
-                    index = new System.Random(GeneratorSeed).Next(NPC.NPCList.Count);
+                    index = UseFixedSeed ? new System.Random(GeneratorSeed).Next(NPC.NPCList.Count) : new System.Random(DateTime.Now.Millisecond).Next(NPC.NPCList.Count);
                     target = NPC.NPCList[index];
                 } while (NPC.NPCList[index].IsKiller);
                 // Save victim's name
