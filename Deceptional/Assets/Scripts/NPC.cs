@@ -417,6 +417,8 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Teleport to Interrogation room
         navAgent.Warp(InterrogationPosition);
         warped = true;
+        // Hide name label
+        HideNameLabel();
         // Set animation state
         anim.SetBool("Walk", false);
         // Inform Player Controller of arrival
@@ -439,7 +441,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         if(warped) {
             navAgent.Warp(PoliceBoxPosition);
             warped = false;
-        }        
+        }
+        // Show name label
+        ShowNameLabel();       
         currentCell = Grid.Instance.GetRandomCell();        
         navAgent.SetDestination(currentCell.transform.position);
         // Set animation state

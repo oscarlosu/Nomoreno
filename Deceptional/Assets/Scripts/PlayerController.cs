@@ -87,6 +87,7 @@ namespace Assets.Scripts {
 
         private List<Coroutine> conversationCoroutines;
         public float PercentageLiars;
+        public TextMesh NameText;
 
         #endregion
 
@@ -137,6 +138,8 @@ namespace Assets.Scripts {
         }
         
         public void DisplayConversation() {
+            // Display name on wall
+            NameText.text = CurrentInterrogationTarget.Name + " says:";
             // Get statement and break into lines
             string statement = CurrentInterrogationTarget.Conversation.ActualClue.Statement;
             statement = TextWrapper.BreakLine(statement);
@@ -159,6 +162,7 @@ namespace Assets.Scripts {
                 StopCoroutine(conversationCoroutines[i]);
                 conversationCoroutines.RemoveAt(i);
             }
+            NameText.text = "";
             StatementTextMesh.text = "";
             StatementTextMesh.gameObject.SetActive(false);
         }
