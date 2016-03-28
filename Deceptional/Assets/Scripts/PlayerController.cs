@@ -178,16 +178,19 @@ namespace Assets.Scripts {
                 // Check if the acccused NPC is the killer
                 if (CurrentInterrogationTarget.IsKiller) {
                     // Victory
-                    NewDayTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name;
+                    NewDayTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name + "\n\nPress any key to restart";
                     NewDayLabelHolder.SetActive(true);
+                    StartCoroutine(WaitForRestart());
                 } else {
+                    // Make NPC angry
                     CurrentInterrogationTarget.Mood = true;
                     CurrentInterrogationTarget.MoodDays += 2;
+                    // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
+                    CurrentInterrogationTarget = null;
+                    // Start new day
+                    StartCoroutine(NextDay());
                 }
-                // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
-                CurrentInterrogationTarget = null;
-                // Start new day
-                StartCoroutine(NextDay());
+                
             }            
         }
         public void Accuse() {
@@ -281,6 +284,20 @@ namespace Assets.Scripts {
             ShowScene();
         }
 
+        private IEnumerator WaitForRestart() {
+            // Disable NPCS
+            NPCParent.SetActive(false);
+            // Clear references to NPCs
+            CurrentInterrogationTarget = null;
+            SelectedNPC = null;
+            // Hide conversation
+            HideConversation();
+            // Wait for key press
+            while (!Input.anyKeyDown) {
+                yield return null;
+            }
+            Application.LoadLevel(0);            
+        }
 
 
         private void HideScene() {
