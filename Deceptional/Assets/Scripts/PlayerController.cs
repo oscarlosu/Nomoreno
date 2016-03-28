@@ -86,6 +86,7 @@ namespace Assets.Scripts {
         public Transform SelectionSpotlight;
 
         private List<Coroutine> conversationCoroutines;
+        public float PercentageLiars;
 
         #endregion
 
@@ -249,7 +250,7 @@ namespace Assets.Scripts {
             string victimName = MurderWitness();
             // Generate conversations
             ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
-            ConversationHandler.SetupConversations(0.8f);
+            ConversationHandler.SetupConversations(PercentageLiars);
             // Show new day message
             string nextDayText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
             NewDayLabelHolder.SetActive(true);
