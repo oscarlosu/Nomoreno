@@ -45,10 +45,16 @@ namespace Assets.Scripts {
             }
             set {
                 if(snpc != null) {
+                    SelectionSpotlight.gameObject.SetActive(false);
+                    SelectionSpotlight.parent = null;
+                    SelectionSpotlight.position = new Vector3(0, SelectionSpotlight.position.y, 0);
                     snpc.HideNameLabel();
                 }
                 snpc = value;
                 if(snpc != null) {
+                    SelectionSpotlight.parent = snpc.transform;
+                    SelectionSpotlight.localPosition = new Vector3(0, SelectionSpotlight.position.y, 0);
+                    SelectionSpotlight.gameObject.SetActive(true);
                     snpc.ShowNameLabel();
                 }
             }
@@ -77,6 +83,7 @@ namespace Assets.Scripts {
         public int PreNextDayDelay;
 
         public Camera InterrogationRoomCamera;
+        public Transform SelectionSpotlight;
 
         #endregion
 
