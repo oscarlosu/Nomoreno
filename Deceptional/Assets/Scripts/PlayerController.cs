@@ -85,11 +85,14 @@ namespace Assets.Scripts {
         public Camera InterrogationRoomCamera;
         public Transform SelectionSpotlight;
 
+        private List<Coroutine> conversationCoroutines;
+
         #endregion
 
         #region Instance methods
 
         public void Awake() {
+            conversationCoroutines = new List<Coroutine>();
             currentDay = 0;
             // Initialize NPCParent
             PlayerController.NPCParent = GameObject.FindGameObjectWithTag("NPCParent");
@@ -103,23 +106,6 @@ namespace Assets.Scripts {
         }
 
         public void Update() {
-            /*
-            if (Input.GetButtonDown("Fire1")) {                
-                // Cast ray and if it hits an NPC, select it
-                Ray ray = InterrogationRoomCamera.ScreenPointToRay(Input.mousePosition);
-                Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 10);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, 100)) {
-                    NPC clicked = hit.transform.gameObject.GetComponent<NPC>();
-                    if (clicked != null) {                      
-                        SelectedNPC = clicked;
-                    }
-                } else {
-                    // Deselect on click
-                    SelectedNPC = null;                    
-                }                
-            }
-            */
             HandleButtons();
         }
        
@@ -148,26 +134,32 @@ namespace Assets.Scripts {
             // Make NPC go to interrogation room
             CurrentInterrogationTarget.GoToInterrogation();
         }
-
+        
         public void DisplayConversation() {
             // Get statement and break into lines
             string statement = CurrentInterrogationTarget.Conversation.ShownStatement;
             statement = TextWrapper.BreakLine(statement);
             StatementTextMesh.gameObject.SetActive(true);
-            StartCoroutine(CoDisplayText(statement, StatementTextMesh));
+            Coroutine inst = StartCoroutine(CoDisplayText(statement, StatementTextMesh));
+            conversationCoroutines.Add(inst);
         }
 
         private IEnumerator CoDisplayText(string text, TextMesh textField) {
+            int index = conversationCoroutines.Count;            
             // Show letters one at a time
             textField.text = "";
             for(int i = 0; i < text.Length; ++i) {
                 textField.text += text[i];
+                Debug.Log("Coroutine " + index + " running");
                 yield return null;
             }            
         }
 
         private void HideConversation() {
-            StopCoroutine("CoDisplayText");
+            for(int i = conversationCoroutines.Count - 1; i >= 0; --i) {
+                StopCoroutine(conversationCoroutines[i]);
+                conversationCoroutines.RemoveAt(i);
+            }
             StatementTextMesh.text = "";
             StatementTextMesh.gameObject.SetActive(false);
         }
@@ -181,18 +173,23 @@ namespace Assets.Scripts {
                 } else {
                     CurrentInterrogationTarget.Mood = true;
                 }
+                // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
+                CurrentInterrogationTarget = null;
                 // Start new day
                 StartCoroutine(NextDay());
             }            
         }
         public void Accuse() {
-            if (CurrentInterrogationTarget != null) {
+            if (CurrentInterrogationTarget != null) {                
                 // Make NPC angry if you wrongfully accuse them of lying
                 if (!CurrentInterrogationTarget.Conversation.Next(false)) {
                     CurrentInterrogationTarget.Mood = true;
                 }
+                // Hide text
+                HideConversation();
                 // Display next text lerping it
-                StartCoroutine(CoDisplayText(TextWrapper.BreakLine(CurrentInterrogationTarget.Conversation.ShownStatement), StatementTextMesh));
+                //StartCoroutine(CoDisplayText(TextWrapper.BreakLine(CurrentInterrogationTarget.Conversation.ShownStatement), StatementTextMesh));
+                DisplayConversation();
             }
         }
 
