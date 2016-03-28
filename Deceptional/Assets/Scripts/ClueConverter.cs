@@ -8,7 +8,7 @@ namespace Assets.Scripts {
     public static class ClueConverter {
 
         #region Fields & properties
-        private static Random r = new Random();
+        private static Random r = new Random(PlayerController.GeneratorSeed);
 
         private static bool useCockney;
 

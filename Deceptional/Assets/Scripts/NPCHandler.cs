@@ -6,9 +6,7 @@ using UnityEngine;
 
 namespace Assets.Scripts {
     public static class NPCHandler {
-        private static System.Random r = new System.Random();
-
-        
+        private static System.Random r = new System.Random(PlayerController.GeneratorSeed);
 
         #region Static lists        
         private static List<string> maleFirsts = new List<string>() {
