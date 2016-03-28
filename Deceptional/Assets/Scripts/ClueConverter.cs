@@ -12,6 +12,15 @@ namespace Assets.Scripts {
 
         private static bool useCockney;
 
+        /// <summary>
+        /// Clue templates are used to create clues dynamically, based on other information.
+        /// The clues are either Accusatory (i.e. directed at a liar), Informative (i.e. directed at an honest person), or Descriptive (i.e. directed at a potential killer).
+        /// Clue templates use the following abstract terms to differ between info:
+            // X = color
+            // Y = piece of clothing
+            // Z = npc names
+            // Q[i] = gender (i refers to particular pronoun instance)
+        /// </summary>
         #region Clue templates
         private static List<string> cockneyClueTemplates = new List<string>() {
             "[A] Blimey! [Z] said [Q[2]] was puttin' up [Q[3]] laundry an' saw da murderer, but I fnk [Q[2]] just wan' attenshun. Nuff said, yeah?",
@@ -128,17 +137,20 @@ namespace Assets.Scripts {
             return ConstructClue(GetClueTemplate(identifier).Equals(ClueIdentifier.Accusatory), npcName, isMale);
         }
 
-        // X = color
-        // Y = piece of clothing
-        // Z = npc names
-        // Q = gender
+        /// <summary>
+        /// Constructs a statement using all custom parameters.
+        /// </summary>
+        /// <param name="template">The neccessary clue template.</param>
+        /// <param name="color">The color of the target clothing.</param>
+        /// <param name="clothing">Clothing type of target clothing.</param>
+        /// <param name="npcName">Name of target NPC.</param>
+        /// <param name="isMale">Gender of target NPC (true = male, false = female).</param>
+        /// <returns></returns>
         public static string ConstructClue(string template, string color, string clothing, string npcName, bool isMale) {
             var matches = cluePattern.Matches(template);
 
             StringBuilder clueBuilder = new StringBuilder(template);
-            clueBuilder.Replace("[A]", "");
-            clueBuilder.Replace("[I]", "");
-            clueBuilder.Replace("[D]", "");
+            clueBuilder.Remove(0, 3);
 
             // Inserting correct pronoun
             string usedPronoun = "";
