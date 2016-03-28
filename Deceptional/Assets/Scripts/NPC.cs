@@ -40,6 +40,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     /// False means they will talk with the detective, true means they will refuse to talk to him
     /// </summary>
     public bool Mood { get; set; }
+    public int MoodDays;
     //public bool Mood;
 
     public bool IsKiller;
@@ -128,6 +129,15 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Legs
         //LegsMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Legs.Type.ToString());
         LegsRenderer.material = Resources.Load<Material>("Materials/" + this.Legs.Description.ToString());
+    }
+
+    public void CoolMood() {
+        if (Mood)
+            if (MoodDays <= 0) {
+                Mood = false;
+            } else {
+                MoodDays--;
+            }
     }
 
     public void OnPointerClick(PointerEventData eventData) {

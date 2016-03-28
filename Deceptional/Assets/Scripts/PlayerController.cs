@@ -141,7 +141,13 @@ namespace Assets.Scripts {
             // Display name on wall
             NameText.text = CurrentInterrogationTarget.Name + " says:";
             // Get statement and break into lines
-            string statement = CurrentInterrogationTarget.Conversation.ActualClue.Statement;
+            string statement = string.Empty;
+            if (CurrentInterrogationTarget.Mood) {
+                statement = "... I'm not gonna talk to you!";
+            } else {
+                statement = CurrentInterrogationTarget.Conversation.ActualClue.Statement;
+            }
+
             statement = TextWrapper.BreakLine(statement);
             StatementTextMesh.gameObject.SetActive(true);
             Coroutine inst = StartCoroutine(CoDisplayText(statement, StatementTextMesh));
@@ -176,6 +182,7 @@ namespace Assets.Scripts {
                     NewDayLabelHolder.SetActive(true);
                 } else {
                     CurrentInterrogationTarget.Mood = true;
+                    CurrentInterrogationTarget.MoodDays += 2;
                 }
                 // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
                 CurrentInterrogationTarget = null;
@@ -188,6 +195,7 @@ namespace Assets.Scripts {
                 // Make NPC angry if you wrongfully accuse them of lying
                 if (!CurrentInterrogationTarget.Conversation.Next(false)) {
                     CurrentInterrogationTarget.Mood = true;
+                    CurrentInterrogationTarget.MoodDays++;
                 }
                 // Hide text
                 HideConversation();
@@ -256,6 +264,8 @@ namespace Assets.Scripts {
             SelectedNPC = null;
             // Murder new witness
             string victimName = MurderWitness();
+            // Cool NPC moods
+            foreach (NPC n in NPC.NPCList) { n.CoolMood(); }
             // Generate conversations
             ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
             ConversationHandler.SetupConversations(PercentageLiars);
