@@ -26,6 +26,8 @@ namespace Assets.Scripts {
             }
         }
 
+        public static int GeneratorSeed = 0;
+
         public static GameObject NPCParent;
 
         #region Instance fields & properties
@@ -182,7 +184,7 @@ namespace Assets.Scripts {
                     NewDayLabelHolder.SetActive(true);
                 } else {
                     CurrentInterrogationTarget.Mood = true;
-                    CurrentInterrogationTarget.MoodDays += 2;
+                    CurrentInterrogationTarget.MoodDays = 1;
                 }
                 // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
                 CurrentInterrogationTarget = null;
@@ -195,7 +197,7 @@ namespace Assets.Scripts {
                 // Make NPC angry if you wrongfully accuse them of lying
                 if (!CurrentInterrogationTarget.Conversation.Next(false)) {
                     CurrentInterrogationTarget.Mood = true;
-                    CurrentInterrogationTarget.MoodDays++;
+                    CurrentInterrogationTarget.MoodDays = 1;
                 }
                 // Hide text
                 HideConversation();
@@ -299,7 +301,8 @@ namespace Assets.Scripts {
                 int index;
                 NPC target;
                 do {
-                    index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
+                    //index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
+                    index = new System.Random(GeneratorSeed).Next(NPC.NPCList.Count);
                     target = NPC.NPCList[index];
                 } while (NPC.NPCList[index].IsKiller);
                 // Save victim's name

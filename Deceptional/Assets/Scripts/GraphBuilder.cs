@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Assets.Scripts {
     public static class GraphBuilder {
-        private static Random r = new Random();
+        private static Random r = new Random(PlayerController.GeneratorSeed);
         private static List<string> colors = new List<string>() { "Red", "Blue", "Green", "Yellow", "Black", "White" };
         private static List<string> clothing = new List<string>() { "Hat", "Shirt", "Pants" };
         
