@@ -5,7 +5,82 @@ using System.Linq;
 namespace Assets.Scripts {
     public static class GraphBuilder {
         private static Random r = new Random();
+        private static List<string> colors = new List<string>() { "Red", "Blue", "Green", "Yellow", "Black", "White" };
+        private static List<string> clothing = new List<string>() { "Hat", "Shirt", "Pants" };
 
+        public static Graph BuildLieGraph(double percentageLiars, Graph truthGraph) {
+            int liarCount = (int)(truthGraph.Nodes.Where(n => !n.IsVisited).Count() * percentageLiars);
+            List<NPC> liars = new List<NPC>();
+
+            var lieGraph = new Graph();
+            var nonKillers = truthGraph.Nodes.Where(node => !node.IsKiller).ToList();
+            while (--liarCount >= 0) {
+                if (nonKillers.Count == 0) { throw new Exception("NonKillers has been exhausted. Less liars required."); }
+
+                Node n = nonKillers[r.Next(nonKillers.Count)];
+                nonKillers.Remove(n);
+                liars.Add(n.NPC); //n.NPC.Conversation.IsTrue = false;
+
+                Node n_lie = new Node() { NPC = n.NPC };
+                var possibleTargets = truthGraph.Nodes.Where(node => node.NPC != n_lie.NPC).ToList();
+                n_lie.TargetNode = possibleTargets[r.Next(possibleTargets.Count)];
+                n_lie.IsDescriptive = !Convert.ToBoolean(r.Next(5));
+
+                lieGraph.Nodes.Add(n_lie);
+                if (lieGraph.ReferenceLookup.ContainsKey(n_lie.TargetNode)) lieGraph.ReferenceLookup[n_lie.TargetNode].Add(n_lie);
+                else lieGraph.ReferenceLookup.Add(n_lie.TargetNode, new List<Node>() { n_lie });
+
+                var lieTarget = n_lie.TargetNode.NPC;
+                
+                // Creates lie-related Clue object.
+                ClueIdentifier lieClueID;
+                NPCPart.NPCPartType npcPartType = NPCPart.NPCPartType.None;
+                if (n_lie.IsDescriptive) {
+                    var lieClothing = clothing[r.Next(clothing.Count)];
+                    var lieColor = string.Empty;
+                    switch (lieClothing) {
+                        case "Hat":
+                            lieColor = Enum.GetName(typeof(NPCPart.NPCPartDescription), lieTarget.Head.Description);
+                            npcPartType = NPCPart.NPCPartType.Hat;
+                            break;
+                        case "Shirt":
+                            lieColor = Enum.GetName(typeof(NPCPart.NPCPartDescription), lieTarget.Torso.Description);
+                            npcPartType = NPCPart.NPCPartType.Shirt;
+                            break;
+                        case "Pants":
+                            lieColor = Enum.GetName(typeof(NPCPart.NPCPartDescription), lieTarget.Legs.Description);
+                            npcPartType = NPCPart.NPCPartType.Pants;
+                            break;
+                        default: throw new Exception("Clothing doesn't exist");
+                    }
+
+                    n_lie.Clue = ClueConverter.ConstructClue(n_lie.IsDescriptive, lieColor, lieClothing, lieTarget.Name, lieTarget.IsMale);
+                    lieClueID = ClueIdentifier.Descriptive;
+                } else {
+                    n_lie.Clue = ClueConverter.ConstructClue(liars.Contains(n_lie.TargetNode.NPC), lieTarget.Name, lieTarget.IsMale);
+                    lieClueID = liars.Contains(n_lie.TargetNode.NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational; // n_lie.TargetNode.NPC.Conversation.IsTrue
+                }
+
+                n_lie.NodeClue = new Clue(n_lie.Clue, n_lie.TargetNode.NPC, lieClueID, npcPartType);
+
+                // Inverts truth statements targeted at NPC hooked to current node.
+                List<Node> refNodes = new List<Node>();
+                if (truthGraph.ReferenceLookup.TryGetValue(n, out refNodes))
+                    foreach (Node refN in refNodes) {
+                        refN.Clue = ClueConverter.ConstructClue(true, n.NPC.Name, n.NPC.IsMale);
+                        refN.NodeClue = new Clue(refN.Clue, refN.TargetNode.NPC, ClueIdentifier.Accusatory, NPCPart.NPCPartType.None);
+                    }
+                // Inverts deceptive statements targeted at NPC hooked to current node.
+                if (lieGraph.ReferenceLookup.TryGetValue(n, out refNodes))
+                    foreach (Node refN in refNodes)
+                        if (!refN.IsDescriptive) {
+                            refN.Clue = ClueConverter.ConstructClue(false, n.NPC.Name, n.NPC.IsMale);
+                            refN.NodeClue = new Clue(refN.Clue, refN.TargetNode.NPC, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
+                        }
+            }
+
+            return lieGraph;
+        }
 
         public static Graph BuildRandomGraph(int nodeCount, int descriptiveCount) {
             if (nodeCount < descriptiveCount) throw new ArgumentException("NodeCount cannot be less than DescriptiveCount.\n");

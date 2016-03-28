@@ -17,6 +17,7 @@ namespace Assets.Scripts {
             Identifier = identifier;
             NPCPartType = targetPart;
             switch (NPCPartType) {
+                case NPCPart.NPCPartType.None:  NPCDescription = NPCPart.NPCPartDescription.Black; break; // Black used as placeholder, value should be irrelevant.
                 case NPCPart.NPCPartType.Hat:   NPCDescription = Target.Head.Description; break;
                 case NPCPart.NPCPartType.Shirt: NPCDescription = Target.Torso.Description; break;
                 case NPCPart.NPCPartType.Pants: NPCDescription = Target.Legs.Description; break;
