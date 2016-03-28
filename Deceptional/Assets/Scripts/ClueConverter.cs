@@ -123,6 +123,11 @@ namespace Assets.Scripts {
             return ConstructClue(GetClueTemplate(identifier), color, clothing, npcName, isMale);
         }
 
+        public static string ConstructClue(ClueIdentifier identifier, string npcName, bool isMale) {
+            if (identifier.Equals(ClueIdentifier.Descriptive)) throw new ArgumentException("Identifier cannot be Descriptive if no color or clothing is provided.");
+            return ConstructClue(GetClueTemplate(identifier).Equals(ClueIdentifier.Accusatory), npcName, isMale);
+        }
+
         // X = color
         // Y = piece of clothing
         // Z = npc names

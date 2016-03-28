@@ -18,8 +18,8 @@ namespace Assets.Scripts {
 
                 if (truthNode == null) { throw new Exception("TruthGraph does not contain clues for all NPCs!"); }
 
-                npc.Conversation = new Conversation(truthNode.Clue, truthNode.NodeClue);
-                if (lieNode != null) npc.Conversation.PushStatement(lieNode.Clue, lieNode.NodeClue);
+                npc.Conversation = new Conversation(truthNode.NodeClue);
+                if (lieNode != null) npc.Conversation.PushStatement(lieNode.NodeClue);
             }
 
             foreach (NPC liar in LieGraph.Nodes.Select(node => node.NPC)) {

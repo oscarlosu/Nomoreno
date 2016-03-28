@@ -138,7 +138,7 @@ namespace Assets.Scripts {
         
         public void DisplayConversation() {
             // Get statement and break into lines
-            string statement = CurrentInterrogationTarget.Conversation.ShownStatement;
+            string statement = CurrentInterrogationTarget.Conversation.ActualClue.Statement;
             statement = TextWrapper.BreakLine(statement);
             StatementTextMesh.gameObject.SetActive(true);
             Coroutine inst = StartCoroutine(CoDisplayText(statement, StatementTextMesh));
