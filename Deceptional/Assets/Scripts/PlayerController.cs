@@ -172,7 +172,8 @@ namespace Assets.Scripts {
                 // Check if the acccused NPC is the killer
                 if (CurrentInterrogationTarget.IsKiller) {
                     // Victory
-                    StatementTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name;
+                    NewDayTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name;
+                    NewDayLabelHolder.SetActive(true);
                 } else {
                     CurrentInterrogationTarget.Mood = true;
                 }
@@ -197,6 +198,9 @@ namespace Assets.Scripts {
 
         public void Dismiss() {
             if(CurrentInterrogationTarget != null) {
+                if(SelectedNPC == CurrentInterrogationTarget) {
+                    SelectedNPC.ShowName = true;
+                }
                 UpdateTime();
                 CurrentInterrogationTarget.GoToWaiting();
                 CurrentInterrogationTarget = null;

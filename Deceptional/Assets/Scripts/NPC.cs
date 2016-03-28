@@ -42,7 +42,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     public bool Mood { get; set; }
     //public bool Mood;
 
-    public bool IsKiller { get; set; }
+    public bool IsKiller;
     //public bool IsKiller    
 
     public MeshFilter HeadMeshFilter;
@@ -85,6 +85,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
 
     public SpriteRenderer Emoji;
     private bool warped;
+    public bool ShowName;
 
 
     // Use this for initialization
@@ -97,6 +98,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     }
 
     void OnEnable() {
+        ShowName = false;
         CanMingle = true;
         warped = false;
         // Place npc on random empty position
@@ -433,7 +435,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Start GoToWaiting coroutine
         StartCoroutine(CoGoToWaiting());
     }
-
+    
     private IEnumerator CoGoToWaiting()
     {
         CanMingle = false;
@@ -443,7 +445,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
             warped = false;
         }
         // Show name label
-        ShowNameLabel();       
+        if(ShowName) {
+            ShowNameLabel();
+        }              
         currentCell = Grid.Instance.GetRandomCell();        
         navAgent.SetDestination(currentCell.transform.position);
         // Set animation state
