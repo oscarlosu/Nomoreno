@@ -183,7 +183,12 @@ namespace Assets.Scripts {
                     NewDayTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name + "\n\nPress any key to restart";
                     NewDayLabelHolder.SetActive(true);
                     StartCoroutine(WaitForRestart());
-                } else {
+                } else if (NPC.NPCList.Count <= 1) {
+                    // Game Over
+                    NewDayTextMesh.text = "On day " + currentDay + " the detective\n hadn't arrested the murderer\n but since everyone else was dead, \nthere was no real need anymore...";
+                    NewDayLabelHolder.SetActive(true);
+                    StartCoroutine(WaitForRestart());
+                } else { 
                     // Make NPC angry
                     CurrentInterrogationTarget.Mood = true;
                     CurrentInterrogationTarget.MoodDays = 1;
