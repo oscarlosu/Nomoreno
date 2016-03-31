@@ -101,7 +101,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     }
 
     void OnEnable() {
-        ShowName = false;
+        ShowName = true;
         CanMingle = true;
         warped = false;
         // Place npc on random empty position

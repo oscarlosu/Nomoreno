@@ -945,6 +945,7 @@ GameObject:
   - 4: {fileID: 151669318}
   - 23: {fileID: 151669320}
   - 102: {fileID: 151669319}
+  - 114: {fileID: 151669321}
   m_Layer: 8
   m_Name: NewDayText
   m_TagString: Untagged
@@ -1016,6 +1017,17 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
+--- !u!114 &151669321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 151669317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7249683c93c692f43a08e16944216455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &160734335
 GameObject:
   m_ObjectHideFlags: 0
