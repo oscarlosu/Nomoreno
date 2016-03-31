@@ -88,6 +88,8 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     private bool warped;
     public bool ShowName;
 
+    public bool MingleReady;
+
 
     // Use this for initialization
     void Awake()
@@ -237,7 +239,10 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         do
         {
             yield return null;
-        } while (navAgent.remainingDistance > MinglingDistance);
+        } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
+        target.MingleReady = true;
+        // Face other NPC
+        transform.LookAt(target.transform);
         // Set animator state
         anim.SetBool("Walk", false);
         // Display result of mingling
@@ -369,12 +374,15 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         StartCoroutine(CoWaitForMingle(other));
     }
 
+
+    
     private IEnumerator CoWaitForMingle(NPC other)
     {
         anim.SetBool("Walk", false);
         CanMingle = false;
+        MingleReady = false;
         // Wait for other NPC to get near
-        while (Vector3.Distance(transform.position, other.transform.position) > MinglingDistance)
+        while (!MingleReady)
         {
             yield return null;
         }
