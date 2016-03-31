@@ -318,7 +318,8 @@ namespace Assets.Scripts {
             while (!Input.anyKeyDown) {
                 yield return null;
             }
-            Application.LoadLevel(0);            
+            //Application.LoadLevel(0);            
+            UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         }
 
 
