@@ -2,8 +2,6 @@
 using System.Collections;
 
 public class NameLabel : MonoBehaviour {
-    private float epsilon = 0.5f;
-    public Vector3 Center;
     void OnEnable() {
         SetRotation();
     }

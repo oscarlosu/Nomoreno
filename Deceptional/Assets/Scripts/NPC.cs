@@ -111,7 +111,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         navAgent.Warp(currentCell.transform.position);
 
         NameLabelHolder.transform.GetComponentInChildren<TextMesh>().text = Name;
-        NameLabelHolder.SetActive(false);
+        //HideNameLabel();
         // NPCs always start waiting
         StartCoroutine(Waiting());        
     }
@@ -468,9 +468,10 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
             warped = false;
         }
         // Show name label
-        if(ShowName) {
-            ShowNameLabel();
-        }              
+        //if(ShowName) {
+        //    ShowNameLabel();
+        //}
+        ShowNameLabel();
         currentCell = Grid.Instance.GetRandomCell();        
         navAgent.SetDestination(currentCell.transform.position);
         // Set animation state
