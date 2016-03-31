@@ -64,7 +64,7 @@ namespace Assets.Scripts {
             // Set gender and name
             bool npcGender = Convert.ToBoolean(r.Next(0, 2));
             npc.IsMale = npcGender;
-            npc.Name = GetRandomName(npcGender);
+            npc.Name = GetRandomName(npcGender, useFullNames);
             
             NPCPart.NPCPartDescription randomDesc;
             var maxValue = Enum.GetValues(typeof(NPCPart.NPCPartDescription)).Length;
@@ -81,10 +81,20 @@ namespace Assets.Scripts {
             return npcGO;
         }
 
-        public static string GetRandomName(bool isMale) {
-            var name = isMale ?
-                maleFirsts[r.Next(maleFirsts.Count)] + " " + maleSurs[r.Next(maleSurs.Count)] :
-                femaleFirsts[r.Next(femaleFirsts.Count)] + " " + femaleSurs[r.Next(femaleSurs.Count)];
+        private static bool useFullNames = false;
+        private static int nextMaleIdx = 0;
+        private static int nextFemaleIdx = 0;
+        public static string GetRandomName(bool isMale, bool useFullName) {
+            var name = string.Empty;
+            if (useFullName) {
+                name = isMale ?
+                    maleFirsts[r.Next(maleFirsts.Count)] + " " + maleSurs[r.Next(maleSurs.Count)] :
+                    femaleFirsts[r.Next(femaleFirsts.Count)] + " " + femaleSurs[r.Next(femaleSurs.Count)];
+            } else {
+                name = isMale ?
+                    maleFirsts[nextMaleIdx++ % maleFirsts.Count] :
+                    femaleFirsts[nextFemaleIdx++ % femaleFirsts.Count];
+            }
             return name;
         }
     }
