@@ -253,6 +253,15 @@ namespace Assets.Scripts {
             minuteRotation.y = 0;
             ClockMinuteHandle.localEulerAngles = minuteRotation;
         }
+
+        private void ResetClock() {
+            Vector3 hourRotation = ClockHourHandle.localEulerAngles;
+            Vector3 minuteRotation = ClockMinuteHandle.localEulerAngles;
+            hourRotation.y = -60;
+            ClockHourHandle.localEulerAngles = hourRotation;
+            minuteRotation.y = 0;
+            ClockMinuteHandle.localEulerAngles = minuteRotation;
+        }
         
         private IEnumerator NextDay() {
             yield return new WaitForSeconds(PreNextDayDelay);
@@ -278,6 +287,8 @@ namespace Assets.Scripts {
             // Generate conversations
             ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
             ConversationHandler.SetupConversations(PercentageLiars);
+            // Reset clock
+            ResetClock();
             // Show new day message
             string nextDayText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
             NewDayLabelHolder.SetActive(true);

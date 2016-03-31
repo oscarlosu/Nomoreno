@@ -3601,14 +3601,12 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 671236336}
-  m_Text: 'Monday
+  m_Text: 'Interviewing
 
-    Oct 1881
+    period
 
 
-    Day 1 of 7
-
-    10:00 - 21:00'
+    10:00 - 20:00'
   m_OffsetZ: 0
   m_CharacterSize: 0.05
   m_LineSpacing: 1
@@ -4373,11 +4371,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 402858, guid: 8f05d79a4555c11449e2608cf5f61219, type: 2}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.50000006
       objectReference: {fileID: 0}
     - target: {fileID: 402858, guid: 8f05d79a4555c11449e2608cf5f61219, type: 2}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.8660254
       objectReference: {fileID: 0}
     - target: {fileID: 9538756, guid: 8f05d79a4555c11449e2608cf5f61219, type: 2}
       propertyPath: m_Enabled
