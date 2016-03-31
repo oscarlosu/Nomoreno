@@ -329,15 +329,19 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         return false;
     }
     public bool IsHappy(NPC other) {
-        if(other.Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
-            other.Conversation.ActualClue.Target == this) {
+        if((other.Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
+            other.Conversation.ActualClue.Target == this) ||
+            (Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
+            Conversation.ActualClue.Target == other)) {
             return true;
         }
         return false;
     }
     public bool IsAngry(NPC other) {
-        if (other.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
-            other.Conversation.ActualClue.Target == this) {
+        if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
+            other.Conversation.ActualClue.Target == this) ||
+            (Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
+            Conversation.ActualClue.Target == other)) {
             return true;
         }
         return false;
