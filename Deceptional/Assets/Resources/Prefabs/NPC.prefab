@@ -562,6 +562,7 @@ MonoBehaviour:
   Emoji: {fileID: 21212408}
   ShowName: 0
   MingleReady: 0
+  RotationSpeed: 5
 --- !u!136 &13691536
 CapsuleCollider:
   m_ObjectHideFlags: 1

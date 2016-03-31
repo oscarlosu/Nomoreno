@@ -47,18 +47,15 @@ namespace Assets.Scripts {
                 return snpc;
             }
             set {
-                if(snpc != null) {
+                if(value == null) {
                     SelectionSpotlight.gameObject.SetActive(false);
                     SelectionSpotlight.parent = null;
-                    SelectionSpotlight.position = new Vector3(0, SelectionSpotlight.position.y, 0);
-                    //snpc.HideNameLabel();
                 }
                 snpc = value;
                 if(snpc != null) {
                     SelectionSpotlight.parent = snpc.transform;
-                    SelectionSpotlight.localPosition = new Vector3(0, SelectionSpotlight.position.y, 0);
+                    SelectionSpotlight.localPosition = new Vector3(0, SelectionSpotlightYOffset, 0);
                     SelectionSpotlight.gameObject.SetActive(true);
-                    //snpc.ShowNameLabel();
                 }
             }
         }
@@ -91,6 +88,7 @@ namespace Assets.Scripts {
         private List<Coroutine> conversationCoroutines;
         public float PercentageLiars;
         public TextMesh NameText;
+        public float SelectionSpotlightYOffset;
 
         #endregion
 

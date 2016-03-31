@@ -10477,7 +10477,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 468672, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0.6999912
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 468672, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: m_LocalPosition.y
@@ -10485,7 +10485,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 468672, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -21.500006
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 468672, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: m_LocalRotation.x
@@ -10512,10 +10512,6 @@ Prefab:
       value: 
       objectReference: {fileID: 55112582}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
-      propertyPath: DismissButton
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: NPCS
       value: 
       objectReference: {fileID: 1413495104}
@@ -10528,13 +10524,13 @@ Prefab:
       value: 
       objectReference: {fileID: 260934227}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
-      propertyPath: ClockMinuteHandle
-      value: 
-      objectReference: {fileID: 1237338129}
-    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: ClockHourHandle
       value: 
       objectReference: {fileID: 1976082886}
+    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
+      propertyPath: ClockMinuteHandle
+      value: 
+      objectReference: {fileID: 1237338129}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: NewDayLabelHolder
       value: 
@@ -10548,25 +10544,9 @@ Prefab:
       value: 
       objectReference: {fileID: 127038516}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
-      propertyPath: PercentageLiars
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: NameText
       value: 
       objectReference: {fileID: 1424532848}
-    - target: {fileID: 468672, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 468672, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 468672, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
   m_IsPrefabParent: 0

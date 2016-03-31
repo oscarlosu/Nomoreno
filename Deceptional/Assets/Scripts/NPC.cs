@@ -148,6 +148,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
 
     public void OnPointerClick(PointerEventData eventData) {
         PlayerController.Instance.SelectedNPC = this;
+        Debug.Log(Name + " clicked on");
     }
 
     public void ShowNameLabel() {
@@ -197,7 +198,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     
     private IEnumerator Mingle()
     {
-        Debug.Log("mingle");
         CanMingle = false;
         // Select target (make sure it is available)
         int index = Random.Range(0, NPC.NPCList.Count);
