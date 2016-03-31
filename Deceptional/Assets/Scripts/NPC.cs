@@ -148,7 +148,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
 
     public void OnPointerClick(PointerEventData eventData) {
         PlayerController.Instance.SelectedNPC = this;
-        Debug.Log(Name + " clicked on");
     }
 
     public void ShowNameLabel() {
@@ -522,6 +521,10 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Start Waiting coroutine
         StartCoroutine(Waiting());
         // End
+    }
+
+    void OnDisable() {
+        StopAllCoroutines();
     }
 
 }

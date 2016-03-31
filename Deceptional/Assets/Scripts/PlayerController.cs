@@ -26,8 +26,8 @@ namespace Assets.Scripts {
             }
         }
 
-        public static int GeneratorSeed = 0;
-        public static bool UseFixedSeed;
+        public int GeneratorSeed;
+        public bool UseFixedSeed;
 
         public static GameObject NPCParent;
 
@@ -89,6 +89,7 @@ namespace Assets.Scripts {
         public float PercentageLiars;
         public TextMesh NameText;
         public float SelectionSpotlightYOffset;
+        public GameObject StartGameButton;
 
         #endregion
 
@@ -102,10 +103,14 @@ namespace Assets.Scripts {
             // Disable NPCParent
             PlayerController.NPCParent.SetActive(false);
             // Generate NPCs 
-            NPCHandler.GenerateMultipleWitnesses(NumberOfNPCS);
+            NPCHandler.GenerateMultipleWitnesses(NumberOfNPCS);  
+        }
+
+        public void StartGame() {
+
+            StartGameButton.SetActive(false);
             // Generate new day
             StartCoroutine(NextDay());
-            
         }
 
         public void Update() {

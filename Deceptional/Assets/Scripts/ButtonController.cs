@@ -11,14 +11,22 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler
     public TextMesh TextMesh;
     private Vector3 origPos;
 
+    public enum TriggerMode {
+        OnDown,
+        OnUp
+    }
+    public TriggerMode Mode;
+
     void Start() {
         origPos = transform.position;
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        MethodBase mb = typeof(PlayerController).GetMethod(MethodName);
-        mb.Invoke(PlayerController.Instance, new Object[0]);
+        if(Mode == TriggerMode.OnDown) {
+            MethodBase mb = typeof(PlayerController).GetMethod(MethodName);
+            mb.Invoke(PlayerController.Instance, new Object[0]);
+        }        
         StartCoroutine(AnimateButton());
     }
 
@@ -43,5 +51,10 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler
         }
         //Debug.Log("DONE");
         transform.position = origPos;
+
+        if (Mode == TriggerMode.OnUp) {
+            MethodBase mb = typeof(PlayerController).GetMethod(MethodName);
+            mb.Invoke(PlayerController.Instance, new Object[0]);
+        }
     }
 }
