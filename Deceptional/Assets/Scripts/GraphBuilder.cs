@@ -149,7 +149,8 @@ namespace Assets.Scripts {
         /// <param name="descriptiveCount">The amount of descriptive nodes that should appear in the graph.</param>
         /// <returns>A new Graph built using random parameters.</returns>
         public static Graph BuildRandomGraph(int nodeCount, int descriptiveCount) {
-            if (nodeCount < descriptiveCount) throw new ArgumentException("NodeCount cannot be less than DescriptiveCount.\n");
+            while (nodeCount - descriptiveCount - 1 < 0 && descriptiveCount > 0)
+                descriptiveCount--;
 
             /// WorkFlow:
             // Add Killer Node.
@@ -189,10 +190,20 @@ namespace Assets.Scripts {
 
             // Set up killerNode.Clue
             var restNodes = g.Nodes.Where(n => !n.IsDescriptive && !n.IsKiller).ToList();
-            g.Nodes[0].TargetNode = restNodes[r.Next(restNodes.Count)];
-            var targetNode = restNodes[r.Next(restNodes.Count)];
-            // Sets up the KillerNode with a support clue.
-            SetupSupportNode(g.Nodes[0], targetNode);
+            // If there's not any other NPCs than descriptive & killer.
+            if (restNodes.Count < 1)
+                restNodes = g.Nodes.Where(n => !n.IsKiller).ToList();
+            // If there's not any other NPCs than killer.
+            if (restNodes.Count < 1) {
+                g.Nodes[0].TargetNode = g.Nodes[0];
+                SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNode);
+                return g;
+            } else { 
+                g.Nodes[0].TargetNode = restNodes[r.Next(restNodes.Count)];
+                var targetNode = restNodes[r.Next(restNodes.Count)];
+                // Sets up the KillerNode with a support clue.
+                SetupSupportNode(g.Nodes[0], targetNode);
+            }
 
             // Managing ReferenceLookup.
             foreach (Node n in g.Nodes) { 
