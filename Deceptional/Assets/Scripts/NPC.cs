@@ -78,6 +78,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     public Cell currentCell;
 
     public GameObject NameLabelHolder;
+    private NameLabel nameLabelScritpt;
 
     public Sprite Angry;
     public Sprite Happy;
@@ -89,6 +90,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     public bool ShowName;
 
     public bool MingleReady;
+    public float RotationSpeed;
 
 
     // Use this for initialization
@@ -97,6 +99,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Get references to components
         navAgent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
+        nameLabelScritpt = NameLabelHolder.GetComponent<NameLabel>();
         Mood = false;
     }
 
@@ -194,6 +197,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     
     private IEnumerator Mingle()
     {
+        Debug.Log("mingle");
         CanMingle = false;
         // Select target (make sure it is available)
         int index = Random.Range(0, NPC.NPCList.Count);
@@ -242,7 +246,10 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
         target.MingleReady = true;
         // Face other NPC
-        transform.LookAt(target.transform);
+        //transform.LookAt(target.transform);
+        while(!RotateTowards(target.transform)) {
+            yield return null;
+        }
         // Set animator state
         anim.SetBool("Walk", false);
         // Display result of mingling
@@ -256,6 +263,25 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Start Roam coroutine
         StartCoroutine(Roam());
         // End
+    }
+    
+    private bool RotateTowards(Transform target) {
+        // Update rotation
+        Vector3 direction = (target.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * RotationSpeed);
+        // Update rotation of name label
+        nameLabelScritpt.UpdateRotation();
+        // Return true if target reached
+        return Mathf.Approximately(Quaternion.Angle(transform.rotation, lookRotation), 0.0f);        
+    }
+
+    private bool RotateTowards(Quaternion targetRotation) {
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * RotationSpeed);
+        // Update rotation of name label
+        nameLabelScritpt.UpdateRotation();
+        // Return true if target reached
+        return Mathf.Approximately(Quaternion.Angle(transform.rotation, targetRotation), 0.0f);
     }
     
     
@@ -391,17 +417,25 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
             yield return null;
         }
         // Face other NPC
-        Quaternion rotation = transform.rotation;
-        transform.LookAt(other.transform);
+        // Store original rotation
+        Quaternion originalRotation = transform.rotation;
+        //transform.LookAt(other.transform);
+        while (!RotateTowards(other.transform)) {
+            yield return null;
+        }
         // Display result of mingling
         Emoji.sprite = GetMingleResult(other);
         Emoji.enabled = true;
         // Wait for other NPC to finish mingling
         // TODO: Is this good enough?
-        yield return new WaitForSeconds(MinglingDuration);
-        // Face original direction
-        transform.rotation = rotation;
+        yield return new WaitForSeconds(MinglingDuration);        
+        // Hide emoji
         Emoji.enabled = false;
+        // Face original direction
+        //transform.rotation = originalRotation;
+        while (!RotateTowards(originalRotation)) {
+            yield return null;
+        }
         // Start Waiting coroutine
         StartCoroutine(Waiting());
         // End
