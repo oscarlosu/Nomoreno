@@ -2,8 +2,6 @@
 using System.Collections;
 
 public class NameLabel : MonoBehaviour {
-    private float epsilon = 0.5f;
-    public Vector3 Center;
     void OnEnable() {
         SetRotation();
     }
@@ -11,11 +9,8 @@ public class NameLabel : MonoBehaviour {
 	void Update () {
         SetRotation();
     }
-    private void SetRotation() {
-        if (Vector3.SqrMagnitude(transform.position) > epsilon) {
-            transform.LookAt(Center);
-            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
-        }
+    private void SetRotation() {        
+        transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
     }
 
 }
