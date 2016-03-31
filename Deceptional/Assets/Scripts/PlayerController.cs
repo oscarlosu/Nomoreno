@@ -51,14 +51,14 @@ namespace Assets.Scripts {
                     SelectionSpotlight.gameObject.SetActive(false);
                     SelectionSpotlight.parent = null;
                     SelectionSpotlight.position = new Vector3(0, SelectionSpotlight.position.y, 0);
-                    snpc.HideNameLabel();
+                    //snpc.HideNameLabel();
                 }
                 snpc = value;
                 if(snpc != null) {
                     SelectionSpotlight.parent = snpc.transform;
                     SelectionSpotlight.localPosition = new Vector3(0, SelectionSpotlight.position.y, 0);
                     SelectionSpotlight.gameObject.SetActive(true);
-                    snpc.ShowNameLabel();
+                    //snpc.ShowNameLabel();
                 }
             }
         }
