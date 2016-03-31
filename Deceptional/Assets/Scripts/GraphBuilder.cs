@@ -5,8 +5,8 @@ using System.Linq;
 namespace Assets.Scripts {
     public static class GraphBuilder {
         private static Random r = PlayerController.UseFixedSeed ? new Random(PlayerController.GeneratorSeed) : new Random(DateTime.Now.Millisecond);
-        private static List<string> colors = new List<string>() { "Red", "Blue", "Green", "Yellow", "Black", "White" };
-        private static List<string> clothing = new List<string>() { "Hat", "Shirt", "Pants" };
+        //private static List<string> colors = new List<string>() { "Red", "Blue", "Green", "Yellow", "Black", "White" };
+        //private static List<string> clothing = new List<string>() { "Hat", "Shirt", "Pants" };
         
         public static Graph BuildLieGraph(double percentageLiars, Graph truthGraph) {
             int liarCount = (int)(truthGraph.Nodes.Where(n => !n.IsVisited).Count() * percentageLiars);
@@ -27,7 +27,6 @@ namespace Assets.Scripts {
 
                 // Creates lie-related Clue object.
                 Node n_lie;
-                var lieColor = string.Empty;
                 if (lieIsDescriptive) {
                     n_lie = CreateDescriptiveNode(lieTargetNode, n.NPC);
                 } else {

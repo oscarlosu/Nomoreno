@@ -10,7 +10,7 @@ namespace Assets.Scripts {
         #region Fields & properties
         private static Random r = PlayerController.UseFixedSeed ? new Random(PlayerController.GeneratorSeed) : new Random(DateTime.Now.Millisecond);
 
-        private static bool useCockney;
+        private static bool useCockney = true;
 
         /// <summary>
         /// Clue templates are used to create clues dynamically, based on other information.
