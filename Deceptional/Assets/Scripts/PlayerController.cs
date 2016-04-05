@@ -32,7 +32,6 @@ namespace Assets.Scripts {
         public static GameObject NPCParent;
 
         #region Instance fields & properties
-        public GameObject DefaultNPC;
         private NPC cit;
         public NPC CurrentInterrogationTarget {
             get {

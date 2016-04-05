@@ -5,6 +5,10 @@ using UnityEngine.EventSystems;
 using Assets.Scripts;
 
 public class NPC : MonoBehaviour, IPointerClickHandler {
+    private static GameObject defaultNpc = Resources.Load<GameObject>(@"Prefabs\NPC");
+    public static GameObject DefaultNPC {
+        get { return Instantiate(defaultNpc); }
+    }
 
     private static List<NPC> npcList;
     public static List<NPC> NPCList

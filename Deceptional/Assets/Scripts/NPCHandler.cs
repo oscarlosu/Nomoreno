@@ -55,7 +55,7 @@ namespace Assets.Scripts {
 
         public static GameObject GenerateRandomWitness() {
             // Instantiate new npc from prefab, get NPC script
-            var npcGO = GameObject.Instantiate(PlayerController.Instance.DefaultNPC);
+            var npcGO = NPC.DefaultNPC;
             NPC npc = npcGO.GetComponent<NPC>();
             // Make NPCS game object as parent
             npcGO.transform.SetParent(PlayerController.NPCParent.transform);
