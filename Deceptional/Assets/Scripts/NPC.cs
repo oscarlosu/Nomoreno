@@ -235,8 +235,10 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     {
         CanMingle = false;
         // Select target (make sure it is available)
-        int index = Random.Range(0, NPC.NPCList.Count);
-        NPC target = NPC.NPCList[index];
+        //int index = Random.Range(0, NPC.NPCList.Count);
+        //NPC target = NPC.NPCList[index];
+        if (Conversation == null) { yield break; }
+        NPC target = MinglingDirector.Instance.RequestMinglingTarget(this);
         bool found = false;
         for (int i = 0; i < MaxSelectionAttempts; ++i)
         {            
@@ -245,8 +247,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
                 found = true;
                 break;                
             }
-            index = Random.Range(0, NPC.NPCList.Count);
-            target = NPC.NPCList[index];
+            //index = Random.Range(0, NPC.NPCList.Count);
+            //target = NPC.NPCList[index];
+            target = MinglingDirector.Instance.RequestMinglingTarget(this);
         }
         if(!found)
         {

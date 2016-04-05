@@ -19,7 +19,7 @@ namespace Assets.Scripts {
 
                 Node n = nonKillers[r.Next(nonKillers.Count)];
                 nonKillers.Remove(n);
-                liars.Add(n.NPC); // (REPLACING n.NPC.Conversation.IsTrue = false;)
+                liars.Add(n.NPC);
 
                 var possibleTargets = truthGraph.Nodes.Where(node => node.NPC != n.NPC).ToList();
                 var lieTargetNode = possibleTargets[r.Next(possibleTargets.Count)];
@@ -30,28 +30,16 @@ namespace Assets.Scripts {
                 if (lieIsDescriptive) {
                     n_lie = CreateDescriptiveNode(lieTargetNode, n.NPC);
                 } else {
+                    // Liar should initially tell the truth, references are flipped upon graph merge.
                     var lieIdentifier = liars.Contains(n.TargetNode.NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
                     n_lie = CreateSupportNode(lieTargetNode, n.NPC, lieIdentifier);
                 }
 
                 lieGraph.Nodes.Add(n_lie);
-                if (lieGraph.ReferenceLookup.ContainsKey(n_lie.TargetNode)) lieGraph.ReferenceLookup[n_lie.TargetNode].Add(n_lie);
-                else lieGraph.ReferenceLookup.Add(n_lie.TargetNode, new List<Node>() { n_lie });
-
-                // Inverts truth statements targeted at NPC hooked to current node.
-                List<Node> refNodes = new List<Node>();
-                if (truthGraph.ReferenceLookup.TryGetValue(n, out refNodes))
-                    foreach (Node refN in refNodes) {
-                        var newRefClue = ClueConverter.ConstructClue(true, n.NPC.Name, n.NPC.IsMale);
-                        refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Accusatory, NPCPart.NPCPartType.None);
-                    }
-                // Inverts deceptive statements targeted at NPC hooked to current node.
-                if (lieGraph.ReferenceLookup.TryGetValue(n, out refNodes))
-                    foreach (Node refN in refNodes)
-                        if (!refN.IsDescriptive) {
-                            var newRefClue = ClueConverter.ConstructClue(false, n.NPC.Name, n.NPC.IsMale);
-                            refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
-                        }
+                // Setup current reference in the graph.
+                SetupReference(lieGraph, n_lie);
+                // Setup references to the lie.
+                SetupLieReference(truthGraph, lieGraph, n);
             }
 
             return lieGraph;
@@ -180,6 +168,33 @@ namespace Assets.Scripts {
             return killerNode;
         }
         #endregion
+
+        #region Graph Rigging
+        private static void SetupReference(Graph g, Node n) {
+            n.IsVisited = false;
+            if (g.ReferenceLookup.ContainsKey(n.TargetNode))
+                g.ReferenceLookup[n.TargetNode].Add(n);
+            else
+                g.ReferenceLookup.Add(n.TargetNode, new List<Node>() { n });
+        }
+
+        private static void SetupLieReference(Graph truthGraph, Graph lieGraph, Node n) {
+            List<Node> refNodes = new List<Node>();
+            // Inverts truth statements targeted at NPC hooked to current node.
+            if (truthGraph.ReferenceLookup.TryGetValue(n, out refNodes))
+                foreach (Node refN in refNodes) {
+                    var newRefClue = ClueConverter.ConstructClue(true, n.NPC.Name, n.NPC.IsMale);
+                    refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Accusatory, NPCPart.NPCPartType.None);
+                }
+            // Inverts deceptive statements targeted at NPC hooked to current node.
+            if (lieGraph.ReferenceLookup.TryGetValue(n, out refNodes))
+                foreach (Node refN in refNodes)
+                    if (!refN.IsDescriptive) {
+                        var newRefClue = ClueConverter.ConstructClue(false, n.NPC.Name, n.NPC.IsMale);
+                        refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
+                    }
+        }
+        #endregion
         #endregion
 
         /// <summary>
@@ -197,7 +212,6 @@ namespace Assets.Scripts {
             // Add/Setup Descriptive Nodes.
             // Add/Setup Support Nodes.
             // Setup Killer Node.
-            // Add Boolean Nodes..?
             Graph g = new Graph();
 
             // Adding Killer Node
@@ -225,28 +239,23 @@ namespace Assets.Scripts {
 
             // Set up killerNode.Clue
             var restNodes = g.Nodes.Where(n => !n.IsDescriptive && !n.IsKiller).ToList();
-            // If there's not any other NPCs than descriptive & killer.
+            // If there's not any other NPCs than descriptive & killer, pick descriptive.
             if (restNodes.Count < 1)
                 restNodes = g.Nodes.Where(n => !n.IsKiller).ToList();
-            // If there's not any other NPCs than killer.
+            // If there's not any other NPCs than killer, return g with killer referencing self.
             if (restNodes.Count < 1) {
                 g.Nodes[0].TargetNode = g.Nodes[0];
                 SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNode);
                 return g;
             } else { 
                 g.Nodes[0].TargetNode = restNodes[r.Next(restNodes.Count)];
-                var targetNode = restNodes[r.Next(restNodes.Count)];
                 // Sets up the KillerNode with a support clue.
-                SetupSupportNode(g.Nodes[0], targetNode);
+                SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNode);
             }
 
             // Managing ReferenceLookup.
-            foreach (Node n in g.Nodes) { 
-                n.IsVisited = false;
-                if (g.ReferenceLookup.ContainsKey(n.TargetNode))
-                    g.ReferenceLookup[n.TargetNode].Add(n);
-                else
-                    g.ReferenceLookup.Add(n.TargetNode, new List<Node>() { n });
+            foreach (Node n in g.Nodes) {
+                SetupReference(g, n);
             }
 
             // Returning.
