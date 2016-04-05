@@ -6,6 +6,9 @@ using Assets.Scripts;
 
 public class NPC : MonoBehaviour, IPointerClickHandler {
 
+    /// <summary>
+    /// List of existing NPCS
+    /// </summary>
     private static List<NPC> npcList;
     public static List<NPC> NPCList
     {
@@ -18,8 +21,13 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
             return NPC.npcList;
         }
     }
-
+    /// <summary>
+    /// Name of the NPC
+    /// </summary>
     public string Name;
+    /// <summary>
+    /// Determines gender of NPC
+    /// </summary>
     public bool IsMale;
     /**
     *  Index of this NPC in NPCList
@@ -37,11 +45,14 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     /// </summary>
     public bool Mood { get; set; }
     public int MoodDays;
-    //public bool Mood;
+    /// <summary>
+    /// Determines if NPC is killer
+    /// </summary>
+    public bool IsKiller;  
 
-    public bool IsKiller;
-    //public bool IsKiller    
-
+    /// <summary>
+    /// References to rendering components for the NPC's body parts
+    /// </summary>
     public MeshFilter HeadMeshFilter;
     public MeshRenderer HeadRenderer;
     public MeshFilter TorsoMeshFilter;
@@ -68,24 +79,52 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     [Tooltip("The higher the value, the higher the chance to Mingle and the lower the chance to Roam. [0, 1]")]
     public float MingleRoamChanceRatio;
 
+    /// <summary>
+    /// True if the NPC is available with mingle, false otherwise
+    /// </summary>
     public bool CanMingle;
+    /// <summary>
+    /// Number of random selection attempts before aborting a random selection phase
+    /// </summary>
     public int MaxSelectionAttempts;
-
+    /// <summary>
+    /// Currently occupied cell in the grid
+    /// </summary>
     public Cell currentCell;
-
+    /// <summary>
+    /// Game object that holds the name label
+    /// </summary>
     public GameObject NameLabelHolder;
+    /// <summary>
+    /// Controller for the name label
+    /// </summary>
     private NameLabel nameLabelScritpt;
 
-    public Sprite Angry;
-    public Sprite Happy;
+    /// <summary>
+    /// References to the mingling icons
+    /// </summary>
+    public Sprite Distrust;
+    public Sprite Trust;
     public Sprite Agree;
     public Sprite Disagree;
+    public Sprite NoResult;
 
+    /// <summary>
+    /// Reference to the sprite renderer that will render the mingling result sprites
+    /// </summary>
     public SpriteRenderer Emoji;
+    /// <summary>
+    /// True if the NPC has warped to the interrogation room, false otherwise (or after the NPC has warped bacck to the waiting room)
+    /// </summary>
     private bool warped;
     public bool ShowName;
-
+    /// <summary>
+    /// Used to syncronize two NPCs when they are preparing for mingling
+    /// </summary>
     public bool MingleReady;
+    /// <summary>
+    /// Determines how fast the NPCS rotate to face other NPCs for mingling
+    /// </summary>
     public float RotationSpeed;
 
 
@@ -290,11 +329,12 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         } else if (IsDisagree(other.Conversation.ActualClue)) {
             return Disagree;
         } else if(IsHappy(other)) {
-            return Happy;
+            return Trust;
         } else if(IsAngry(other)) {
-            return Angry;
+            return Distrust;
+        } else {
+            return NoResult;
         }
-        return null;
     }
 
     private bool IsAgree(Clue other) {
