@@ -35,24 +35,26 @@ namespace Assets.Scripts {
                 }
 
                 lieGraph.Nodes.Add(n_lie);
-                if (lieGraph.ReferenceLookup.ContainsKey(n_lie.TargetNode)) lieGraph.ReferenceLookup[n_lie.TargetNode].Add(n_lie);
-                else lieGraph.ReferenceLookup.Add(n_lie.TargetNode, new List<Node>() { n_lie });
+                //if (lieGraph.ReferenceLookup.ContainsKey(n_lie.TargetNode)) lieGraph.ReferenceLookup[n_lie.TargetNode].Add(n_lie);
+                //else lieGraph.ReferenceLookup.Add(n_lie.TargetNode, new List<Node>() { n_lie });
 
-                // Inverts truth statements targeted at NPC hooked to current node.
-                List<Node> refNodes = new List<Node>();
-                if (truthGraph.ReferenceLookup.TryGetValue(n, out refNodes))
-                    foreach (Node refN in refNodes) {
-                        var newRefClue = ClueConverter.ConstructClue(true, n.NPC.Name, n.NPC.IsMale);
-                        refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Accusatory, NPCPart.NPCPartType.None);
-                    }
-                // Inverts deceptive statements targeted at NPC hooked to current node.
-                if (lieGraph.ReferenceLookup.TryGetValue(n, out refNodes))
-                    foreach (Node refN in refNodes)
-                        if (!refN.IsDescriptive) {
-                            var newRefClue = ClueConverter.ConstructClue(false, n.NPC.Name, n.NPC.IsMale);
-                            refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
-                        }
+                //// Inverts truth statements targeted at NPC hooked to current node.
+                //List<Node> refNodes = new List<Node>();
+                //if (truthGraph.ReferenceLookup.TryGetValue(n, out refNodes))
+                //    foreach (Node refN in refNodes) {
+                //        var newRefClue = ClueConverter.ConstructClue(true, n.NPC.Name, n.NPC.IsMale);
+                //        refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Accusatory, NPCPart.NPCPartType.None);
+                //    }
+                //// Inverts deceptive statements targeted at NPC hooked to current node.
+                //if (lieGraph.ReferenceLookup.TryGetValue(n, out refNodes))
+                //    foreach (Node refN in refNodes)
+                //        if (!refN.IsDescriptive) {
+                //            var newRefClue = ClueConverter.ConstructClue(false, n.NPC.Name, n.NPC.IsMale);
+                //            refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
+                //        }
             }
+            SetupReferences(lieGraph);
+            ApplyLieGraph(truthGraph, lieGraph);
 
             return lieGraph;
         }
@@ -180,6 +182,37 @@ namespace Assets.Scripts {
             return killerNode;
         }
         #endregion
+
+        #region Graph Rigging
+        private static void SetupReferences(Graph g) {
+            foreach (Node n in g.Nodes) {
+                n.IsVisited = false;
+                if (g.ReferenceLookup.ContainsKey(n.TargetNode))
+                    g.ReferenceLookup[n.TargetNode].Add(n);
+                else
+                    g.ReferenceLookup.Add(n.TargetNode, new List<Node>() { n });
+            }
+        }
+
+        private static void ApplyLieGraph(Graph truthGraph, Graph lieGraph) {
+            foreach (Node n in truthGraph.Nodes) { 
+                // Inverts truth statements targeted at NPC hooked to current node.
+                List<Node> refNodes = new List<Node>();
+                if (truthGraph.ReferenceLookup.TryGetValue(n, out refNodes))
+                    foreach (Node refN in refNodes) {
+                        var newRefClue = ClueConverter.ConstructClue(true, n.NPC.Name, n.NPC.IsMale);
+                        refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Accusatory, NPCPart.NPCPartType.None);
+                    }
+                // Inverts deceptive statements targeted at NPC hooked to current node.
+                if (lieGraph.ReferenceLookup.TryGetValue(n, out refNodes))
+                    foreach (Node refN in refNodes)
+                        if (!refN.IsDescriptive) {
+                            var newRefClue = ClueConverter.ConstructClue(false, n.NPC.Name, n.NPC.IsMale);
+                            refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
+                        }
+            }
+        }
+        #endregion
         #endregion
 
         /// <summary>
@@ -241,13 +274,7 @@ namespace Assets.Scripts {
             }
 
             // Managing ReferenceLookup.
-            foreach (Node n in g.Nodes) { 
-                n.IsVisited = false;
-                if (g.ReferenceLookup.ContainsKey(n.TargetNode))
-                    g.ReferenceLookup[n.TargetNode].Add(n);
-                else
-                    g.ReferenceLookup.Add(n.TargetNode, new List<Node>() { n });
-            }
+            SetupReferences(g);
 
             // Returning.
             return g;
