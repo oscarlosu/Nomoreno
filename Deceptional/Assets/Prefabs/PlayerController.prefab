@@ -23,7 +23,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 114114}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.6999912, y: -0, z: -21.500006}
+  m_LocalPosition: {x: 0, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -39,9 +39,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a47d32146997e9748a3f06f484e922f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseRealTime: 0
+  GeneratorSeed: 0
+  UseFixedSeed: 0
+  DefaultNPC: {fileID: 187672, guid: 8cfae813ff314164fa2c13d09d7379bf, type: 2}
+  UseRealTime: 1
   DailyInteracions: 10
-  DayDuration: 0
+  DayDuration: 600
   NumberOfNPCS: 20
   NumberOfDescriptiveClues: 3
   CallInButton: {fileID: 0}
@@ -51,6 +54,7 @@ MonoBehaviour:
   ClockHourHandle: {fileID: 0}
   ClockMinuteHandle: {fileID: 0}
   NewDayLabelHolder: {fileID: 0}
+  currentTime: 0
   NextDayDelay: 3
   PreNextDayDelay: 1
   InterrogationRoomCamera: {fileID: 0}
