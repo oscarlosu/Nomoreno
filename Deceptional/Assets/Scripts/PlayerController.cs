@@ -107,6 +107,8 @@ namespace Assets.Scripts {
             PlayerController.NPCParent.SetActive(false);
             // Generate NPCs 
             NPCHandler.GenerateMultipleWitnesses(NumberOfNPCS);
+            // Create MinglingDirector;
+            var dummy = MinglingDirector.Instance;
 
             // Generate new day
             StartCoroutine(NextDay());
