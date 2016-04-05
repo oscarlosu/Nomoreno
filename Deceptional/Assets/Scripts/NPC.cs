@@ -200,9 +200,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         //NPC target = NPC.NPCList[index];
         if (Conversation == null) { yield break; }
         NPC target = MinglingDirector.Instance.RequestMinglingTarget(this);
-        if (target != null) {
-            Debug.Log(Name + " minglingTarget: " + target.Name);
-        }
         bool found = false;
         for (int i = 0; i < MaxSelectionAttempts; ++i)
         {            
