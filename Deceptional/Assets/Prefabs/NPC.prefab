@@ -161,7 +161,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 187672}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: 0.15, z: 0}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 477008}
@@ -216,7 +216,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 149904}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000016292068}
   m_LocalPosition: {x: 0, y: 3.03, z: 0}
   m_LocalScale: {x: 0.125, y: 0.125, z: 0.125}
   m_Children: []
@@ -555,10 +555,11 @@ MonoBehaviour:
   MaxSelectionAttempts: 10
   currentCell: {fileID: 0}
   NameLabelHolder: {fileID: 176686}
-  Angry: {fileID: 21300000, guid: 9358fb1642d1b44829a86369578ba6a5, type: 3}
-  Happy: {fileID: 21300000, guid: 64b912c0e13a2477bab35fed5a4e7e93, type: 3}
-  Agree: {fileID: 21300000, guid: 4ad417a924df7448ebd694a46a7f0b67, type: 3}
-  Disagree: {fileID: 21300000, guid: 8126b39d441584cb8b2d82b3dba6ed00, type: 3}
+  Distrust: {fileID: 21300000, guid: 81293bf0b2bca2d47829173234c81a31, type: 3}
+  Trust: {fileID: 21300000, guid: ffdab5ef126ce924b8f2fd3db26060eb, type: 3}
+  Agree: {fileID: 21300000, guid: 33c53fc979731e34c8e3963bc2f1846d, type: 3}
+  Disagree: {fileID: 21300000, guid: 8f35c4c34e57f7a4183bb06f454f5b4e, type: 3}
+  NoResult: {fileID: 21300000, guid: d8c02efd30a4e464e8cd9b2109c963d8, type: 3}
   Emoji: {fileID: 21212408}
   ShowName: 0
   MingleReady: 0
@@ -622,7 +623,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e56f04a4d84bab7409676bd2749e415d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 33c53fc979731e34c8e3963bc2f1846d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -103,10 +103,11 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     /// <summary>
     /// References to the mingling icons
     /// </summary>
-    public Sprite Angry;
-    public Sprite Happy;
+    public Sprite Distrust;
+    public Sprite Trust;
     public Sprite Agree;
     public Sprite Disagree;
+    public Sprite NoResult;
 
     /// <summary>
     /// Reference to the sprite renderer that will render the mingling result sprites
@@ -325,11 +326,12 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         } else if (IsDisagree(other.Conversation.ActualClue)) {
             return Disagree;
         } else if(IsHappy(other)) {
-            return Happy;
+            return Trust;
         } else if(IsAngry(other)) {
-            return Angry;
+            return Distrust;
+        } else {
+            return NoResult;
         }
-        return null;
     }
 
     private bool IsAgree(Clue other) {
