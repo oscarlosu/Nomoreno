@@ -60,8 +60,9 @@ namespace Assets.Scripts {
             }
         }
         public bool UseRealTime;
+        private bool timeRunning;
         public int DailyInteracions;
-        public int DayDuration;
+        public float DayDuration; // In seconds
         public int NumberOfNPCS;
         public int NumberOfDescriptiveClues;
         
@@ -76,7 +77,7 @@ namespace Assets.Scripts {
         public GameObject NewDayLabelHolder;
 
         private int interactionCount;
-        private int currentTime;
+        public float currentTime;
         private int currentDay;
 
         public int NextDayDelay;
@@ -95,6 +96,8 @@ namespace Assets.Scripts {
         #region Instance methods
 
         public void Awake() {
+            //Hack to make sure currentTIme is DayDuration
+            currentTime = DayDuration;
             conversationCoroutines = new List<Coroutine>();
             currentDay = 0;
             // Initialize NPCParent
@@ -103,14 +106,28 @@ namespace Assets.Scripts {
             PlayerController.NPCParent.SetActive(false);
             // Generate NPCs 
             NPCHandler.GenerateMultipleWitnesses(NumberOfNPCS);
+
             // Generate new day
             StartCoroutine(NextDay());
         }
 
         public void Update() {
             HandleButtons();
+            if (UseRealTime && timeRunning) UpdateRealTime();
         }
        
+        private void UpdateRealTime() {
+            currentTime -= Time.deltaTime;
+            // Checks if minute has passed.
+            var minute = Mathf.Floor((float)currentTime / 60.0f);
+            var estimate = (float)currentTime / 60.0f;
+            if (estimate < minute + 1f/60f)
+                StartCoroutine(AnimateClock());
+
+            if (currentTime <= 0) {
+                StartCoroutine(NextDay());
+            }
+        }
 
         private void HandleButtons() {
             if(CurrentInterrogationTarget == null) {
@@ -127,8 +144,9 @@ namespace Assets.Scripts {
                 CallInButton.ChangeButton("Call In", "CallIn");
             }
         }
+
         public void CallIn() {
-            if (SelectedNPC == null) return;
+            if (SelectedNPC == null || SelectedNPC == CurrentInterrogationTarget) return;
             // Dismiss whoever is in the interrogation room
             Dismiss();
             // Set current interrogation target
@@ -191,22 +209,25 @@ namespace Assets.Scripts {
                     CurrentInterrogationTarget.Mood = true;
                     CurrentInterrogationTarget.MoodDays = 1;
                     // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
-                    CurrentInterrogationTarget = null;
+                    Dismiss();
                     // Start new day
                     StartCoroutine(NextDay());
                 }
                 
             }            
         }
+
         public void Accuse() {
-            if (CurrentInterrogationTarget != null) {                
+            if (CurrentInterrogationTarget != null) {
+                // Count interaction and update time.
+                UpdateTime();
+                // Hide text
+                HideConversation();
                 // Make NPC angry if you wrongfully accuse them of lying
                 if (!CurrentInterrogationTarget.Conversation.Next(false)) {
                     CurrentInterrogationTarget.Mood = true;
                     CurrentInterrogationTarget.MoodDays = 1;
                 }
-                // Hide text
-                HideConversation();
                 // Display next text lerping it
                 DisplayConversation();
             }
@@ -214,16 +235,15 @@ namespace Assets.Scripts {
 
         public void Dismiss() {
             if(CurrentInterrogationTarget != null) {
-                if(SelectedNPC == CurrentInterrogationTarget) {
-                    SelectedNPC.ShowName = true;
-                }
-                UpdateTime();
+                //if(SelectedNPC == CurrentInterrogationTarget) {
+                //    SelectedNPC.ShowName = true;
+                //}
+
                 CurrentInterrogationTarget.GoToWaiting();
                 CurrentInterrogationTarget = null;
                 HideConversation();
-                if (UseRealTime && currentTime == 0)
-                    StartCoroutine(NextDay());
-                else if (!UseRealTime && interactionCount == 0)
+                UpdateTime();
+                if (!UseRealTime && interactionCount == 0)
                     StartCoroutine(NextDay());
             }            
         }
@@ -232,7 +252,7 @@ namespace Assets.Scripts {
             // Update interactions
             interactionCount--;
             // Animate clock
-            StartCoroutine(AnimateClock());
+            if (!UseRealTime) StartCoroutine(AnimateClock());
         }
 
         private IEnumerator AnimateClock() {
@@ -264,6 +284,7 @@ namespace Assets.Scripts {
         
         private IEnumerator NextDay() {
             yield return new WaitForSeconds(PreNextDayDelay);
+            if (UseRealTime) timeRunning = false;
             if(CurrentInterrogationTarget != null) {
                 Cell cell = Grid.Instance.GetRandomCell();
                 CurrentInterrogationTarget.currentCell = cell;
@@ -298,6 +319,7 @@ namespace Assets.Scripts {
             NewDayLabelHolder.SetActive(false);
             // Show scene
             ShowScene();
+            if (UseRealTime) timeRunning = true;
         }
 
         private IEnumerator WaitForRestart() {

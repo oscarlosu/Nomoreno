@@ -63,9 +63,10 @@ namespace Assets.Scripts {
         /// Creates a Node for the truth graph, targeting the Node target and hooks the new Node to hookNPC
         /// </summary>
         /// <param name="target">Node which the new node should reference.</param>
-        /// <param name="hookNPC">NPC which is connected to the new Node</param>
+        /// <param name="hookNPC">NPC which is connected to the new Node.</param>
+        /// <param name="partIdx">Part of NPC being described (0: Head, 1: Torso, 2: Legs).</param>
         /// <returns>New Descriptive clue Node.</returns>
-        public static Node CreateDescriptiveNode(Node target, NPC hookNPC) {
+        public static Node CreateDescriptiveNode(Node target, NPC hookNPC, int partIdx) {
             var descriptiveNode = new Node() {
                 IsDescriptive = true,
                 TargetNode = target
@@ -73,7 +74,7 @@ namespace Assets.Scripts {
 
             string statement = string.Empty;
             NPCPart.NPCPartType cluePartType;
-            switch (r.Next(3)) {
+            switch (partIdx) {
                 case 0:
                     statement = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Head.Description), "hat", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale);
                     cluePartType = NPCPart.NPCPartType.Hat;
@@ -93,6 +94,46 @@ namespace Assets.Scripts {
             descriptiveNode.NodeClue = new Clue(statement, descriptiveNode.TargetNode.NPC, ClueIdentifier.Descriptive, cluePartType);
 
             return descriptiveNode;
+        }
+
+        public static Node CreateDescriptiveNode(Node target, NPC hookNPC) {
+            return CreateDescriptiveNode(target, hookNPC, r.Next(3));
+        }
+        
+        /// <summary>
+        /// Creates a list of Descriptive nodes with equal distribution.
+        /// </summary>
+        /// <param name="targetNode">The target of description.</param>
+        /// <param name="count">The amount of nodes returned.</param>
+        /// <returns></returns>
+        private static List<Node> CreateDescriptiveNodes(Node targetNode, int count) {
+            List<Node> returnList = new List<Node>();
+            var nonKillers = NPC.NPCList.Where(npc => !npc.IsKiller).ToList();
+            
+            if (count == 1) {
+                // Select one body part
+                int partIdx = r.Next(3);
+                var hookNPC = nonKillers.FirstOrDefault();
+                returnList.Add(CreateDescriptiveNode(targetNode, hookNPC, partIdx));
+                nonKillers.Remove(hookNPC);
+            } else if (count == 2) {
+                int excludeIdx = r.Next(3);
+                for (int i = 0; i < 3; i++) {
+                    // Skip one body part
+                    if (i == excludeIdx) continue;
+                    var hookNPC = nonKillers.FirstOrDefault();
+                    returnList.Add(CreateDescriptiveNode(targetNode, hookNPC, i));
+                    nonKillers.Remove(hookNPC);
+                }
+            } else {
+                for (int i = 0; i < count; i++) {
+                    var hookNPC = nonKillers.FirstOrDefault();
+                    returnList.Add(CreateDescriptiveNode(targetNode, hookNPC, i % 3));
+                    nonKillers.Remove(hookNPC);
+                }
+            }
+
+            return returnList;
         }
         #endregion
 
@@ -163,12 +204,7 @@ namespace Assets.Scripts {
             g.Nodes.Add(CreateKillerNode());
 
             // Adds descriptive nodes and hooks them to the kiler node.
-            var nonKillers = NPC.NPCList.Where(npc => !npc.IsKiller).ToList();
-            for (int i = 0; i < descriptiveCount; i++) {
-                var hookNPC = nonKillers.FirstOrDefault();
-                g.Nodes.Add(CreateDescriptiveNode(g.Nodes[0], hookNPC));
-                nonKillers.Remove(hookNPC);
-            }
+            g.Nodes.AddRange(CreateDescriptiveNodes(g.Nodes[0], descriptiveCount));
 
             // Creating support Nodes
             while (g.Nodes.Count < nodeCount) {
