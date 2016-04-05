@@ -101,6 +101,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         anim = GetComponent<Animator>();
         nameLabelScritpt = NameLabelHolder.GetComponent<NameLabel>();
         Mood = false;
+        NPC.NPCList.Add(this);
     }
 
     void OnEnable() {
@@ -524,7 +525,13 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     }
 
     void OnDisable() {
+        CanMingle = false;
         StopAllCoroutines();
+    }
+
+    void OnDestroy() {
+        StopAllCoroutines();
+        NPC.NPCList.Remove(this);
     }
 
 }

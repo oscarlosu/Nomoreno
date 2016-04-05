@@ -89,7 +89,6 @@ namespace Assets.Scripts {
         public float PercentageLiars;
         public TextMesh NameText;
         public float SelectionSpotlightYOffset;
-        public GameObject StartGameButton;
 
         #endregion
 
@@ -103,12 +102,7 @@ namespace Assets.Scripts {
             // Disable NPCParent
             PlayerController.NPCParent.SetActive(false);
             // Generate NPCs 
-            NPCHandler.GenerateMultipleWitnesses(NumberOfNPCS);  
-        }
-
-        public void StartGame() {
-
-            StartGameButton.SetActive(false);
+            NPCHandler.GenerateMultipleWitnesses(NumberOfNPCS);
             // Generate new day
             StartCoroutine(NextDay());
         }
@@ -314,11 +308,14 @@ namespace Assets.Scripts {
             SelectedNPC = null;
             // Hide conversation
             HideConversation();
+            // Clear NPCList
+            NPC.NPCList.Clear();
             // Wait for key press
             while (!Input.anyKeyDown) {
                 yield return null;
             }
-            //Application.LoadLevel(0);            
+            //Application.LoadLevel(0);
+                 
             UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         }
 

@@ -77,7 +77,7 @@ namespace Assets.Scripts {
 
             npc.Assemble(newHead, newTorso, newLegs);
 
-            NPC.NPCList.Add(npc);
+            
             return npcGO;
         }
 
