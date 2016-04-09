@@ -5,7 +5,7 @@ public class Conversation
 {
     public Clue ActualClue;
     public Clue FirstStatementClue;
-    public Clue SecondStatementClue = new Clue("*Triggering intensifies*", null, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
+    public Clue SecondStatementClue = new Clue("I wasn't lying...\nI'm not gonna talk to you!", null, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
     private bool isTrue = true;
     public bool IsTrue {
         get { return isTrue; }

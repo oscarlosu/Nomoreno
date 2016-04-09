@@ -164,7 +164,7 @@ namespace Assets.Scripts {
             // Get statement and break into lines
             string statement = string.Empty;
             if (CurrentInterrogationTarget.Mood) {
-                statement = "... I'm not gonna talk to you!";
+                statement = "I wasn't lying...\nI'm not gonna talk to you!";
             } else {
                 statement = CurrentInterrogationTarget.Conversation.ActualClue.Statement;
             }
