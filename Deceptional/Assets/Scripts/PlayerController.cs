@@ -259,6 +259,12 @@ namespace Assets.Scripts {
             if(CurrentInterrogationTarget != null) {
                 CurrentInterrogationTarget.GoToWaiting();
                 CurrentInterrogationTarget = null;
+
+                MinglingDirector.Instance.ResetMinglers();
+                foreach (NPC npc in NPC.NPCList) {
+                    npc.ChangeBehaviour();
+                }
+
                 HideConversation();
                 UpdateTime();
                 if (!UseRealTime && interactionCount == 0)

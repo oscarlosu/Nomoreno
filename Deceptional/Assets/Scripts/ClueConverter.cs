@@ -80,12 +80,6 @@ namespace Assets.Scripts {
         };
         #endregion
 
-        #region Pronouns
-        private static List<string> malePronouns = new List<string>() { "man", "he", "his", "men", "him", "Mister" };
-        private static List<string> femalePronouns = new List<string>() { "woman", "she", "hers", "women", "her", "Miss" };
-        #endregion
-
-        private static Regex cluePattern = new Regex(@"(\[X\])|(\[Y\])|(\[Z\])|(\[Q\[\d\]\])");
         #endregion
 
         public static string GetClueTemplate(ClueIdentifier identifier) {

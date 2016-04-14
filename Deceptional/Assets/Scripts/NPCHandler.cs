@@ -33,14 +33,6 @@ namespace Assets.Scripts {
             "Greypartridge", "Hewitson", "Colligan", "Heferord", "Reynolds", "McGlinn"
         };
         #endregion
-        
-        [Obsolete("MurderWitness method accessible in PlayerController.")]
-        public static void MurderRandomWitness() {
-            var allWitnesses = NPC.NPCList.Where(npc => !npc.IsKiller);
-            var randomWitness = allWitnesses.ToList()[r.Next(allWitnesses.Count())];
-            NPC.NPCList.Remove(randomWitness);
-            UnityEngine.Object.Destroy(randomWitness.gameObject);
-        }
 
         public static void GenerateMultipleWitnesses(int count) {
             PlayerController.NPCParent.SetActive(false);

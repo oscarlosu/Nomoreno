@@ -10443,6 +10443,8 @@ Prefab:
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: DayDuration
       value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: UseRealTime
       value: 0
       objectReference: {fileID: 0}
