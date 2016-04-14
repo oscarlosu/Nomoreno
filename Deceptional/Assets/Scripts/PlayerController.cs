@@ -167,11 +167,7 @@ namespace Assets.Scripts {
             // Get statement and break into lines
             string statement = string.Empty;
             if (CurrentInterrogationTarget.Mood) {
-<<<<<<< HEAD
                 statement = CurrentInterrogationTarget.Conversation.MoodyMessage;
-=======
-                statement = "I wasn't lying...\nI'm not gonna talk to you!";
->>>>>>> 5dcb75035ba9b0b444d031992904d8696196e748
             } else {
                 statement = CurrentInterrogationTarget.Conversation.ActualClue.Statement;
             }
