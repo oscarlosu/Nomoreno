@@ -350,7 +350,8 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         if (CurrentBehaviour == Behaviour.Mingling) {
             CurrentBehaviour = Behaviour.Waiting;
         }
-        if (CurrentBehaviour != Behaviour.MingleWaiting) {
+        Emoji.enabled = false;
+        if (!(CurrentBehaviour == Behaviour.MingleWaiting)) {
             if (MinglingDirector.Instance.IsMingler()) StartCoroutine(Mingle());
             else StartCoroutine(Roam());
             //if (CurrentBehaviour != Behaviour.Moving && CanMingle == true) {
@@ -362,7 +363,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
 
     private enum Behaviour { Waiting, Moving, Mingling, MingleWaiting, Interrogated }
     private Behaviour CurrentBehaviour = Behaviour.Waiting;
-    private bool CanMingle { get { return CurrentBehaviour == Behaviour.Waiting || CurrentBehaviour == Behaviour.Moving; } }
+    public bool CanMingle { get { return CurrentBehaviour == Behaviour.Waiting || CurrentBehaviour == Behaviour.Moving; } }
     // Replace with Task architecture.
     #region Behaviour coroutines
     //private IEnumerator Waiting() {

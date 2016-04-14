@@ -261,9 +261,26 @@ namespace Assets.Scripts {
                 CurrentInterrogationTarget = null;
 
                 MinglingDirector.Instance.ResetMinglers();
-                foreach (NPC npc in NPC.NPCList) {
-                    npc.ChangeBehaviour();
+                int maxIdx = NPC.NPCList.Count - 1;
+                int idx = UnityEngine.Random.Range(0, maxIdx);
+                List<int> visitedIdx = new List<int>();
+                for (NPC nextNPC = NPC.NPCList[idx]; MinglingDirector.Instance.IsMingler(); nextNPC = NPC.NPCList[idx]) {
+                    nextNPC.ChangeBehaviour();
+
+                    while (visitedIdx.Contains(idx))
+                        idx = UnityEngine.Random.Range(0, maxIdx);
+
+                    visitedIdx.Add(idx);
                 }
+                for (int i = 0; i < NPC.NPCList.Count; i++) {
+                    if (visitedIdx.Contains(i))
+                        continue;
+
+                    NPC.NPCList[i].ChangeBehaviour();
+                }
+                //foreach (NPC npc in NPC.NPCList) {
+                //    npc.ChangeBehaviour();
+                //}
 
                 HideConversation();
                 UpdateTime();
