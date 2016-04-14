@@ -118,16 +118,19 @@ namespace Assets.Scripts {
             HandleButtons();
             if (UseRealTime && timeRunning) UpdateRealTime();
         }
-       
+
+        private double oneSecond = 0;
         private void UpdateRealTime() {
             currentTime -= Time.deltaTime;
-            // Checks if minute has passed.
-            var minute = Mathf.Floor((float)currentTime / 60.0f);
-            var estimate = (float)currentTime / 60.0f;
-            if (estimate < minute + 1f/60f)
-                StartCoroutine(AnimateClock());
+            oneSecond += Time.deltaTime;
+            if (oneSecond >= 1.0) {
+                oneSecond -= 1; // Animate minute hand.
+                //AnimateRealClock();
+                StartCoroutine(AnimateRealClock());
+            }
 
-            if (currentTime <= 0) {
+            if (currentTime <= 0 && timeRunning) {
+                timeRunning = false;
                 StartCoroutine(NextDay());
             }
         }
@@ -164,9 +167,24 @@ namespace Assets.Scripts {
             // Get statement and break into lines
             string statement = string.Empty;
             if (CurrentInterrogationTarget.Mood) {
-                statement = "... I'm not gonna talk to you!";
+                statement = CurrentInterrogationTarget.Conversation.MoodyMessage;
             } else {
                 statement = CurrentInterrogationTarget.Conversation.ActualClue.Statement;
+            }
+
+            statement = TextWrapper.BreakLine(statement);
+            StatementTextMesh.gameObject.SetActive(true);
+            Coroutine inst = StartCoroutine(CoDisplayText(statement, StatementTextMesh));
+            conversationCoroutines.Add(inst);
+        }
+
+        public void DisplayConversation(string prefix) {
+            NameText.text = CurrentInterrogationTarget.Name + " says:";
+            var statement = string.Empty;
+            if (CurrentInterrogationTarget.Mood) {
+                statement = CurrentInterrogationTarget.Conversation.MoodyMessage;
+            } else {
+                statement = prefix + CurrentInterrogationTarget.Conversation.ActualClue.Statement;
             }
 
             statement = TextWrapper.BreakLine(statement);
@@ -196,6 +214,7 @@ namespace Assets.Scripts {
 
         public void Arrest() {
             if(CurrentInterrogationTarget != null) {
+                if (UseRealTime) timeRunning = false;
                 // Check if the acccused NPC is the killer
                 if (CurrentInterrogationTarget.IsKiller) {
                     // Victory
@@ -232,16 +251,12 @@ namespace Assets.Scripts {
                     CurrentInterrogationTarget.MoodDays = 1;
                 }
                 // Display next text lerping it
-                DisplayConversation();
+                DisplayConversation("Okay, okay, you got me... ");
             }
         }
 
         public void Dismiss() {
             if(CurrentInterrogationTarget != null) {
-                //if(SelectedNPC == CurrentInterrogationTarget) {
-                //    SelectedNPC.ShowName = true;
-                //}
-
                 CurrentInterrogationTarget.GoToWaiting();
                 CurrentInterrogationTarget = null;
                 HideConversation();
@@ -276,6 +291,19 @@ namespace Assets.Scripts {
             ClockMinuteHandle.localEulerAngles = minuteRotation;
         }
 
+        private IEnumerator AnimateRealClock() {
+            Vector3 hourRotation = ClockHourHandle.localEulerAngles;
+            Vector3 minuteRotation = ClockMinuteHandle.localEulerAngles;
+            // We want to rotate the hour handle to rotate 1/2 a degree.
+            // We also want the minute handle to rotate to next second.
+            var accelerator = 600 / DayDuration;
+            minuteRotation.y += 6.0f * accelerator;
+            ClockMinuteHandle.localEulerAngles = minuteRotation;
+            hourRotation.y += 0.5f * accelerator;
+            ClockHourHandle.localEulerAngles = hourRotation;
+            yield return null;
+        }
+
         private void ResetClock() {
             Vector3 hourRotation = ClockHourHandle.localEulerAngles;
             Vector3 minuteRotation = ClockMinuteHandle.localEulerAngles;
@@ -287,7 +315,6 @@ namespace Assets.Scripts {
         
         private IEnumerator NextDay() {
             yield return new WaitForSeconds(PreNextDayDelay);
-            if (UseRealTime) timeRunning = false;
             if(CurrentInterrogationTarget != null) {
                 Cell cell = Grid.Instance.GetRandomCell();
                 CurrentInterrogationTarget.currentCell = cell;

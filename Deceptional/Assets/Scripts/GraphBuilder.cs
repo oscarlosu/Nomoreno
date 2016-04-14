@@ -60,26 +60,17 @@ namespace Assets.Scripts {
                 TargetNode = target
             };
 
-            string statement = string.Empty;
+            string template = ClueConverter.GetClueTemplate(ClueIdentifier.Descriptive);
             NPCPart.NPCPartType cluePartType;
             switch (partIdx) {
-                case 0:
-                    statement = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Head.Description), "hat", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale);
-                    cluePartType = NPCPart.NPCPartType.Hat;
-                    break;
-                case 1:
-                    statement = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Torso.Description), "shirt", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale);
-                    cluePartType = NPCPart.NPCPartType.Shirt;
-                    break;
-                case 2:
-                    statement = ClueConverter.ConstructClue(true, NPCDescriptionToString(descriptiveNode.TargetNode.NPC.Legs.Description), "pants", descriptiveNode.TargetNode.NPC.Name, descriptiveNode.TargetNode.NPC.IsMale);
-                    cluePartType = NPCPart.NPCPartType.Pants;
-                    break;
+                case 0: cluePartType = NPCPart.NPCPartType.Hat; break;
+                case 1: cluePartType = NPCPart.NPCPartType.Shirt; break;
+                case 2: cluePartType = NPCPart.NPCPartType.Pants; break;
                 default: throw new Exception("Random generator tried to access non-existant clothing.");
             }
 
             descriptiveNode.NPC = hookNPC;
-            descriptiveNode.NodeClue = new Clue(statement, descriptiveNode.TargetNode.NPC, ClueIdentifier.Descriptive, cluePartType);
+            descriptiveNode.NodeClue = new Clue(template, descriptiveNode.TargetNode.NPC, ClueIdentifier.Descriptive, cluePartType);
 
             return descriptiveNode;
         }
@@ -153,8 +144,8 @@ namespace Assets.Scripts {
         public static void SetupSupportNode(Node baseNode, Node targetNode) { SetupSupportNode(baseNode, targetNode, ClueIdentifier.Informational); }
         public static void SetupSupportNode(Node baseNode, Node targetNode, ClueIdentifier identifier) {
             baseNode.TargetNode = targetNode;
-            var statement = ClueConverter.ConstructClue(identifier, baseNode.TargetNode.NPC.Name, baseNode.TargetNode.NPC.IsMale);
-            baseNode.NodeClue = new Clue(statement, baseNode.TargetNode.NPC, identifier, NPCPart.NPCPartType.None);
+            var template = ClueConverter.GetClueTemplate(identifier);
+            baseNode.NodeClue = new Clue(template, baseNode.TargetNode.NPC, identifier, NPCPart.NPCPartType.None);
         }
         #endregion
 
@@ -183,15 +174,15 @@ namespace Assets.Scripts {
             // Inverts truth statements targeted at NPC hooked to current node.
             if (truthGraph.ReferenceLookup.TryGetValue(n, out refNodes))
                 foreach (Node refN in refNodes) {
-                    var newRefClue = ClueConverter.ConstructClue(true, n.NPC.Name, n.NPC.IsMale);
-                    refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Accusatory, NPCPart.NPCPartType.None);
+                    var newRefClueTemplate = ClueConverter.GetClueTemplate(ClueIdentifier.Accusatory);
+                    refN.NodeClue = new Clue(newRefClueTemplate, refN.TargetNode.NPC, ClueIdentifier.Accusatory, NPCPart.NPCPartType.None);
                 }
             // Inverts deceptive statements targeted at NPC hooked to current node.
             if (lieGraph.ReferenceLookup.TryGetValue(n, out refNodes))
                 foreach (Node refN in refNodes)
                     if (!refN.IsDescriptive) {
-                        var newRefClue = ClueConverter.ConstructClue(false, n.NPC.Name, n.NPC.IsMale);
-                        refN.NodeClue = new Clue(newRefClue, refN.TargetNode.NPC, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
+                        var newRefClueTemplate = ClueConverter.GetClueTemplate(ClueIdentifier.Informational);
+                        refN.NodeClue = new Clue(newRefClueTemplate, refN.TargetNode.NPC, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
                     }
         }
         #endregion
