@@ -33,7 +33,6 @@ public class Conversation
     public void Disable() { isDisabled = true; }
 
     public void PushStatement(Clue newStatement) {
-        SecondStatementClue.Template = SecondStatementClue.Template.Insert(0, "Okay, okay, you caught me... ");
         SecondStatementClue = FirstStatementClue;
         ActualClue = FirstStatementClue = newStatement;
         IsTrue = false;
