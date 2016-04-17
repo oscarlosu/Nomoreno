@@ -240,7 +240,7 @@ namespace Assets.Scripts {
         }
 
         public void Accuse() {
-            if (CurrentInterrogationTarget != null) {
+            if (CurrentInterrogationTarget != null && !CurrentInterrogationTarget.Mood) {
                 // Count interaction and update time.
                 UpdateTime();
                 // Hide text
@@ -284,7 +284,7 @@ namespace Assets.Scripts {
 
                 HideConversation();
                 UpdateTime();
-                if (!UseRealTime && interactionCount == 0)
+                if (!UseRealTime && interactionCount <= 0)
                     StartCoroutine(NextDay());
             }            
         }

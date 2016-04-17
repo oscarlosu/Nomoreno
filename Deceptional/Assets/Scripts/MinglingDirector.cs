@@ -23,21 +23,21 @@ namespace Assets.Scripts {
 
         public List<NPC> RequestMinglingTargets(NPC initiator) {
             lock (lockObj) {
-                Clue minglingClue = initiator.Conversation.FirstStatementClue;
+                Clue minglingClue = initiator.Conversation.ActualClue;
                 List<NPC> interestNPCs = NPC.NPCList.Where(npc => npc != initiator && npc.CanMingle).ToList();
-                List<Clue> minglingClues = interestNPCs.Select(npc => npc.Conversation.FirstStatementClue).ToList();
+                List<Clue> minglingClues = interestNPCs.Select(npc => npc.Conversation.ActualClue).ToList();
 
                 if (minglingClue.Identifier == ClueIdentifier.Descriptive) {
                     var interestClues = minglingClues.Where(clue => clue.NPCPartType == minglingClue.NPCPartType);
-                    interestNPCs = interestNPCs.Where(npc => interestClues.Any(clue => clue.Equals(npc.Conversation.FirstStatementClue))).ToList();
+                    interestNPCs = interestNPCs.Where(npc => interestClues.Any(clue => clue.Equals(npc.Conversation.ActualClue))).ToList();
 
                     //if (interestClues.Count() > 0) {
                     //    interestNPC = interestNPCs.ToList()[new Random(DateTime.Now.Millisecond).Next(interestNPCs.Count())];
                     //    //interestNPC = NPC.NPCList.FirstOrDefault(npc => npc.Conversation.FirstStatementClue.Equals(interestClues.FirstOrDefault()));
                     //}
                 } else {
-                    var interestClues = minglingClues.Where(clue => clue.Target == minglingClue.Target);
-                    interestNPCs = interestNPCs.Where(npc => interestClues.Any(clue => clue.Equals(npc.Conversation.FirstStatementClue))).ToList();
+                    var interestClues = minglingClues.Where(clue => clue.Target == minglingClue.Target || clue.Target == initiator);
+                    interestNPCs = interestNPCs.Where(npc => interestClues.Any(clue => clue.Equals(npc.Conversation.ActualClue))).ToList();
 
                     //if (interestNPCs.Count() > 0) {
                     //    interestNPC = interestNPCs.ToList()[new Random(DateTime.Now.Millisecond).Next(interestNPCs.Count())];
