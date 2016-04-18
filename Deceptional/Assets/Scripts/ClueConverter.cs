@@ -88,17 +88,16 @@ namespace Assets.Scripts {
         private static Regex cluePattern = new Regex(@"(\[X\])|(\[Y\])|(\[Z\])|(\[Q\[\d\]\])");
         #endregion
 
-        #region Private methods
-        private static string GetClueTemplate(ClueIdentifier identifier) {
+        public static string GetClueTemplate(ClueIdentifier identifier) {
             Regex cluePattern = new Regex(@"(\[A\])|(\[I\])|(\[D\])");
-            List<string> templateList = useCockney ? cockneyClueTemplates : englishClueTemplates;
 
+            List<string> templateList = useCockney ? cockneyClueTemplates : englishClueTemplates;
             List<string> relevantClues;
             switch (identifier) {
                 case ClueIdentifier.Accusatory:     relevantClues = templateList.Where(s => cluePattern.Match(s).Groups[1].Success).ToList(); break;
                 case ClueIdentifier.Informational:  relevantClues = templateList.Where(s => cluePattern.Match(s).Groups[2].Success).ToList(); break;
                 case ClueIdentifier.Descriptive:    relevantClues = templateList.Where(s => cluePattern.Match(s).Groups[3].Success).ToList(); break;
-                default: relevantClues = templateList; break;
+                default:                            relevantClues = templateList; break;
             }
             int index = r.Next(relevantClues.Count);
             return relevantClues[index];
@@ -109,66 +108,6 @@ namespace Assets.Scripts {
                 return pronoun.Replace("h", "'");
             else
                 return pronoun;
-        }
-        #endregion
-
-        public static string ConstructClue(bool isAccusatory, string npcName, bool isMale) {
-            return isAccusatory ?
-                ConstructClue(ClueIdentifier.Accusatory, "<COLOR_ERROR>", "<CLOTHING_ERROR>", npcName, isMale) :
-                ConstructClue(ClueIdentifier.Informational, "<COLOR_ERROR>", "<CLOTHING_ERROR>", npcName, isMale);
-        }
-
-        public static string ConstructClue(string color, string npcName, bool isMale) {
-            return ConstructClue(ClueIdentifier.Informational, color, "<CLOTHING_ERROR>", npcName, isMale);
-        }
-
-        public static string ConstructClue(bool isDescriptive, string color, string clothing, string npcName, bool isMale) {
-            return isDescriptive ?
-                ConstructClue(ClueIdentifier.Descriptive, color, clothing, npcName, isMale) :
-                ConstructClue(ClueIdentifier.Informational, color, clothing, npcName, isMale);
-        }
-
-        public static string ConstructClue(ClueIdentifier identifier, string color, string clothing, string npcName, bool isMale) {
-            return ConstructClue(GetClueTemplate(identifier), color, clothing, npcName, isMale);
-        }
-
-        public static string ConstructClue(ClueIdentifier identifier, string npcName, bool isMale) {
-            if (identifier.Equals(ClueIdentifier.Descriptive)) throw new ArgumentException("Identifier cannot be Descriptive if no color or clothing is provided.");
-            return ConstructClue(GetClueTemplate(identifier).Equals(ClueIdentifier.Accusatory), npcName, isMale);
-        }
-
-        /// <summary>
-        /// Constructs a statement using all custom parameters.
-        /// </summary>
-        /// <param name="template">The neccessary clue template.</param>
-        /// <param name="color">The color of the target clothing.</param>
-        /// <param name="clothing">Clothing type of target clothing.</param>
-        /// <param name="npcName">Name of target NPC.</param>
-        /// <param name="isMale">Gender of target NPC (true = male, false = female).</param>
-        /// <returns></returns>
-        public static string ConstructClue(string template, string color, string clothing, string npcName, bool isMale) {
-            var matches = cluePattern.Matches(template);
-
-            StringBuilder clueBuilder = new StringBuilder(template);
-            clueBuilder.Remove(0, 3);
-
-            // Inserting correct pronoun
-            string usedPronoun = "";
-            foreach (Match m in matches) {
-                if (m.Groups[4].Success) {
-                    int pronounIdx = int.Parse(Regex.Match(m.Groups[4].Value, @"\d+").Value);
-                    usedPronoun = isMale ? malePronouns[pronounIdx - 1] : femalePronouns[pronounIdx - 1];
-                    usedPronoun = useCockney ? CocknifyPronoun(usedPronoun) : usedPronoun;
-                    clueBuilder.Replace(m.Groups[4].Value, usedPronoun);
-                }
-            }
-
-            // Replacing abstract tokens with format tokens
-            clueBuilder.Replace(@"[X]", color);
-            clueBuilder.Replace(@"[Y]", clothing);
-            clueBuilder.Replace(@"[Z]", npcName);
-
-            return clueBuilder.ToString().Trim();
         }
     }
 }

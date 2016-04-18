@@ -10,12 +10,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     /// List of existing NPCS
     /// </summary>
     private static List<NPC> npcList;
-    public static List<NPC> NPCList
-    {
-        get
-        {
-            if(NPC.npcList == null)
-            {
+    public static List<NPC> NPCList {
+        get {
+            if (NPC.npcList == null) {
                 NPC.npcList = new List<NPC>();
             }
             return NPC.npcList;
@@ -48,7 +45,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     /// <summary>
     /// Determines if NPC is killer
     /// </summary>
-    public bool IsKiller;  
+    public bool IsKiller;
 
     /// <summary>
     /// References to rendering components for the NPC's body parts
@@ -127,10 +124,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     /// </summary>
     public float RotationSpeed;
 
-
+    #region MonoBehaviour methods
     // Use this for initialization
-    void Awake()
-    {
+    void Awake() {
         // Get references to components
         navAgent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
@@ -152,25 +148,39 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         NameLabelHolder.transform.GetComponentInChildren<TextMesh>().text = Name;
         //HideNameLabel();
         // NPCs always start waiting
-        StartCoroutine(Waiting());        
+        StartCoroutine(Waiting());
     }
 
-    public void Assemble(NPCPart head, NPCPart torso, NPCPart legs)
-    {
+    void OnDisable() {
+        CanMingle = false;
+        StopAllCoroutines();
+    }
+
+    void OnDestroy() {
+        StopAllCoroutines();
+        NPC.NPCList.Remove(this);
+    }
+    #endregion
+
+    public void OnPointerClick(PointerEventData eventData) {
+        PlayerController.Instance.SelectedNPC = this;
+    }
+
+    public void Assemble(NPCPart head, NPCPart torso, NPCPart legs) {
         // Save parts
-        this.Head = head;
-        this.Torso = torso;
-        this.Legs = legs;
+        Head = head;
+        Torso = torso;
+        Legs = legs;
         // Load meshes and materials
         // Head
         //HeadMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Head.Type.ToString());
-        HeadRenderer.material = Resources.Load<Material>("Materials/" + this.Head.Description.ToString());
+        HeadRenderer.material = Resources.Load<Material>("Materials/" + Head.Description.ToString());
         // Torso
         //TorsoMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Torso.Type.ToString());
-        TorsoRenderer.material = Resources.Load<Material>("Materials/" + this.Torso.Description.ToString());
+        TorsoRenderer.material = Resources.Load<Material>("Materials/" + Torso.Description.ToString());
         // Legs
         //LegsMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Legs.Type.ToString());
-        LegsRenderer.material = Resources.Load<Material>("Materials/" + this.Legs.Description.ToString());
+        LegsRenderer.material = Resources.Load<Material>("Materials/" + Legs.Description.ToString());
     }
 
     public void CoolMood() {
@@ -182,10 +192,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
             }
     }
 
-    public void OnPointerClick(PointerEventData eventData) {
-        PlayerController.Instance.SelectedNPC = this;
-    }
-
     public void ShowNameLabel() {
         NameLabelHolder.SetActive(true);
     }
@@ -193,116 +199,17 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         NameLabelHolder.SetActive(false);
     }
 
-    private IEnumerator HandleWalkAnimation()
-    {
+    private IEnumerator HandleWalkAnimation() {
         // Start walk animation        
         anim.SetBool("Walk", true);
         // Wait for agent to reach destination
-        do
-        {
+        do {
             yield return null;
         } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
         // Stop walk animation
         anim.SetBool("Walk", false);
     }
-    
-    private IEnumerator Waiting()
-    {
-        CanMingle = true;
-        while (true)
-        {
-            // Switch to Roam or Mingle?
-            if (Random.Range(0.0f, 1.0f) < BehaviourChangeChance)
-            {
-                // Select Roam or Mingle
-                if(Random.Range(0.0f, 1.0f) < MingleRoamChanceRatio)
-                {
-                    StartCoroutine(Mingle());
-                }
-                else
-                {
-                    StartCoroutine(Roam());
-                }
-                yield break;
-            }
-            // Wait for one second
-            yield return new WaitForSeconds(1.0f);
-        }        
-    }
 
-    
-    private IEnumerator Mingle()
-    {
-        CanMingle = false;
-        // Select target (make sure it is available)
-        //int index = Random.Range(0, NPC.NPCList.Count);
-        //NPC target = NPC.NPCList[index];
-        if (Conversation == null) { yield break; }
-        NPC target = MinglingDirector.Instance.RequestMinglingTarget(this);
-        bool found = false;
-        for (int i = 0; i < MaxSelectionAttempts; ++i)
-        {            
-            if(target.CanMingle)
-            {
-                found = true;
-                break;                
-            }
-            //index = Random.Range(0, NPC.NPCList.Count);
-            //target = NPC.NPCList[index];
-            target = MinglingDirector.Instance.RequestMinglingTarget(this);
-        }
-        if(!found)
-        {
-            StartCoroutine(Waiting());
-            yield break;
-        }
-        // Try to get free adjacent cell
-        Cell targetCell = currentCell;
-        found = false;
-        foreach(Cell c in target.currentCell.Adjacent) {
-            if(c.Free) {
-                targetCell = c;
-                Grid.Instance.TakeCell(targetCell);
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            StartCoroutine(Waiting());
-            yield break;
-        }
-        // Set animator state
-        anim.SetBool("Walk", true);
-        // Inform target of mingling start
-        target.WaitForMingle(this);
-        // Navigate to target
-        navAgent.SetDestination(targetCell.transform.position);
-        // Wait until near enough to the target
-        do
-        {
-            yield return null;
-        } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
-        target.MingleReady = true;
-        // Face other NPC
-        //transform.LookAt(target.transform);
-        while(!RotateTowards(target.transform)) {
-            yield return null;
-        }
-        // Set animator state
-        anim.SetBool("Walk", false);
-        // Display result of mingling
-        Emoji.sprite = GetMingleResult(target);
-        Emoji.enabled = true;
-        // Wait for mingling duration
-        yield return new WaitForSeconds(MinglingDuration);
-        Emoji.enabled = false;
-        // Inform target of mingling end
-        // TODO: Unnecesary? <- Handled by  WaitForMingle
-        // Start Roam coroutine
-        StartCoroutine(Roam());
-        // End
-    }
-    
     private bool RotateTowards(Transform target) {
         // Update rotation
         Vector3 direction = (target.position - transform.position).normalized;
@@ -311,7 +218,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Update rotation of name label
         nameLabelScritpt.UpdateRotation();
         // Return true if target reached
-        return Mathf.Approximately(Quaternion.Angle(transform.rotation, lookRotation), 0.0f);        
+        return Mathf.Approximately(Quaternion.Angle(transform.rotation, lookRotation), 0.0f);
     }
 
     private bool RotateTowards(Quaternion targetRotation) {
@@ -321,26 +228,27 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Return true if target reached
         return Mathf.Approximately(Quaternion.Angle(transform.rotation, targetRotation), 0.0f);
     }
-    
-    
+
+
     private Sprite GetMingleResult(NPC other) {
-        if(IsAgree(other.Conversation.ActualClue)) {
+        if (IsAgree(other.Conversation.ActualClue)) {
             return Agree;
         } else if (IsDisagree(other.Conversation.ActualClue)) {
             return Disagree;
-        } else if(IsHappy(other)) {
+        } else if (IsHappy(other)) {
             return Trust;
-        } else if(IsAngry(other)) {
+        } else if (IsAngry(other)) {
             return Distrust;
         } else {
             return NoResult;
         }
     }
 
+    #region Mingling results
     private bool IsAgree(Clue other) {
-        if(Conversation.ActualClue.Identifier == other.Identifier) {
+        if (Conversation.ActualClue.Identifier == other.Identifier) {
             // Descriptive
-            if(Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive) {
+            if (Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive) {
                 // Talking about the same part
                 if (other.NPCPartType == Conversation.ActualClue.NPCPartType) {
                     // Agreement on descriptive clue
@@ -356,7 +264,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
             // Supportive or  Accusatory
             else {
                 // Same target
-                if(Conversation.ActualClue.Target == other.Target) {
+                if (Conversation.ActualClue.Target == other.Target) {
                     return true;
                 } else {
                     return false;
@@ -394,7 +302,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         return false;
     }
     public bool IsHappy(NPC other) {
-        if((other.Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
+        if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
             other.Conversation.ActualClue.Target == this) ||
             (Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
             Conversation.ActualClue.Target == other)) {
@@ -411,9 +319,122 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         }
         return false;
     }
+    #endregion
 
-    private IEnumerator Roam()
-    {
+    #region Behaviour bootstrappers
+    public void WaitForMingle(NPC other) {
+        // Interrupt other coroutines
+        StopAllCoroutines();
+        // Start WaitForMingle coroutine
+        StartCoroutine(CoWaitForMingle(other));
+    }
+
+    public void GoToInterrogation() {
+        // Interrupt other coroutines
+        StopAllCoroutines();
+        // Hide emoji
+        Emoji.enabled = false;
+        // Start interrogation routine
+        StartCoroutine(CoGoToInterrogation());
+    }
+
+    public void GoToWaiting() {
+        // Interrupt other coroutines 
+        StopAllCoroutines();
+        // Start GoToWaiting coroutine
+        StartCoroutine(CoGoToWaiting());
+    }
+    #endregion
+
+    // Replace with Task architecture.
+    #region Behaviour coroutines
+
+    private IEnumerator Waiting() {
+        CanMingle = true;
+        while (true) {
+            // Switch to Roam or Mingle?
+            if (Random.Range(0.0f, 1.0f) < BehaviourChangeChance) {
+                // Select Roam or Mingle
+                if (Random.Range(0.0f, 1.0f) < MingleRoamChanceRatio) {
+                    StartCoroutine(Mingle());
+                } else {
+                    StartCoroutine(Roam());
+                }
+                yield break;
+            }
+            // Wait for one second
+            yield return new WaitForSeconds(1.0f);
+        }
+    }
+
+    private IEnumerator Mingle() {
+        CanMingle = false;
+        // Select target (make sure it is available)
+        //int index = Random.Range(0, NPC.NPCList.Count);
+        //NPC target = NPC.NPCList[index];
+        if (Conversation == null) { yield break; }
+        NPC target = MinglingDirector.Instance.RequestMinglingTarget(this);
+        bool found = false;
+        for (int i = 0; i < MaxSelectionAttempts; ++i) {
+            if (target.CanMingle) {
+                found = true;
+                break;
+            }
+            //index = Random.Range(0, NPC.NPCList.Count);
+            //target = NPC.NPCList[index];
+            target = MinglingDirector.Instance.RequestMinglingTarget(this);
+        }
+        if (!found) {
+            StartCoroutine(Waiting());
+            yield break;
+        }
+        // Try to get free adjacent cell
+        Cell targetCell = currentCell;
+        found = false;
+        foreach (Cell c in target.currentCell.Adjacent) {
+            if (c.Free) {
+                targetCell = c;
+                Grid.Instance.TakeCell(targetCell);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            StartCoroutine(Waiting());
+            yield break;
+        }
+        // Set animator state
+        anim.SetBool("Walk", true);
+        // Inform target of mingling start
+        target.WaitForMingle(this);
+        // Navigate to target
+        navAgent.SetDestination(targetCell.transform.position);
+        // Wait until near enough to the target
+        do {
+            yield return null;
+        } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
+        target.MingleReady = true;
+        // Face other NPC
+        //transform.LookAt(target.transform);
+        while (!RotateTowards(target.transform)) {
+            yield return null;
+        }
+        // Set animator state
+        anim.SetBool("Walk", false);
+        // Display result of mingling
+        Emoji.sprite = GetMingleResult(target);
+        Emoji.enabled = true;
+        // Wait for mingling duration
+        yield return new WaitForSeconds(MinglingDuration);
+        Emoji.enabled = false;
+        // Inform target of mingling end
+        // TODO: Unnecesary? <- Handled by  WaitForMingle
+        // Start Roam coroutine
+        StartCoroutine(Roam());
+        // End
+    }
+
+    private IEnumerator Roam() {
         CanMingle = true;
         // Select destination
         //Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
@@ -423,8 +444,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Set animator state
         anim.SetBool("Walk", true);
         // Wait until target is reached
-        do
-        {
+        do {
             yield return null;
         } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
         // Set animation state
@@ -434,25 +454,12 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // End
     }
 
-
-    public void WaitForMingle(NPC other)
-    {
-        // Interrupt other coroutines
-        StopAllCoroutines();
-        // Start WaitForMingle coroutine
-        StartCoroutine(CoWaitForMingle(other));
-    }
-
-
-    
-    private IEnumerator CoWaitForMingle(NPC other)
-    {
+    private IEnumerator CoWaitForMingle(NPC other) {
         anim.SetBool("Walk", false);
         CanMingle = false;
         MingleReady = false;
         // Wait for other NPC to get near
-        while (!MingleReady)
-        {
+        while (!MingleReady) {
             yield return null;
         }
         // Face other NPC
@@ -467,7 +474,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         Emoji.enabled = true;
         // Wait for other NPC to finish mingling
         // TODO: Is this good enough?
-        yield return new WaitForSeconds(MinglingDuration);        
+        yield return new WaitForSeconds(MinglingDuration);
         // Hide emoji
         Emoji.enabled = false;
         // Face original direction
@@ -479,27 +486,8 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         StartCoroutine(Waiting());
         // End
     }
-    /*
-    private void RotateTowards(Transform target)
-    {
-        Vector3 direction = (target.position - transform.position).normalized;
-        Quaternion lookRotation = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
-    }
-    */
 
-    public void GoToInterrogation()
-    {
-        // Interrupt other coroutines
-        StopAllCoroutines();
-        // Hide emoji
-        Emoji.enabled = false;
-        // Start interrogation routine
-        StartCoroutine(CoGoToInterrogation());        
-    }
-    
-    private IEnumerator CoGoToInterrogation()
-    {
+    private IEnumerator CoGoToInterrogation() {
         CanMingle = false;
         // Set animator state
         anim.SetBool("Walk", true);
@@ -524,19 +512,10 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         yield return null;
     }
 
-    public void GoToWaiting()
-    {
-        // Interrupt other coroutines 
-        StopAllCoroutines();
-        // Start GoToWaiting coroutine
-        StartCoroutine(CoGoToWaiting());
-    }
-    
-    private IEnumerator CoGoToWaiting()
-    {
+    private IEnumerator CoGoToWaiting() {
         CanMingle = false;
         // Teleport to waiting room
-        if(warped) {
+        if (warped) {
             navAgent.Warp(PoliceBoxPosition);
             warped = false;
         }
@@ -545,15 +524,14 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         //    ShowNameLabel();
         //}
         ShowNameLabel();
-        currentCell = Grid.Instance.GetRandomCell();        
+        currentCell = Grid.Instance.GetRandomCell();
         navAgent.SetDestination(currentCell.transform.position);
         // Set animation state
         anim.SetBool("Walk", true);
         // Navigate to waiting room
         navAgent.SetDestination(currentCell.transform.position);
         // Wait until target is reached
-        do
-        {
+        do {
             yield return null;
         } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
         // Set animation state
@@ -562,15 +540,5 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         StartCoroutine(Waiting());
         // End
     }
-
-    void OnDisable() {
-        CanMingle = false;
-        StopAllCoroutines();
-    }
-
-    void OnDestroy() {
-        StopAllCoroutines();
-        NPC.NPCList.Remove(this);
-    }
-
+    #endregion
 }
