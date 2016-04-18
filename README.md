@@ -7,7 +7,11 @@ procedurally generated cases.
 # Team members
 
 Anders Antoft Schou: Producer, UX, Game Designer
+
 Nikolaj Henningsen: Writer, Game Designer
+
 Thomas Kallevig: Artist, Sound, Game Designer
+
 Alexander Kirk Jorgensen: Programmer, Game Designer
+
 Oscar Losada: Programmer, Game Designer
