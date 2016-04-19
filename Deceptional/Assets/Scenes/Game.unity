@@ -572,7 +572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 412539a539e25444dac90557758ba75a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Label: Call In
+  Label: CALL IN
   MethodName: CallIn
   TextMesh: {fileID: 581761156}
   Mode: 0
@@ -2361,7 +2361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 412539a539e25444dac90557758ba75a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Label: Arrest
+  Label: ARREST
   MethodName: Arrest
   TextMesh: {fileID: 1321314942}
   Mode: 0
@@ -10410,7 +10410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 412539a539e25444dac90557758ba75a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Label: Accuse of Lying
+  Label: ACCUSE OF LYING
   MethodName: Accuse
   TextMesh: {fileID: 1146946582}
   Mode: 0
