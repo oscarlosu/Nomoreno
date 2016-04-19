@@ -10,7 +10,7 @@ namespace Assets.Scripts {
         public static Graph LieGraph { get; set; }
 
         public static void SetupConversations(double percentageLiars) {
-            LieGraph = GraphBuilder.BuildLieGraph(percentageLiars, TruthGraph);
+            LieGraph = GraphBuilder.BuildLieGraph(percentageLiars, 6, TruthGraph);
 
             foreach (NPC npc in NPC.NPCList) {
                 var truthNode = TruthGraph.Nodes.FirstOrDefault(node => node.NPC.Equals(npc));

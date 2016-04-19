@@ -18,15 +18,9 @@ namespace Assets.Scripts {
 
             // Create non-similar lists.
             var killer = NPC.NPCList.First(npc => npc.IsKiller);
-            var nonSimilarHats =
-                nonKillerNPCs
-                    .Where(npc => npc.Head.Description != killer.Head.Description);
-            var nonSimilarTorsos =
-                nonKillerNPCs
-                    .Where(npc => npc.Torso.Description != killer.Torso.Description);
-            var nonSimilarPants =
-                nonKillerNPCs
-                    .Where(npc => npc.Legs.Description != killer.Legs.Description);
+            var nonSimilarHats = nonKillerNPCs.Where(npc => npc.Head.Description != killer.Head.Description);
+            var nonSimilarTorsos = nonKillerNPCs.Where(npc => npc.Torso.Description != killer.Torso.Description);
+            var nonSimilarPants = nonKillerNPCs.Where(npc => npc.Legs.Description != killer.Legs.Description);
 
             
             while (--liarCount >= 0) {
