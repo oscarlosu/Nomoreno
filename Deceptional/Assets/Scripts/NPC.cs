@@ -40,7 +40,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     /// <summary>
     /// False means they will talk with the detective, true means they will refuse to talk to him
     /// </summary>
-    public bool Mood { get; set; }
+    public bool Mood;
     public int MoodDays;
     /// <summary>
     /// Determines if NPC is killer
@@ -354,9 +354,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         if (!(CurrentBehaviour == Behaviour.MingleWaiting)) {
             if (MinglingDirector.Instance.IsMingler()) StartCoroutine(Mingle());
             else StartCoroutine(Roam());
-            //if (CurrentBehaviour != Behaviour.Moving && CanMingle == true) {
-            //    StartCoroutine(Roam());
-            //}
         }
     }
     #endregion
@@ -366,41 +363,12 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     public bool CanMingle { get { return CurrentBehaviour == Behaviour.Waiting || CurrentBehaviour == Behaviour.Moving; } }
     // Replace with Task architecture.
     #region Behaviour coroutines
-    //private IEnumerator Waiting() {
-    //    CurrentBehaviour = Behaviour.Waiting;
-    //    CanMingle = true;
-    //    while (true) {
-    //        //// Switch to Roam or Mingle?
-    //        //if (Random.Range(0.0f, 1.0f) < BehaviourChangeChance) {
-    //        //    // Select Roam or Mingle
-    //        //    if (Random.Range(0.0f, 1.0f) < MingleRoamChanceRatio) {
-    //        //        StartCoroutine(Mingle());
-    //        //    } else {
-    //        //        StartCoroutine(Roam());
-    //        //    }
-    //        //    yield break;
-    //        //}
-    //        // Wait for one second
-    //        yield return new WaitForSeconds(1.0f);
-    //    }
-    //}
-
     private IEnumerator Mingle() {
-        //CanMingle = false;
         if (Conversation == null) { yield break; }
 
         // Select all potential targets.
         List<NPC> targets = MinglingDirector.Instance.RequestMinglingTargets(this);
         Debug.Log(Name + " has " + targets.Count + " potential mingle targets");
-        //for (int i = 0; i < MaxSelectionAttempts; ++i) {
-        //    if (target.CanMingle) {
-        //        found = true;
-        //        break;
-        //    }
-        //    //index = Random.Range(0, NPC.NPCList.Count);
-        //    //target = NPC.NPCList[index];
-        //    target = MinglingDirector.Instance.RequestMinglingTarget(this);
-        //}
 
         // Find a suitable target.
         NPC target = null;
@@ -446,9 +414,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         MinglingDirector.Instance.DecrementMinglers();
         CurrentBehaviour = Behaviour.Mingling;
         // Wait until near enough to the target
-        do {
-            yield return null; // Replace with WaitUntil(Mathf.Approximately(navAgent.remainingDistance, 0.0f));
-        } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
+        yield return new WaitUntil(() => Mathf.Approximately(navAgent.remainingDistance, 0.0f));
         target.MingleReady = true;
         // Face other NPC
         while (!RotateTowards(target.transform)) {
@@ -471,13 +437,13 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     }
 
     private IEnumerator Roam() {
-        //CanMingle = true;
+        // Set behaviour
+        CurrentBehaviour = Behaviour.Moving;
         // Select destination
         //Vector3 result = RandomVector3(WaitingRoomMin, WaitingRoomMax);
         Grid.Instance.FreeCell(currentCell);
         currentCell = Grid.Instance.GetRandomCell();
         navAgent.SetDestination(currentCell.transform.position);
-        CurrentBehaviour = Behaviour.Moving;
         // Set animator state
         anim.SetBool("Walk", true);
         // Wait until target is reached
@@ -486,16 +452,17 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
         // Set animation state
         anim.SetBool("Walk", false);
-        // Start Waiting coroutine
-        //StartCoroutine(Waiting());
-        // End
     }
 
     private IEnumerator CoWaitForMingle(NPC other) {
+        // Set behaviour to MingleWaiting
+        CurrentBehaviour = Behaviour.MingleWaiting;
+        
+        // Start animation
         anim.SetBool("Walk", false);
-        //CanMingle = false;
         MingleReady = false;
         // Wait for other NPC to get near
+        // Wait for distance to be lower than threshold, instead of mingling signal from initiator?
         while (!MingleReady) {
             yield return null;
         }
@@ -520,9 +487,6 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         while (!RotateTowards(originalRotation)) {
             yield return null;
         }
-        // Start Waiting coroutine
-        //StartCoroutine(Waiting());
-        // End
     }
 
     private IEnumerator CoGoToInterrogation() {

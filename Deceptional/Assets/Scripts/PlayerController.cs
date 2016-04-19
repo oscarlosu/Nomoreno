@@ -60,6 +60,7 @@ namespace Assets.Scripts {
                 }
             }
         }
+        private NPC arrestedNPC;
         public bool UseRealTime;
         private bool timeRunning;
         public int DailyInteracions;
@@ -138,16 +139,16 @@ namespace Assets.Scripts {
         private void HandleButtons() {
             if(CurrentInterrogationTarget == null) {
                 // Show call in
-                CallInButton.ChangeButton("Call In", "CallIn");
+                CallInButton.ChangeButton("CALL IN", "CallIn");
             } else if(SelectedNPC == null) {
                 // Show dismiss
-                CallInButton.ChangeButton("Dismiss", "Dismiss");
+                CallInButton.ChangeButton("DISMISS", "Dismiss");
             } else if(CurrentInterrogationTarget == SelectedNPC) {
                 // Show dismiss
-                CallInButton.ChangeButton("Dismiss", "Dismiss");
+                CallInButton.ChangeButton("DISMISS", "Dismiss");
             } else if(CurrentInterrogationTarget != SelectedNPC) {
                 // Show call in
-                CallInButton.ChangeButton("Call In", "CallIn");
+                CallInButton.ChangeButton("CALL IN", "CallIn");
             }
         }
 
@@ -230,6 +231,8 @@ namespace Assets.Scripts {
                     // Make NPC angry
                     CurrentInterrogationTarget.Mood = true;
                     CurrentInterrogationTarget.MoodDays = 1;
+                    // Save reference to arrested NPC
+                    arrestedNPC = CurrentInterrogationTarget;
                     // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
                     Dismiss();
                     // Start new day
@@ -355,6 +358,8 @@ namespace Assets.Scripts {
             SelectedNPC = null;
             // Murder new witness
             string victimName = MurderWitness();
+            // Clear reference to arrested NPC
+            arrestedNPC = null;
             // Cool NPC moods
             foreach (NPC n in NPC.NPCList) { n.CoolMood(); }
             // Generate conversations
@@ -414,7 +419,7 @@ namespace Assets.Scripts {
                     //index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
                     index = UseFixedSeed ? new System.Random(GeneratorSeed).Next(NPC.NPCList.Count) : new System.Random(DateTime.Now.Millisecond).Next(NPC.NPCList.Count);
                     target = NPC.NPCList[index];
-                } while (NPC.NPCList[index].IsKiller);
+                } while (NPC.NPCList[index].IsKiller || arrestedNPC == target);
                 // Save victim's name
                 name = target.Name;
                 // Remove from list

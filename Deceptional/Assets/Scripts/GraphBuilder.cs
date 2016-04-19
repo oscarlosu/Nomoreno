@@ -5,32 +5,46 @@ using System.Linq;
 namespace Assets.Scripts {
     public static class GraphBuilder {
         private static Random r = PlayerController.Instance.UseFixedSeed ? new Random(PlayerController.Instance.GeneratorSeed) : new Random(DateTime.Now.Millisecond);
-        //private static List<string> colors = new List<string>() { "Red", "Blue", "Green", "Yellow", "Black", "White" };
-        //private static List<string> clothing = new List<string>() { "Hat", "Shirt", "Pants" };
         
-        public static Graph BuildLieGraph(double percentageLiars, Graph truthGraph) {
+        public static Graph BuildLieGraph(double percentageLiars, int descriptiveLies, Graph truthGraph) {
+            // Calculating amount of liars.
             int liarCount = (int)(truthGraph.Nodes.Where(n => !n.IsVisited).Count() * percentageLiars);
             List<NPC> liars = new List<NPC>();
 
+            // Create neccessary graph and lists.
             var lieGraph = new Graph();
-            var nonKillers = truthGraph.Nodes.Where(node => !node.IsKiller).ToList();
-            while (--liarCount >= 0) {
-                if (nonKillers.Count == 0) { throw new Exception("NonKillers has been exhausted. Less liars required."); }
+            var nonKillerNodes = truthGraph.Nodes.Where(node => !node.IsKiller).ToList();
+            var nonKillerNPCs = NPC.NPCList.Where(npc => !npc.IsKiller);
 
-                Node n = nonKillers[r.Next(nonKillers.Count)];
-                nonKillers.Remove(n);
+            // Create non-similar lists.
+            var killer = NPC.NPCList.First(npc => npc.IsKiller);
+            var nonSimilarHats =
+                nonKillerNPCs
+                    .Where(npc => npc.Head.Description != killer.Head.Description);
+            var nonSimilarTorsos =
+                nonKillerNPCs
+                    .Where(npc => npc.Torso.Description != killer.Torso.Description);
+            var nonSimilarPants =
+                nonKillerNPCs
+                    .Where(npc => npc.Legs.Description != killer.Legs.Description);
+
+            
+            while (--liarCount >= 0) {
+                // Find liar node and remove it from nonKillers.
+                Node n = nonKillerNodes[r.Next(nonKillerNodes.Count)];
+                nonKillerNodes.Remove(n);
                 liars.Add(n.NPC);
 
-                var possibleTargets = truthGraph.Nodes.Where(node => node.NPC != n.NPC).ToList();
-                var lieTargetNode = possibleTargets[r.Next(possibleTargets.Count)];
-                var lieIsDescriptive = !Convert.ToBoolean(r.Next(5));
+                if (nonKillerNodes.Count == 0) { throw new Exception("NonKillers has been exhausted. Less liars required."); }
 
+                var possibleTargets = truthGraph.Nodes.Where(node => node.NPC != n.NPC).ToList();
+                Node lieTargetNode = possibleTargets[r.Next(possibleTargets.Count)];
                 // Creates lie-related Clue object.
                 Node n_lie;
-                if (lieIsDescriptive) {
+                if (--descriptiveLies >= 0) {
                     n_lie = CreateDescriptiveNode(lieTargetNode, n.NPC);
                 } else {
-                    // Liar should initially tell the truth, references are flipped upon graph merge.
+                    // Current liar should initially tell the truth about his target, since references are flipped upon graph merge.
                     var lieIdentifier = liars.Contains(n.TargetNode.NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
                     n_lie = CreateSupportNode(lieTargetNode, n.NPC, lieIdentifier);
                 }

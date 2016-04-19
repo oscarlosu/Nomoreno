@@ -60,7 +60,7 @@ namespace Assets.Scripts {
             "[A] I heard about the murder from [Z], [Q[2]] told me [Q[2]] saw the murderer and that the murderer looked [Q[5]] straight in the eye... But I'm not sure about that part.",
             "[A] Don't talk to me, talk to [Z] [Q[2]] is bragging about almost catching the murderer.",
             "[A] So little [Q[6]]-know-it-all says that [Q[2]] is certain that [Q[2]] saw the “real” murderer, I doubt it, [Z] just think [Q[2]] is so clever... [Q[2]] is not!",
-            "[I] I know that [Z] ran into the murderer when  [Q[2]] was heading out for work, you might want to talk with [Q[2]].",
+            "[I] I know that [Z] ran into the murderer when [Q[2]] was heading out for work, you might want to talk with [Q[2]].",
             "[I] I saw [Z] coming away from around where the murder happened, [Q[2]] was white as a ghost. [Q[2]] must have seen something.",
             "[I] When I heard about the murder, I immediately thought that [Z] would had seen it, since [Q[2]] usually walks [Q[3]] dog around that time.",
             "[I] I was walking my dog, and was just coming back from the park. There was not a lot of people, but I think I saw [Z]coming home from the pub.",
