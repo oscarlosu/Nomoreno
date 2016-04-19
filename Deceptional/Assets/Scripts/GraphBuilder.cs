@@ -21,7 +21,6 @@ namespace Assets.Scripts {
             var nonSimilarHats = nonKillerNPCs.Where(npc => npc.Head.Description != killer.Head.Description);
             var nonSimilarTorsos = nonKillerNPCs.Where(npc => npc.Torso.Description != killer.Torso.Description);
             var nonSimilarPants = nonKillerNPCs.Where(npc => npc.Legs.Description != killer.Legs.Description);
-
             
             while (--liarCount >= 0) {
                 // Find liar node and remove it from nonKillers.
@@ -31,13 +30,36 @@ namespace Assets.Scripts {
 
                 if (nonKillerNodes.Count == 0) { throw new Exception("NonKillers has been exhausted. Less liars required."); }
 
-                var possibleTargets = truthGraph.Nodes.Where(node => node.NPC != n.NPC).ToList();
-                Node lieTargetNode = possibleTargets[r.Next(possibleTargets.Count)];
+                List<Node> possibleTargets;
                 // Creates lie-related Clue object.
                 Node n_lie;
                 if (--descriptiveLies >= 0) {
-                    n_lie = CreateDescriptiveNode(lieTargetNode, n.NPC);
+                    int partIdx = r.Next(3);
+                    switch (partIdx) {
+                        case 0:
+                            possibleTargets = 
+                                nonKillerNodes
+                                    .Where(node => nonSimilarHats.Any(npc => npc == node.NPC)).ToList();
+                            break;
+                        case 1:
+                            possibleTargets = 
+                                nonKillerNodes
+                                    .Where(node => nonSimilarTorsos.Any(npc => npc == node.NPC)).ToList();
+                            break;
+                        case 2:
+                            possibleTargets = 
+                                nonKillerNodes
+                                    .Where(node => nonSimilarPants.Any(npc => npc == node.NPC)).ToList();
+                            break;
+                        default: throw new Exception("Random generator tried to access non-existant clothing.");
+                    }
+
+                    Node lieTargetNode = possibleTargets[r.Next(possibleTargets.Count)];
+                    n_lie = CreateDescriptiveNode(lieTargetNode, n.NPC, partIdx);
                 } else {
+                    possibleTargets = truthGraph.Nodes.Where(node => node.NPC != n.NPC).ToList();
+                    Node lieTargetNode = possibleTargets[r.Next(possibleTargets.Count)];
+
                     // Current liar should initially tell the truth about his target, since references are flipped upon graph merge.
                     var lieIdentifier = liars.Contains(n.TargetNode.NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
                     n_lie = CreateSupportNode(lieTargetNode, n.NPC, lieIdentifier);
