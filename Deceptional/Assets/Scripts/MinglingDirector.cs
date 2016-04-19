@@ -13,55 +13,57 @@ namespace Assets.Scripts {
             }
         }
 
-        private Random r = new Random(DateTime.Now.Millisecond);
-        private int minglers = 0;
-        private object lockObj = new object();
+        //private int minglers = 0;
+
+
 
         public MinglingDirector() {
-            minglers = r.Next(3) + 2;
+            //ResetMinglers();
         }
 
         public List<NPC> RequestMinglingTargets(NPC initiator) {
-            lock (lockObj) {
                 Clue minglingClue = initiator.Conversation.ActualClue;
+                // Get list of other NPCs that are available to mingle and list of their clues
                 List<NPC> interestNPCs = NPC.NPCList.Where(npc => npc != initiator && npc.CanMingle).ToList();
-                List<Clue> minglingClues = interestNPCs.Select(npc => npc.Conversation.ActualClue).ToList();
+                //List<Clue> minglingClues = interestNPCs.Select(npc => npc.Conversation.ActualClue).ToList();
 
                 if (minglingClue.Identifier == ClueIdentifier.Descriptive) {
-                    var interestClues = minglingClues.Where(clue => clue.NPCPartType == minglingClue.NPCPartType);
-                    interestNPCs = interestNPCs.Where(npc => interestClues.Any(clue => clue.Equals(npc.Conversation.ActualClue))).ToList();
+                //var interestClues = minglingClues.Where(clue => clue.NPCPartType == minglingClue.NPCPartType);
+                //interestNPCs = interestNPCs.Where(npc => interestClues.Any(clue => clue.Equals(npc.Conversation.ActualClue))).ToList();
+                interestNPCs = interestNPCs.Where(npc => npc.Conversation.ActualClue.NPCPartType == minglingClue.NPCPartType).ToList();
+                //if (interestClues.Count() > 0) {
+                //    interestNPC = interestNPCs.ToList()[new Random(DateTime.Now.Millisecond).Next(interestNPCs.Count())];
+                //    //interestNPC = NPC.NPCList.FirstOrDefault(npc => npc.Conversation.FirstStatementClue.Equals(interestClues.FirstOrDefault()));
+                //}
+            } else {
+                //var interestClues = minglingClues.Where(clue => clue.Target == minglingClue.Target || clue.Target == initiator);
+                //interestNPCs = interestNPCs.Where(npc => minglingClue.Target == npc || interestClues.Any(clue => clue.Equals(npc.Conversation.ActualClue))).ToList();
 
-                    //if (interestClues.Count() > 0) {
-                    //    interestNPC = interestNPCs.ToList()[new Random(DateTime.Now.Millisecond).Next(interestNPCs.Count())];
-                    //    //interestNPC = NPC.NPCList.FirstOrDefault(npc => npc.Conversation.FirstStatementClue.Equals(interestClues.FirstOrDefault()));
-                    //}
-                } else {
-                    var interestClues = minglingClues.Where(clue => clue.Target == minglingClue.Target || clue.Target == initiator);
-                    interestNPCs = interestNPCs.Where(npc => interestClues.Any(clue => clue.Equals(npc.Conversation.ActualClue))).ToList();
-
-                    //if (interestNPCs.Count() > 0) {
-                    //    interestNPC = interestNPCs.ToList()[new Random(DateTime.Now.Millisecond).Next(interestNPCs.Count())];
-                    //    //interestNPC = NPC.NPCList.FirstOrDefault(npc => npc.Conversation.FirstStatementClue.Equals(interestClues.FirstOrDefault()));
-                    //}
-                }
-                
-                return interestNPCs;
+                interestNPCs = interestNPCs.Where(npc => npc.Conversation.ActualClue.Target == minglingClue.Target || 
+                                                         npc.Conversation.ActualClue.Target == initiator ||
+                                                         minglingClue.Target == npc).ToList();
+                //if (interestNPCs.Count() > 0) {
+                //    interestNPC = interestNPCs.ToList()[new Random(DateTime.Now.Millisecond).Next(interestNPCs.Count())];
+                //    //interestNPC = NPC.NPCList.FirstOrDefault(npc => npc.Conversation.FirstStatementClue.Equals(interestClues.FirstOrDefault()));
+                //}
             }
+                
+            return interestNPCs;
         }
 
-        public bool IsMingler() {
-            if (minglers > 0) {
-                return true;
-            } else
-                return false;
-        }
+        //public bool IsMingler() {
+        //    if (minglers > 0) {
+        //        return true;
+        //    } else
+        //        return false;
+        //}
 
-        public void ResetMinglers() {
-            minglers = r.Next(3) + 2;
-        }
+        //public void ResetMinglers() {
+        //    minglers = PlayerController.Instance.Rng.Next(PlayerController.Instance.MinMinglers, PlayerController.Instance.MaxMinglers + 1);
+        //}
 
-        public void DecrementMinglers() {
-            minglers--;
-        }
+        //public void DecrementMinglers() {
+        //    minglers--;
+        //}
     }
 }
