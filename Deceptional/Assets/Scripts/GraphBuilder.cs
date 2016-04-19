@@ -6,9 +6,10 @@ namespace Assets.Scripts {
     public static class GraphBuilder {
         private static Random r = PlayerController.Instance.UseFixedSeed ? new Random(PlayerController.Instance.GeneratorSeed) : new Random(DateTime.Now.Millisecond);
         
-        public static Graph BuildLieGraph(double percentageLiars, int descriptiveLies, Graph truthGraph) {
+        public static Graph BuildLieGraph(int descriptiveLies, int miscLies, Graph truthGraph) {
             // Calculating amount of liars.
-            int liarCount = (int)(truthGraph.Nodes.Where(n => !n.IsVisited).Count() * percentageLiars);
+            //int liarCount = (int)(truthGraph.Nodes.Where(n => !n.IsVisited).Count() * percentageLiars);
+            int liarCount = descriptiveLies + miscLies;
             List<NPC> liars = new List<NPC>();
 
             // Create neccessary graph and lists.
@@ -37,19 +38,13 @@ namespace Assets.Scripts {
                     int partIdx = r.Next(3);
                     switch (partIdx) {
                         case 0:
-                            possibleTargets = 
-                                nonKillerNodes
-                                    .Where(node => nonSimilarHats.Any(npc => npc == node.NPC)).ToList();
+                            possibleTargets = nonKillerNodes.Where(node => nonSimilarHats.Any(npc => npc == node.NPC)).ToList();
                             break;
                         case 1:
-                            possibleTargets = 
-                                nonKillerNodes
-                                    .Where(node => nonSimilarTorsos.Any(npc => npc == node.NPC)).ToList();
+                            possibleTargets = nonKillerNodes.Where(node => nonSimilarTorsos.Any(npc => npc == node.NPC)).ToList();
                             break;
                         case 2:
-                            possibleTargets = 
-                                nonKillerNodes
-                                    .Where(node => nonSimilarPants.Any(npc => npc == node.NPC)).ToList();
+                            possibleTargets = nonKillerNodes.Where(node => nonSimilarPants.Any(npc => npc == node.NPC)).ToList();
                             break;
                         default: throw new Exception("Random generator tried to access non-existant clothing.");
                     }

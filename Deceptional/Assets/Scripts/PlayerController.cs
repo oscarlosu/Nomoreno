@@ -90,6 +90,7 @@ namespace Assets.Scripts {
 
         private List<Coroutine> conversationCoroutines;
         public float PercentageLiars;
+        public float PercentageDescriptiveLiars;
         public TextMesh NameText;
         public float SelectionSpotlightYOffset;
 
@@ -364,7 +365,7 @@ namespace Assets.Scripts {
             foreach (NPC n in NPC.NPCList) { n.CoolMood(); }
             // Generate conversations
             ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
-            ConversationHandler.SetupConversations(PercentageLiars);
+            ConversationHandler.SetupConversations(PercentageLiars, PercentageDescriptiveLiars);
             // Reset clock
             ResetClock();
             // Show new day message
