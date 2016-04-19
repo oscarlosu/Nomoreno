@@ -148,7 +148,7 @@ namespace Assets.Scripts {
         private void HandleButtons() {
             if(CurrentInterrogationTarget == null) {
                 // Show call in
-                CallInButton.ChangeButton("CALL IN", "CallIn");
+                CallInButton.ChangeButton("CALL\nIN", "CallIn");
             } else if(SelectedNPC == null) {
                 // Show dismiss
                 CallInButton.ChangeButton("DISMISS", "Dismiss");
@@ -157,7 +157,7 @@ namespace Assets.Scripts {
                 CallInButton.ChangeButton("DISMISS", "Dismiss");
             } else if(CurrentInterrogationTarget != SelectedNPC) {
                 // Show call in
-                CallInButton.ChangeButton("CALL IN", "CallIn");
+                CallInButton.ChangeButton("CALL\nIN", "CallIn");
             }
         }
 
