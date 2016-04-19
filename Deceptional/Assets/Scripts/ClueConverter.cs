@@ -8,7 +8,7 @@ namespace Assets.Scripts {
     public static class ClueConverter {
 
         #region Fields & properties
-        private static Random r = PlayerController.Instance.UseFixedSeed ? new Random(PlayerController.Instance.GeneratorSeed) : new Random(DateTime.Now.Millisecond);
+        private static Random r = PlayerController.Instance.UseFixedSeed ? new Random(PlayerController.Instance.Seed) : new Random(DateTime.Now.Millisecond);
 
         private static bool useCockney = true;
 

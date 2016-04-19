@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Assets.Scripts {
     public static class GraphBuilder {
-        private static Random r = PlayerController.Instance.UseFixedSeed ? new Random(PlayerController.Instance.GeneratorSeed) : new Random(DateTime.Now.Millisecond);
+        private static Random r = PlayerController.Instance.UseFixedSeed ? new Random(PlayerController.Instance.Seed) : new Random(DateTime.Now.Millisecond);
         
         public static Graph BuildLieGraph(double percentageLiars, int descriptiveLies, Graph truthGraph) {
             // Calculating amount of liars.
