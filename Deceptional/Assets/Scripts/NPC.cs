@@ -137,7 +137,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     public Behaviour CurrentBehaviour = Behaviour.None;
     public bool CanMingle {
         get {
-            if(CurrentBehaviour == Behaviour.None && currentCell.Adjacent.Exists(cell => cell.Free)) {
+            if(CurrentBehaviour == Behaviour.None && currentCell != null && currentCell.Adjacent.Exists(cell => cell.Free)) {
                 return true;
             }
             return false;
@@ -160,12 +160,15 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         //CanMingle = true;
         warped = false;
         // Place npc on random empty position
-        Grid.Instance.FreeCell(currentCell);
+        //Grid.Instance.FreeCell(currentCell);
         currentCell = Grid.Instance.GetRandomCell();
         //transform.position = currentCell.transform.position;
         navAgent.Warp(currentCell.transform.position);
 
         NameLabelHolder.transform.GetComponentInChildren<TextMesh>().text = Name;
+
+        Emoji.enabled = false;
+        CurrentBehaviour = Behaviour.None;
         //HideNameLabel();
         // NPCs always start waiting
         //StartCoroutine(Waiting());
@@ -174,11 +177,15 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     void OnDisable() {
         //CanMingle = false;
         StopAllCoroutines();
+        Grid.Instance.FreeCell(currentCell);
+        currentCell = null;
     }
 
     void OnDestroy() {
         StopAllCoroutines();
         NPC.NPCList.Remove(this);
+        Grid.Instance.FreeCell(currentCell);
+        currentCell = null;
     }
     #endregion
 
@@ -225,7 +232,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Wait for agent to reach destination
         do {
             yield return null;
-        } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
+        } while (!HasReachedDestination());
         // Stop walk animation
         anim.SetBool("Walk", false);
     }
@@ -249,7 +256,15 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         return Mathf.Approximately(Quaternion.Angle(transform.rotation, targetRotation), 0.0f);
     }
 
-
+    private bool HasReachedDestination() {
+        float dist = navAgent.remainingDistance;
+        if (dist != Mathf.Infinity && 
+            navAgent.pathStatus == NavMeshPathStatus.PathComplete && 
+            Mathf.Approximately(navAgent.remainingDistance, 0.0f)) {
+            return true;
+        }
+        return false;
+    }
     
 
     #region Behaviour bootstrappers
@@ -277,9 +292,10 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         StartCoroutine(CoGoToWaiting());
     }
 
-    public void WaitOrRoam() {
-        Debug.Log("Other " + Name);      
-        Emoji.enabled = false;
+    public void WaitOrRoam() {   
+        if(CurrentBehaviour != Behaviour.None) {
+            return;
+        }
         if(PlayerController.Instance.Rng.Next(0, 2) == 0) {
             Wait();
         } else {
@@ -288,10 +304,11 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     }
 
     public bool AttemptMingle() {
-        Emoji.enabled = false;
+        if(CurrentBehaviour != Behaviour.None) {
+            return false;
+        }
         List<NPC> targets = MinglingDirector.Instance.RequestMinglingTargets(this);
         if(targets.Count > 0) {
-            Debug.Log("Mingle " + Name);
             CurrentBehaviour = Behaviour.Mingling;
             StartCoroutine(Mingle(targets));
             return true;
@@ -315,7 +332,10 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Select random target
         NPC target = targets[PlayerController.Instance.Rng.Next(0, targets.Count)];
         Cell targetCell = target.currentCell.Adjacent.Find(cell => cell.Free);
-        Debug.Log(Name + " with " + target.Name);
+
+        Debug.Log(Name + " mingles with " + target.Name);
+
+
         // Change state
         CurrentBehaviour = Behaviour.Mingling;
         // Set animator state
@@ -323,11 +343,14 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Inform target of mingling start
         target.WaitForMingle(this);
         // Navigate to target
+        Grid.Instance.FreeCell(currentCell);
+        currentCell = null;
         Grid.Instance.TakeCell(targetCell);
+        currentCell = targetCell;
         navAgent.SetDestination(targetCell.transform.position);
         yield return null;   
         // Wait until near enough to the target
-        yield return new WaitUntil(() => Mathf.Approximately(navAgent.remainingDistance, 0.0f));
+        yield return new WaitUntil(() => this.HasReachedDestination());
         //while(!Mathf.Approximately(navAgent.remainingDistance, 0.0f)) {
         //    yield return null;
             
@@ -350,6 +373,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         CurrentBehaviour = Behaviour.Moving;
         // Select destination
         Grid.Instance.FreeCell(currentCell);
+        currentCell = null;
         currentCell = Grid.Instance.GetRandomCell();
         navAgent.SetDestination(currentCell.transform.position);
         // Set animator state
@@ -357,7 +381,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Wait until target is reached
         do {
             yield return null;
-        } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
+        } while (!HasReachedDestination());
         // Set animation state
         anim.SetBool("Walk", false);
     }
@@ -365,7 +389,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     private IEnumerator CoWaitForMingle(NPC other) {
         // Set behaviour to MingleWaiting
         CurrentBehaviour = Behaviour.MingleWaiting;
-        
+
+
+        Debug.Log(Name + " receives mingle from " + other.Name);
         // Start animation
         anim.SetBool("Walk", false);
         //MingleReady = false;
@@ -416,7 +442,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Wait until target is reached
         do {
             yield return null;
-        } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
+        } while (!HasReachedDestination());
         // Teleport to Interrogation room
         navAgent.Warp(InterrogationPosition);
         warped = true;
@@ -439,7 +465,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         }
         ShowNameLabel();
         currentCell = Grid.Instance.GetRandomCell();
-        navAgent.SetDestination(currentCell.transform.position);
+        
         CurrentBehaviour = Behaviour.Moving;
         // Set animation state
         anim.SetBool("Walk", true);
@@ -448,7 +474,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Wait until target is reached
         do {
             yield return null;
-        } while (!Mathf.Approximately(navAgent.remainingDistance, 0.0f));
+        } while (!HasReachedDestination());
         // Set animation state
         anim.SetBool("Walk", false);
         // Start Waiting coroutine
