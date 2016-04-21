@@ -8,6 +8,9 @@ namespace Assets.Scripts {
     /// Dynamically adjusts the difficulty, depending on how well the player is doing.
     /// Higher difficultyValue makes for a harder game. Every increment introduces new obstacles, while every decrement removes some of these obstacles.
     /// Max difficulty is 5, minimum is -5.
+    /// 
+    /// difficultyValue can only differ from Difficulty by a maximum 3 points.
+    /// Higher difficulty should tip the scales in favour of a higher difficulty value.
     /// </summary>
     public class AIDirector {
         private static AIDirector _instance;
@@ -20,59 +23,91 @@ namespace Assets.Scripts {
 
         private AIDirector() { }
 
+        /* BASE PARAMETERS*/
         private float difficultyValue = 0;
-
-        public int Difficulty = 0;
-
-        public int HidingDescriptiveNPCs = 0;
-
-        public int MinLiars = 0;
-        public float PercentageLiars = 0.4f;
-        public float PercentageDescriptiveLiars = 0.2f;
-
-        public int NumDescriptiveClues = 3;
-        
-        public int NumMinglers = 3;
-        public float MingleValue = 2.5f;
-
         private readonly List<Clue> hardClues = new List<Clue>();
         public List<Clue> HardClues { get { return hardClues; } }
         private readonly List<Clue> dailyClues = new List<Clue>();
         public List<Clue> DailyClues { get { return dailyClues; } }
 
+        /* PARAMETERS FROM PLAYERCONTROLLER */
+        private int Difficulty { get { return PlayerController.Instance.Difficulty; } }
+        public int NumberOfDescriptiveClues {
+            get { return PlayerController.Instance.NumberOfDescriptiveClues; }
+            set { PlayerController.Instance.NumberOfDescriptiveClues = value; }
+        }
+
+        /* FIXED PARAMETERS */
+        public float PercentageLiars = 0.4f;
+        public float PercentageDescriptiveLiars = 0.2f;
+        public int HidingDescriptiveNPCs = 0;
+        public float MingleValue = 2.5f;
+        public int NumMinglers = 3;
+
+
+        /// <summary>
+        /// Calculates a new difficulty and changes game parameters accordingly.
+        /// Since AIDirector yields to Difficulty parameter, AIDirector will never change difficulty by more than 2 points.
+        /// </summary>
         public void CalculateDifficulty() {
-            difficultyValue = Difficulty;
-            difficultyValue += HardClues.Count / 2f;
-            difficultyValue -= (DailyClues.Count - 5f) / 5f;
-            
-            if (difficultyValue > 0) { 
-                for (float innerDifficulty = 0; innerDifficulty < difficultyValue; innerDifficulty++) {
-                    if (NumMinglers > 1) NumMinglers--;
-                    if (MingleValue > 0.5f) MingleValue -= 0.5f;
-                    if (NumDescriptiveClues > 1) NumDescriptiveClues--;
-                    if (PercentageLiars < 0.7f) PercentageLiars += 0.06f;
-                    if (HidingDescriptiveNPCs <= NumDescriptiveClues / 2) HidingDescriptiveNPCs++;
-                    if (PercentageDescriptiveLiars < 0.4f) PercentageDescriptiveLiars += 0.05f;
+            difficultyValue = Difficulty - 5;
+            var difficultyModifier = (HardClues.Count * (5f / 2f) + (HardClues.Count * (2f / 5f)) * (float)(PlayerController.Instance.Rng.NextDouble() + 0.5f));
+            difficultyModifier = difficultyModifier >= 0 ? Math.Min(difficultyModifier, 2) : Math.Max(difficultyModifier, -2);
+            difficultyValue += difficultyModifier;
 
-                }
-            } else if (difficultyValue < 0) {
-                for (float innerDifficulty = 0; innerDifficulty > difficultyValue; innerDifficulty--) {
-                    if (NumMinglers < 5) NumMinglers++;
-                    if (MingleValue < 5) MingleValue += 0.5f;
-                    if (NumDescriptiveClues < 6) NumDescriptiveClues++;
-                    if (PercentageLiars > 0.1f) PercentageLiars -= 0.06f;
-                    if (HidingDescriptiveNPCs >= NumDescriptiveClues / 2) HidingDescriptiveNPCs--;
-                    if (PercentageDescriptiveLiars > 0) PercentageDescriptiveLiars -= 0.05f;
+            SetDifficulty((int)difficultyValue);
+            CleanDay();
+        }
 
-                }
-            } else {
+        /// <summary>
+        /// Default Values:
+        ///     - NumMinglers                   = 3
+        ///     - PercentageLiars               = 40 %
+        ///     - PercentageDescriptiveLiars    = 20 %
+        ///     - MingleValue                   = 2.5
+        ///     - NumDescriptiveClues           = 3
+        /// Max Values:
+        ///     - NumMinglers                   = 5
+        ///     - PercentageLiars               = 75 %
+        ///     - PercentageDescriptiveLiars    = 40 %
+        ///     - MingleValue                   = 4.0
+        ///     - NumDescriptiveClues           = 5
+        /// Min Values
+        ///     - NumMinglers                   = 1
+        ///     - PercentageLiars               = 5 %
+        ///     - PercentageDescriptiveLiars    = 0 %
+        ///     - MingleValue                   = 1.0
+        ///     - NumDescriptiveClues           = 1
+        /// </summary>
+        /// <param name="difficultyValue">The current difficulty.</param>
+        private void SetDifficulty(int difficultyValue) {
+            if (difficultyValue == 0) { // Set to default values.
+                NumMinglers = 3;
                 PercentageLiars = 0.4f;
                 PercentageDescriptiveLiars = 0.2f;
-                NumDescriptiveClues = 3;
-                NumMinglers = 3;
                 MingleValue = 2.5f;
-                HidingDescriptiveNPCs = 0;
+                NumberOfDescriptiveClues = 3;
+                HidingDescriptiveNPCs = PlayerController.Instance.Rng.Next(NumberOfDescriptiveClues);
+            } else if (difficultyValue > 0) {
+                NumMinglers = 3 - difficultyValue / 2;
+                PercentageLiars = 0.075f * difficultyValue + 0.375f;
+                PercentageDescriptiveLiars = 0.04f * difficultyValue + 0.2f;
+                MingleValue = 2.5f - (0.03f * difficultyValue);
+                NumberOfDescriptiveClues = (int)(-(1f / 3f) * difficultyValue + (2f + 2f / 3f));
+                HidingDescriptiveNPCs = PlayerController.Instance.Rng.Next(NumberOfDescriptiveClues) - 1 + (int)Math.Ceiling(difficultyValue / 2.0);
+            } else {
+                NumMinglers = 3 - difficultyValue / 2;
+                PercentageLiars = 0.075f * difficultyValue - 0.425f;
+                PercentageDescriptiveLiars = 0.2f + (0.04f * difficultyValue);
+                MingleValue = 2.5f - (0.03f * difficultyValue);
+                NumberOfDescriptiveClues = (int)(-(1f / 3f) * difficultyValue + (2f + 2f / 3f));
+                HidingDescriptiveNPCs = PlayerController.Instance.Rng.Next(Math.Abs(NumberOfDescriptiveClues) / 2);
             }
+        }
+
+        public void CleanDay() {
+            HardClues.Clear();
+            DailyClues.Clear();
         }
     }
 }

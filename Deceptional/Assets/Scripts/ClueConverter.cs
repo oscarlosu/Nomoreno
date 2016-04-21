@@ -8,8 +8,6 @@ namespace Assets.Scripts {
     public static class ClueConverter {
 
         #region Fields & properties
-        private static Random r = PlayerController.Instance.UseFixedSeed ? new Random(PlayerController.Instance.Seed) : new Random(DateTime.Now.Millisecond);
-
         private static bool useCockney = true;
 
         /// <summary>
@@ -93,7 +91,7 @@ namespace Assets.Scripts {
                 case ClueIdentifier.Descriptive:    relevantClues = templateList.Where(s => cluePattern.Match(s).Groups[3].Success).ToList(); break;
                 default:                            relevantClues = templateList; break;
             }
-            int index = r.Next(relevantClues.Count);
+            int index = PlayerController.Instance.Rng.Next(relevantClues.Count);
             return relevantClues[index];
         }
         

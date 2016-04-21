@@ -68,6 +68,7 @@ namespace Assets.Scripts {
         public float DayDuration; // In seconds
         public int NumberOfNPCS;
         public int NumberOfDescriptiveClues;
+        public int Difficulty;
         
 
         public ButtonController CallInButton;
@@ -173,29 +174,25 @@ namespace Assets.Scripts {
         }
         
         public void DisplayConversation() {
-            // Display name on wall
-            NameText.text = CurrentInterrogationTarget.Name + " says:";
-            // Get statement and break into lines
-            string statement = string.Empty;
-            if (CurrentInterrogationTarget.Mood) {
-                statement = CurrentInterrogationTarget.Conversation.MoodyMessage;
-            } else {
-                statement = CurrentInterrogationTarget.Conversation.ActualClue.Statement;
-            }
-
-            statement = TextWrapper.BreakLine(statement);
-            StatementTextMesh.gameObject.SetActive(true);
-            Coroutine inst = StartCoroutine(CoDisplayText(statement, StatementTextMesh));
-            conversationCoroutines.Add(inst);
+            DisplayConversation(string.Empty);
         }
 
         public void DisplayConversation(string prefix) {
+            // Display name on wall
             NameText.text = CurrentInterrogationTarget.Name + " says:";
+            // Get statement and break into lines
             var statement = string.Empty;
             if (CurrentInterrogationTarget.Mood) {
                 statement = CurrentInterrogationTarget.Conversation.MoodyMessage;
             } else {
                 statement = prefix + CurrentInterrogationTarget.Conversation.ActualClue.Statement;
+                // Add displayed clue to AIDirector list if not present already
+                if (!AIDirector.Instance.DailyClues.Contains(CurrentInterrogationTarget.Conversation.ActualClue))
+                    AIDirector.Instance.DailyClues.Add(CurrentInterrogationTarget.Conversation.ActualClue);
+                // Add displayed hard clue to AIDirector list if not present already
+                if (!AIDirector.Instance.HardClues.Contains(CurrentInterrogationTarget.Conversation.ActualClue) &&
+                    CurrentInterrogationTarget.Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive)
+                    AIDirector.Instance.HardClues.Add(CurrentInterrogationTarget.Conversation.ActualClue);
             }
 
             statement = TextWrapper.BreakLine(statement);
@@ -365,6 +362,8 @@ namespace Assets.Scripts {
             }
             HideConversation();
             ++currentDay;
+            // Update AIDirector
+            AIDirector.Instance.CalculateDifficulty();
             // Hide scene
             HideScene();
             // Reset current time and interaction count
@@ -380,8 +379,8 @@ namespace Assets.Scripts {
             // Cool NPC moods
             foreach (NPC n in NPC.NPCList) { n.CoolMood(); }
             // Generate conversations
-            ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
-            ConversationHandler.SetupConversations(PercentageLiars, PercentageDescriptiveLiars);
+            ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, AIDirector.Instance.NumberOfDescriptiveClues);
+            ConversationHandler.SetupConversations(AIDirector.Instance.PercentageLiars, AIDirector.Instance.PercentageDescriptiveLiars);
             // Reset clock
             ResetClock();
             // Show new day message
@@ -436,7 +435,7 @@ namespace Assets.Scripts {
                 NPC target;
                 do {
                     //index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
-                    index = UseFixedSeed ? new System.Random(Seed).Next(NPC.NPCList.Count) : new System.Random(DateTime.Now.Millisecond).Next(NPC.NPCList.Count);
+                    index = Rng.Next(NPC.NPCList.Count);
                     target = NPC.NPCList[index];
                 } while (NPC.NPCList[index].IsKiller || arrestedNPC == target);
                 // Save victim's name

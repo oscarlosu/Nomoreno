@@ -18,7 +18,7 @@ namespace Assets.Scripts {
             miscLieCount = miscLieCount < 0 ? 0 : miscLieCount;
 
             // Setup LieGraph.
-            LieGraph = GraphBuilder.BuildLieGraph(descriptiveLieCount, miscLieCount, TruthGraph);
+            LieGraph = GraphBuilder.BuildLieGraph(descriptiveLieCount, miscLieCount, AIDirector.Instance.HidingDescriptiveNPCs, TruthGraph);
 
             // Hook generated conversations to NPCs
             foreach (NPC npc in NPC.NPCList) {

@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Assets.Scripts {
-    public static class GraphBuilder {
-        private static Random r = PlayerController.Instance.UseFixedSeed ? new Random(PlayerController.Instance.Seed) : new Random(DateTime.Now.Millisecond);
-        
-        public static Graph BuildLieGraph(int descriptiveLies, int miscLies, Graph truthGraph) {
+    public static class GraphBuilder {        
+        public static Graph BuildLieGraph(int descriptiveLies, int miscLies, int hidingDescriptive, Graph truthGraph) {
             // Calculating amount of liars.
-            //int liarCount = (int)(truthGraph.Nodes.Where(n => !n.IsVisited).Count() * percentageLiars);
-            int liarCount = descriptiveLies + miscLies;
+            int liarCount = descriptiveLies + hidingDescriptive + miscLies;
             List<NPC> liars = new List<NPC>();
 
             // Create neccessary graph and lists.
@@ -17,15 +14,54 @@ namespace Assets.Scripts {
             var nonKillerNodes = truthGraph.Nodes.Where(node => !node.IsKiller).ToList();
             var nonKillerNPCs = NPC.NPCList.Where(npc => !npc.IsKiller);
 
+            // Create descriptive lists.
+            // This is to make a suitable amount of Descriptive NPCs lie.
+            var descriptiveNodes = nonKillerNodes.Where(node => node.IsDescriptive).ToList();
+            var descriptiveNPCs = nonKillerNPCs.Where(npc => descriptiveNodes.Any(node => node.NPC == npc && node.IsDescriptive)).ToList();
+            // If there is very few Descriptive NPCs, they will all be in hiding.
+            if (descriptiveNPCs.Count < hidingDescriptive) {
+                hidingDescriptive = descriptiveNPCs.Count;
+                liarCount = descriptiveLies + hidingDescriptive + miscLies;
+            }
+
             // Create non-similar lists.
+            // This is to avoid lies accidently aligning with the truth.
             var killer = NPC.NPCList.First(npc => npc.IsKiller);
             var nonSimilarHats = nonKillerNPCs.Where(npc => npc.Head.Description != killer.Head.Description);
             var nonSimilarTorsos = nonKillerNPCs.Where(npc => npc.Torso.Description != killer.Torso.Description);
             var nonSimilarPants = nonKillerNPCs.Where(npc => npc.Legs.Description != killer.Legs.Description);
             
+            while (--hidingDescriptive >= 0) {
+                liarCount--;
+
+                Node n = descriptiveNodes[PlayerController.Instance.Rng.Next(descriptiveNodes.Count)];
+                nonKillerNodes.Remove(n);
+                descriptiveNodes.Remove(n);
+                liars.Add(n.NPC);
+                
+                List<Node> possibleTargets = new List<Node>(nonKillerNodes);
+                Node n_lie;
+                if (PlayerController.Instance.Rng.Next(nonKillerNPCs.Count()) >= descriptiveNPCs.Count) {
+                    Node lieTargetNode = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
+                    var identifier = liars.Contains(n.TargetNode.NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
+                    n_lie = CreateSupportNode(lieTargetNode, n.NPC, identifier);
+                } else {
+                    int partIdx = PlayerController.Instance.Rng.Next(3);
+                    switch (partIdx) {
+                        case 0: possibleTargets = nonKillerNodes.Where(node => nonSimilarHats.Any(npc => npc == node.NPC)).ToList(); break;
+                        case 1: possibleTargets = nonKillerNodes.Where(node => nonSimilarTorsos.Any(npc => npc == node.NPC)).ToList();  break;
+                        case 2: possibleTargets = nonKillerNodes.Where(node => nonSimilarPants.Any(npc => npc == node.NPC)).ToList(); break;
+                        default: throw new Exception("Random generator tried to access non-existant clothing.");
+                    }
+
+                    Node lieTargetNode = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
+                    n_lie = CreateDescriptiveNode(lieTargetNode, n.NPC, partIdx);
+                }
+            }
+
             while (--liarCount >= 0) {
                 // Find liar node and remove it from nonKillers.
-                Node n = nonKillerNodes[r.Next(nonKillerNodes.Count)];
+                Node n = nonKillerNodes[PlayerController.Instance.Rng.Next(nonKillerNodes.Count)];
                 nonKillerNodes.Remove(n);
                 liars.Add(n.NPC);
 
@@ -35,25 +71,19 @@ namespace Assets.Scripts {
                 // Creates lie-related Clue object.
                 Node n_lie;
                 if (--descriptiveLies >= 0) {
-                    int partIdx = r.Next(3);
+                    int partIdx = PlayerController.Instance.Rng.Next(3);
                     switch (partIdx) {
-                        case 0:
-                            possibleTargets = nonKillerNodes.Where(node => nonSimilarHats.Any(npc => npc == node.NPC)).ToList();
-                            break;
-                        case 1:
-                            possibleTargets = nonKillerNodes.Where(node => nonSimilarTorsos.Any(npc => npc == node.NPC)).ToList();
-                            break;
-                        case 2:
-                            possibleTargets = nonKillerNodes.Where(node => nonSimilarPants.Any(npc => npc == node.NPC)).ToList();
-                            break;
+                        case 0: possibleTargets = nonKillerNodes.Where(node => nonSimilarHats.Any(npc => npc == node.NPC)).ToList(); break;
+                        case 1: possibleTargets = nonKillerNodes.Where(node => nonSimilarTorsos.Any(npc => npc == node.NPC)).ToList(); break;
+                        case 2: possibleTargets = nonKillerNodes.Where(node => nonSimilarPants.Any(npc => npc == node.NPC)).ToList(); break;
                         default: throw new Exception("Random generator tried to access non-existant clothing.");
                     }
 
-                    Node lieTargetNode = possibleTargets[r.Next(possibleTargets.Count)];
+                    Node lieTargetNode = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
                     n_lie = CreateDescriptiveNode(lieTargetNode, n.NPC, partIdx);
                 } else {
                     possibleTargets = truthGraph.Nodes.Where(node => node.NPC != n.NPC).ToList();
-                    Node lieTargetNode = possibleTargets[r.Next(possibleTargets.Count)];
+                    Node lieTargetNode = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
 
                     // Current liar should initially tell the truth about his target, since references are flipped upon graph merge.
                     var lieIdentifier = liars.Contains(n.TargetNode.NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
@@ -101,7 +131,7 @@ namespace Assets.Scripts {
         }
 
         public static Node CreateDescriptiveNode(Node target, NPC hookNPC) {
-            return CreateDescriptiveNode(target, hookNPC, r.Next(3));
+            return CreateDescriptiveNode(target, hookNPC, PlayerController.Instance.Rng.Next(3));
         }
         
         /// <summary>
@@ -116,12 +146,12 @@ namespace Assets.Scripts {
             
             if (count == 1) {
                 // Select one body part
-                int partIdx = r.Next(3);
+                int partIdx = PlayerController.Instance.Rng.Next(3);
                 var hookNPC = nonKillers.FirstOrDefault();
                 returnList.Add(CreateDescriptiveNode(targetNode, hookNPC, partIdx));
                 nonKillers.Remove(hookNPC);
             } else if (count == 2) {
-                int excludeIdx = r.Next(3);
+                int excludeIdx = PlayerController.Instance.Rng.Next(3);
                 for (int i = 0; i < 3; i++) {
                     // Skip one body part
                     if (i == excludeIdx) continue;
@@ -242,7 +272,7 @@ namespace Assets.Scripts {
                 var hookNPC = NPC.NPCList.Where(npc => !g.Nodes.Any(node => node.NPC.Equals(npc))).FirstOrDefault();
 
                 // Find TargetNode without self-referencing.
-                Node newTarget = g.Nodes.Where(node => node.NPC != hookNPC).ToList()[r.Next(g.Nodes.Count)];
+                Node newTarget = g.Nodes.Where(node => node.NPC != hookNPC).ToList()[PlayerController.Instance.Rng.Next(g.Nodes.Count)];
                 //while (newTarget == newTarget.TargetNode) {
                 if (newTarget == newTarget.TargetNode) {
                     //newTarget = g.Nodes[r.Next(g.Nodes.Count)];
@@ -264,7 +294,7 @@ namespace Assets.Scripts {
                 SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNode);
                 return g;
             } else { 
-                g.Nodes[0].TargetNode = restNodes[r.Next(restNodes.Count)];
+                g.Nodes[0].TargetNode = restNodes[PlayerController.Instance.Rng.Next(restNodes.Count)];
                 // Sets up the KillerNode with a support clue.
                 SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNode);
             }

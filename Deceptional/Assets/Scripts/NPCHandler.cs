@@ -6,8 +6,6 @@ using UnityEngine;
 
 namespace Assets.Scripts {
     public static class NPCHandler {
-        private static System.Random r = PlayerController.Instance.UseFixedSeed ? new System.Random(PlayerController.Instance.Seed) : new System.Random(DateTime.Now.Millisecond);
-
         #region Static lists        
         private static List<string> maleFirsts = new List<string>() {
             "Rudolph", "Davis", "Frank", "August", "Jeremy", "John", "Jacob", "Claude",
@@ -54,17 +52,17 @@ namespace Assets.Scripts {
                       
 
             // Set gender and name
-            bool npcGender = Convert.ToBoolean(r.Next(0, 2));
+            bool npcGender = Convert.ToBoolean(PlayerController.Instance.Rng.Next(0, 2));
             npc.IsMale = npcGender;
             npc.Name = GetRandomName(npcGender, useFullNames);
             
             NPCPart.NPCPartDescription randomDesc;
             var maxValue = Enum.GetValues(typeof(NPCPart.NPCPartDescription)).Length;
-            randomDesc = (NPCPart.NPCPartDescription)r.Next(maxValue);
+            randomDesc = (NPCPart.NPCPartDescription)PlayerController.Instance.Rng.Next(maxValue);
             var newHead = new NPCPart(NPCPart.NPCPartType.Hat, randomDesc);
-            randomDesc = (NPCPart.NPCPartDescription)r.Next(maxValue);
+            randomDesc = (NPCPart.NPCPartDescription)PlayerController.Instance.Rng.Next(maxValue);
             var newTorso = new NPCPart(NPCPart.NPCPartType.Shirt, randomDesc);
-            randomDesc = (NPCPart.NPCPartDescription)r.Next(maxValue);
+            randomDesc = (NPCPart.NPCPartDescription)PlayerController.Instance.Rng.Next(maxValue);
             var newLegs = new NPCPart(NPCPart.NPCPartType.Pants, randomDesc);
 
             npc.Assemble(newHead, newTorso, newLegs);
@@ -80,8 +78,8 @@ namespace Assets.Scripts {
             var name = string.Empty;
             if (useFullName) {
                 name = isMale ?
-                    maleFirsts[r.Next(maleFirsts.Count)] + " " + maleSurs[r.Next(maleSurs.Count)] :
-                    femaleFirsts[r.Next(femaleFirsts.Count)] + " " + femaleSurs[r.Next(femaleSurs.Count)];
+                    maleFirsts[PlayerController.Instance.Rng.Next(maleFirsts.Count)] + " " + maleSurs[PlayerController.Instance.Rng.Next(maleSurs.Count)] :
+                    femaleFirsts[PlayerController.Instance.Rng.Next(femaleFirsts.Count)] + " " + femaleSurs[PlayerController.Instance.Rng.Next(femaleSurs.Count)];
             } else {
                 name = isMale ?
                     maleFirsts[nextMaleIdx++ % maleFirsts.Count] :
