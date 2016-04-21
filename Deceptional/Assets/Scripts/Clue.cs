@@ -11,6 +11,7 @@ namespace Assets.Scripts {
         public ClueIdentifier Identifier { get; set; }
         public NPCPart.NPCPartType NPCPartType { get; set; }
         public NPCPart.NPCPartDescription NPCDescription { get; set; }
+        public string Location { get; set; }
 
         public Clue(string template, NPC target, ClueIdentifier identifier, NPCPart.NPCPartType targetPart) {
             Template = template;
@@ -24,6 +25,7 @@ namespace Assets.Scripts {
                 case NPCPart.NPCPartType.Pants: NPCDescription = Target.Legs.Description; break;
                 default: throw new Exception("NPCPart unidentifiable");
             }
+            Location = "Nowhere";
         }
 
         /// <summary>

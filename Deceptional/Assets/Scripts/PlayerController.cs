@@ -26,8 +26,9 @@ namespace Assets.Scripts {
             }
         }
 
-        public int GeneratorSeed;
+        public int Seed;
         public bool UseFixedSeed;
+        public System.Random Rng;
 
         public static GameObject NPCParent;
 
@@ -94,12 +95,20 @@ namespace Assets.Scripts {
         public TextMesh NameText;
         public float SelectionSpotlightYOffset;
 
+        public int MaxMinglers;
+        public int MinMinglers;
+
         #endregion
 
         #region Instance methods
 
         public void Awake() {
-            //Hack to make sure currentTIme is DayDuration
+            // Initialize RNG
+            if(!UseFixedSeed) {
+                Seed = (int) DateTime.Now.Ticks;
+            }
+            Rng = new System.Random(Seed);
+            //Hack to make sure currentTime is DayDuration
             currentTime = DayDuration;
             conversationCoroutines = new List<Coroutine>();
             currentDay = 0;
@@ -140,7 +149,7 @@ namespace Assets.Scripts {
         private void HandleButtons() {
             if(CurrentInterrogationTarget == null) {
                 // Show call in
-                CallInButton.ChangeButton("CALL IN", "CallIn");
+                CallInButton.ChangeButton("CALL\nIN", "CallIn");
             } else if(SelectedNPC == null) {
                 // Show dismiss
                 CallInButton.ChangeButton("DISMISS", "Dismiss");
@@ -149,7 +158,7 @@ namespace Assets.Scripts {
                 CallInButton.ChangeButton("DISMISS", "Dismiss");
             } else if(CurrentInterrogationTarget != SelectedNPC) {
                 // Show call in
-                CallInButton.ChangeButton("CALL IN", "CallIn");
+                CallInButton.ChangeButton("CALL\nIN", "CallIn");
             }
         }
 
@@ -264,33 +273,40 @@ namespace Assets.Scripts {
                 CurrentInterrogationTarget.GoToWaiting();
                 CurrentInterrogationTarget = null;
 
-                MinglingDirector.Instance.ResetMinglers();
-                int maxIdx = NPC.NPCList.Count - 1;
-                int idx = UnityEngine.Random.Range(0, maxIdx);
-                List<int> visitedIdx = new List<int>();
-                for (NPC nextNPC = NPC.NPCList[idx]; MinglingDirector.Instance.IsMingler(); nextNPC = NPC.NPCList[idx]) {
-                    nextNPC.ChangeBehaviour();
-
-                    while (visitedIdx.Contains(idx))
-                        idx = UnityEngine.Random.Range(0, maxIdx);
-
-                    visitedIdx.Add(idx);
-                }
-                for (int i = 0; i < NPC.NPCList.Count; i++) {
-                    if (visitedIdx.Contains(i))
-                        continue;
-
-                    NPC.NPCList[i].ChangeBehaviour();
-                }
-                //foreach (NPC npc in NPC.NPCList) {
-                //    npc.ChangeBehaviour();
-                //}
+                ExecuteMinglePhase();
 
                 HideConversation();
                 UpdateTime();
                 if (!UseRealTime && interactionCount <= 0)
                     StartCoroutine(NextDay());
             }            
+        }
+
+
+        private void ExecuteMinglePhase() {
+            // Reset States
+            for (int i = 0; i < NPC.NPCList.Count; ++i) {
+                NPC.NPCList[i].CurrentBehaviour = NPC.Behaviour.None;
+            }
+
+            // TODO: Shuffle npc list
+
+
+            // Select minglers
+            int nMinglers = Rng.Next(PlayerController.Instance.MinMinglers, PlayerController.Instance.MaxMinglers + 1);
+            int confirmed = 0;
+            for(int i = 0; confirmed < nMinglers && i < NPC.NPCList.Count; ++i) {
+                if(NPC.NPCList[i].AttemptMingle()) {
+                    ++confirmed;
+                }
+            }
+            //Debug.Log("Confirmed " + confirmed + "Attempted " + nMinglers);
+            // Make other NPCs either wait or roam
+            for (int i = 0; i < NPC.NPCList.Count; ++i) {
+                if (NPC.NPCList[i].CurrentBehaviour == NPC.Behaviour.None) {
+                    NPC.NPCList[i].WaitOrRoam();
+                }
+            }
         }
 
         private void UpdateTime() {
@@ -379,6 +395,8 @@ namespace Assets.Scripts {
             // Show scene
             ShowScene();
             if (UseRealTime) timeRunning = true;
+            // Mingling phase
+            ExecuteMinglePhase();
         }
 
         private IEnumerator WaitForRestart() {
@@ -418,7 +436,7 @@ namespace Assets.Scripts {
                 NPC target;
                 do {
                     //index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
-                    index = UseFixedSeed ? new System.Random(GeneratorSeed).Next(NPC.NPCList.Count) : new System.Random(DateTime.Now.Millisecond).Next(NPC.NPCList.Count);
+                    index = UseFixedSeed ? new System.Random(Seed).Next(NPC.NPCList.Count) : new System.Random(DateTime.Now.Millisecond).Next(NPC.NPCList.Count);
                     target = NPC.NPCList[index];
                 } while (NPC.NPCList[index].IsKiller || arrestedNPC == target);
                 // Save victim's name
