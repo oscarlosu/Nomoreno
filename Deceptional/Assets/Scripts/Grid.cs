@@ -22,7 +22,7 @@ public class Grid : MonoBehaviour {
     private float ErrorMargin = 0.5f;
 	
     public void FreeCell(Cell cell) {
-        if(cell != null) {
+        if(cell != null && !cell.Free) {
             cell.Free = true;
             FreeCells.Add(cell);
         }        
@@ -70,5 +70,12 @@ public class Grid : MonoBehaviour {
         // Populate lists
         Cells = sortedCells;
         FreeCells = sortedCells;
+    }
+
+    void Update() {
+        if(Input.GetKeyDown(KeyCode.Space)) {
+            int takenCells = Cells.Count - FreeCells.Count;
+            Debug.Log("Taken Cells: " + takenCells);
+        }
     }
 }

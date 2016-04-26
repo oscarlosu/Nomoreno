@@ -22,15 +22,15 @@ namespace Assets.Scripts {
         }
 
         public List<NPC> RequestMinglingTargets(NPC initiator) {
-                Clue minglingClue = initiator.Conversation.ActualClue;
+                Clue initiatorClue = initiator.Conversation.ActualClue;
                 // Get list of other NPCs that are available to mingle and list of their clues
-                List<NPC> interestNPCs = NPC.NPCList.Where(npc => npc != initiator && npc.CanMingle).ToList();
+                List<NPC> interestNPCs = NPC.NPCList.Where(other => other != initiator && other.CanMingle).ToList();
                 //List<Clue> minglingClues = interestNPCs.Select(npc => npc.Conversation.ActualClue).ToList();
 
-                if (minglingClue.Identifier == ClueIdentifier.Descriptive) {
+                if (initiatorClue.Identifier == ClueIdentifier.Descriptive) {
                 //var interestClues = minglingClues.Where(clue => clue.NPCPartType == minglingClue.NPCPartType);
                 //interestNPCs = interestNPCs.Where(npc => interestClues.Any(clue => clue.Equals(npc.Conversation.ActualClue))).ToList();
-                interestNPCs = interestNPCs.Where(npc => npc.Conversation.ActualClue.NPCPartType == minglingClue.NPCPartType).ToList();
+                interestNPCs = interestNPCs.Where(other => other.Conversation.ActualClue.NPCPartType == initiatorClue.NPCPartType).ToList();
                 //if (interestClues.Count() > 0) {
                 //    interestNPC = interestNPCs.ToList()[new Random(DateTime.Now.Millisecond).Next(interestNPCs.Count())];
                 //    //interestNPC = NPC.NPCList.FirstOrDefault(npc => npc.Conversation.FirstStatementClue.Equals(interestClues.FirstOrDefault()));
@@ -39,9 +39,9 @@ namespace Assets.Scripts {
                 //var interestClues = minglingClues.Where(clue => clue.Target == minglingClue.Target || clue.Target == initiator);
                 //interestNPCs = interestNPCs.Where(npc => minglingClue.Target == npc || interestClues.Any(clue => clue.Equals(npc.Conversation.ActualClue))).ToList();
 
-                interestNPCs = interestNPCs.Where(npc => npc.Conversation.ActualClue.Target == minglingClue.Target || 
-                                                         npc.Conversation.ActualClue.Target == initiator ||
-                                                         minglingClue.Target == npc).ToList();
+                interestNPCs = interestNPCs.Where(other => (other.Conversation.ActualClue.Identifier != ClueIdentifier.Descriptive && 
+                                                           (other.Conversation.ActualClue.Target == initiator || other.Conversation.ActualClue.Target == initiatorClue.Target)) || 
+                                                            initiatorClue.Target == other).ToList();
                 //if (interestNPCs.Count() > 0) {
                 //    interestNPC = interestNPCs.ToList()[new Random(DateTime.Now.Millisecond).Next(interestNPCs.Count())];
                 //    //interestNPC = NPC.NPCList.FirstOrDefault(npc => npc.Conversation.FirstStatementClue.Equals(interestClues.FirstOrDefault()));

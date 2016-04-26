@@ -284,6 +284,7 @@ namespace Assets.Scripts {
             // Reset States
             for (int i = 0; i < NPC.NPCList.Count; ++i) {
                 NPC.NPCList[i].CurrentBehaviour = NPC.Behaviour.None;
+                NPC.NPCList[i].Emoji.enabled = false;
             }
 
             // TODO: Shuffle npc list
