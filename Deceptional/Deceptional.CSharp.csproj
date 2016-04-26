@@ -70,7 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\ButtonController.cs" />
-    <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Cell.cs" />
     <Compile Include="Assets\Scripts\Clue.cs" />
     <Compile Include="Assets\Scripts\ClueConverter.cs" />
@@ -80,7 +79,9 @@
     <Compile Include="Assets\Scripts\Graph.cs" />
     <Compile Include="Assets\Scripts\GraphBuilder.cs" />
     <Compile Include="Assets\Scripts\Grid.cs" />
-    <Compile Include="Assets\Scripts\HoverOver.cs" />
+    <Compile Include="Assets\Scripts\Interface\CameraController.cs" />
+    <Compile Include="Assets\Scripts\Interface\HoverOver.cs" />
+    <Compile Include="Assets\Scripts\Interface\StartButton.cs" />
     <Compile Include="Assets\Scripts\MinglingDirector.cs" />
     <Compile Include="Assets\Scripts\NPC.cs" />
     <Compile Include="Assets\Scripts\NPCBehaviour\ITask.cs" />
@@ -91,8 +92,10 @@
     <Compile Include="Assets\Scripts\NextDayText.cs" />
     <Compile Include="Assets\Scripts\Node.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
-    <Compile Include="Assets\Scripts\StartButton.cs" />
     <Compile Include="Assets\Scripts\TextWrapper.cs" />
+    <Compile Include="Assets\Scripts\Transitions\DropTransition.cs" />
+    <Compile Include="Assets\Scripts\Transitions\RotateTransition.cs" />
+    <Compile Include="Assets\Scripts\Transitions\Transition.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\3DText.shader" />
