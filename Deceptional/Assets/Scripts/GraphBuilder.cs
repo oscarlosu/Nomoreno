@@ -17,7 +17,7 @@ namespace Assets.Scripts {
             // Create descriptive lists.
             // This is to make a suitable amount of Descriptive NPCs lie.
             var descriptiveNodes = nonKillerNodes.Where(node => node.IsDescriptive).ToList();
-            var descriptiveNPCs = nonKillerNPCs.Where(npc => descriptiveNodes.Any(node => node.NPC == npc && node.IsDescriptive)).ToList();
+            var descriptiveNPCs = nonKillerNPCs.Where(npc => descriptiveNodes.Any(node => node.NPC == npc)).ToList();
             // If there is very few Descriptive NPCs, they will all be in hiding.
             if (descriptiveNPCs.Count < hidingDescriptive) {
                 hidingDescriptive = descriptiveNPCs.Count;
@@ -30,38 +30,18 @@ namespace Assets.Scripts {
             var nonSimilarHats = nonKillerNPCs.Where(npc => npc.Head.Description != killer.Head.Description);
             var nonSimilarTorsos = nonKillerNPCs.Where(npc => npc.Torso.Description != killer.Torso.Description);
             var nonSimilarPants = nonKillerNPCs.Where(npc => npc.Legs.Description != killer.Legs.Description);
-            
-            while (--hidingDescriptive >= 0) {
-                liarCount--;
-
-                Node n = descriptiveNodes[PlayerController.Instance.Rng.Next(descriptiveNodes.Count)];
-                nonKillerNodes.Remove(n);
-                descriptiveNodes.Remove(n);
-                liars.Add(n.NPC);
-                
-                List<Node> possibleTargets = new List<Node>(nonKillerNodes);
-                Node n_lie;
-                if (PlayerController.Instance.Rng.Next(nonKillerNPCs.Count()) >= descriptiveNPCs.Count) {
-                    Node lieTargetNode = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
-                    var identifier = liars.Contains(n.TargetNode.NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
-                    n_lie = CreateSupportNode(lieTargetNode, n.NPC, identifier);
-                } else {
-                    int partIdx = PlayerController.Instance.Rng.Next(3);
-                    switch (partIdx) {
-                        case 0: possibleTargets = nonKillerNodes.Where(node => nonSimilarHats.Any(npc => npc == node.NPC)).ToList(); break;
-                        case 1: possibleTargets = nonKillerNodes.Where(node => nonSimilarTorsos.Any(npc => npc == node.NPC)).ToList();  break;
-                        case 2: possibleTargets = nonKillerNodes.Where(node => nonSimilarPants.Any(npc => npc == node.NPC)).ToList(); break;
-                        default: throw new Exception("Random generator tried to access non-existant clothing.");
-                    }
-
-                    Node lieTargetNode = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
-                    n_lie = CreateDescriptiveNode(lieTargetNode, n.NPC, partIdx);
-                }
-            }
 
             while (--liarCount >= 0) {
                 // Find liar node and remove it from nonKillers.
-                Node n = nonKillerNodes[PlayerController.Instance.Rng.Next(nonKillerNodes.Count)];
+                Node n;
+                if (hidingDescriptive > 0) {
+                    n = descriptiveNodes[PlayerController.Instance.Rng.Next(descriptiveNodes.Count)];
+                    descriptiveNodes.Remove(n);
+                    hidingDescriptive--;
+                } else {
+                    n = nonKillerNodes[PlayerController.Instance.Rng.Next(nonKillerNodes.Count)];
+                }
+                // Remove the node from nonKillerNodes and add the NPC to liars.
                 nonKillerNodes.Remove(n);
                 liars.Add(n.NPC);
 
@@ -70,7 +50,8 @@ namespace Assets.Scripts {
                 List<Node> possibleTargets;
                 // Creates lie-related Clue object.
                 Node n_lie;
-                if (--descriptiveLies >= 0) {
+                // Rolls a dice to determine whether new lie should be descriptive.
+                if (PlayerController.Instance.Rng.Next(nonKillerNPCs.Count()) < descriptiveNPCs.Count) {
                     int partIdx = PlayerController.Instance.Rng.Next(3);
                     switch (partIdx) {
                         case 0: possibleTargets = nonKillerNodes.Where(node => nonSimilarHats.Any(npc => npc == node.NPC)).ToList(); break;
@@ -80,14 +61,14 @@ namespace Assets.Scripts {
                     }
 
                     Node lieTargetNode = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
-                    n_lie = CreateDescriptiveNode(lieTargetNode, n.NPC, partIdx);
+                    n_lie = ClueFactory.Instance.CreateDescriptiveNode(lieTargetNode, n.NPC, partIdx);
                 } else {
                     possibleTargets = truthGraph.Nodes.Where(node => node.NPC != n.NPC).ToList();
                     Node lieTargetNode = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
 
                     // Current liar should initially tell the truth about his target, since references are flipped upon graph merge.
                     var lieIdentifier = liars.Contains(n.TargetNode.NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
-                    n_lie = CreateSupportNode(lieTargetNode, n.NPC, lieIdentifier);
+                    n_lie = ClueFactory.Instance.CreateSupportNode(lieTargetNode, n.NPC, lieIdentifier);
                 }
 
                 lieGraph.Nodes.Add(n_lie);
@@ -99,121 +80,6 @@ namespace Assets.Scripts {
 
             return lieGraph;
         }
-
-        #region Node handling
-        #region Descriptive Nodes
-        /// <summary>
-        /// Creates a Node for the truth graph, targeting the Node target and hooks the new Node to hookNPC
-        /// </summary>
-        /// <param name="target">Node which the new node should reference.</param>
-        /// <param name="hookNPC">NPC which is connected to the new Node.</param>
-        /// <param name="partIdx">Part of NPC being described (0: Head, 1: Torso, 2: Legs).</param>
-        /// <returns>New Descriptive clue Node.</returns>
-        public static Node CreateDescriptiveNode(Node target, NPC hookNPC, int partIdx) {
-            var descriptiveNode = new Node() {
-                IsDescriptive = true,
-                TargetNode = target
-            };
-
-            string template = ClueConverter.GetClueTemplate(ClueIdentifier.Descriptive);
-            NPCPart.NPCPartType cluePartType;
-            switch (partIdx) {
-                case 0: cluePartType = NPCPart.NPCPartType.Hat; break;
-                case 1: cluePartType = NPCPart.NPCPartType.Shirt; break;
-                case 2: cluePartType = NPCPart.NPCPartType.Pants; break;
-                default: throw new Exception("Random generator tried to access non-existant clothing.");
-            }
-
-            descriptiveNode.NPC = hookNPC;
-            descriptiveNode.NodeClue = new Clue(template, descriptiveNode.TargetNode.NPC, ClueIdentifier.Descriptive, cluePartType);
-
-            return descriptiveNode;
-        }
-
-        public static Node CreateDescriptiveNode(Node target, NPC hookNPC) {
-            return CreateDescriptiveNode(target, hookNPC, PlayerController.Instance.Rng.Next(3));
-        }
-        
-        /// <summary>
-        /// Creates a list of Descriptive nodes with equal distribution.
-        /// </summary>
-        /// <param name="targetNode">The target of description.</param>
-        /// <param name="count">The amount of nodes returned.</param>
-        /// <returns></returns>
-        private static List<Node> CreateDescriptiveNodes(Node targetNode, int count) {
-            List<Node> returnList = new List<Node>();
-            var nonKillers = NPC.NPCList.Where(npc => !npc.IsKiller).ToList();
-            
-            if (count == 1) {
-                // Select one body part
-                int partIdx = PlayerController.Instance.Rng.Next(3);
-                var hookNPC = nonKillers.FirstOrDefault();
-                returnList.Add(CreateDescriptiveNode(targetNode, hookNPC, partIdx));
-                nonKillers.Remove(hookNPC);
-            } else if (count == 2) {
-                int excludeIdx = PlayerController.Instance.Rng.Next(3);
-                for (int i = 0; i < 3; i++) {
-                    // Skip one body part
-                    if (i == excludeIdx) continue;
-                    var hookNPC = nonKillers.FirstOrDefault();
-                    returnList.Add(CreateDescriptiveNode(targetNode, hookNPC, i));
-                    nonKillers.Remove(hookNPC);
-                }
-            } else {
-                for (int i = 0; i < count; i++) {
-                    var hookNPC = nonKillers.FirstOrDefault();
-                    returnList.Add(CreateDescriptiveNode(targetNode, hookNPC, i % 3));
-                    nonKillers.Remove(hookNPC);
-                }
-            }
-
-            return returnList;
-        }
-        #endregion
-
-        #region Support Nodes (Accusatory/Informative)
-        /// <summary>
-        /// Creates a node, hooked to a NPC, and attaches a support clue to it, referencing the target Node.
-        /// </summary>
-        /// <param name="target">The Node containing target information.</param>
-        /// <param name="hookNPC">The NPC related to this Node.</param>
-        /// <returns>A new support node, connected to the hookNPC.</returns>
-        public static Node CreateSupportNode(Node target, NPC hookNPC) { return CreateSupportNode(target, hookNPC, ClueIdentifier.Informational); }
-        public static Node CreateSupportNode(Node target, NPC hookNPC, ClueIdentifier identifier) {
-            var supportNode = new Node() {
-                NPC = hookNPC,
-                TargetNode = target
-            };
-
-            SetupSupportNode(supportNode, target, identifier);
-
-            return supportNode;
-        }
-
-        /// <summary>
-        /// Attaches a support clue to a specified Node, referencing the target Node.
-        /// </summary>
-        /// <param name="baseNode">The Node in need of a clue.</param>
-        /// <param name="targetNode">The Node containing target information.</param>
-        /// <param name="identifier">The identifier that determines the nature of the statement.</param>
-        public static void SetupSupportNode(Node baseNode, Node targetNode) { SetupSupportNode(baseNode, targetNode, ClueIdentifier.Informational); }
-        public static void SetupSupportNode(Node baseNode, Node targetNode, ClueIdentifier identifier) {
-            baseNode.TargetNode = targetNode;
-            var template = ClueConverter.GetClueTemplate(identifier);
-            baseNode.NodeClue = new Clue(template, baseNode.TargetNode.NPC, identifier, NPCPart.NPCPartType.None);
-        }
-        #endregion
-
-        #region Misc. Nodes
-        public static Node CreateKillerNode() {
-            var killerNode = new Node() {
-                NPC = NPC.NPCList.FirstOrDefault(npc => npc.IsKiller),
-                IsKiller = true
-            };
-
-            return killerNode;
-        }
-        #endregion
 
         #region Graph Rigging
         private static void SetupReference(Graph g, Node n) {
@@ -241,7 +107,6 @@ namespace Assets.Scripts {
                     }
         }
         #endregion
-        #endregion
 
         /// <summary>
         /// Builds a graph using random parameters.
@@ -261,10 +126,10 @@ namespace Assets.Scripts {
             Graph g = new Graph();
 
             // Adding Killer Node
-            g.Nodes.Add(CreateKillerNode());
+            g.Nodes.Add(ClueFactory.Instance.CreateKillerNode());
 
             // Adds descriptive nodes and hooks them to the kiler node.
-            g.Nodes.AddRange(CreateDescriptiveNodes(g.Nodes[0], descriptiveCount));
+            g.Nodes.AddRange(ClueFactory.Instance.CreateDescriptiveNodes(g.Nodes[0], descriptiveCount));
 
             // Creating support Nodes
             while (g.Nodes.Count < nodeCount) {
@@ -279,7 +144,7 @@ namespace Assets.Scripts {
                     throw new Exception("NewTarget references itself.");
                 }
 
-                var restNode = CreateSupportNode(newTarget, hookNPC);
+                var restNode = ClueFactory.Instance.CreateSupportNode(newTarget, hookNPC);
                 g.Nodes.Add(restNode);
             }
 
@@ -291,12 +156,12 @@ namespace Assets.Scripts {
             // If there's not any other NPCs than killer, return g with killer referencing self.
             if (restNodes.Count < 1) {
                 g.Nodes[0].TargetNode = g.Nodes[0];
-                SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNode);
+                ClueFactory.Instance.SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNode);
                 return g;
             } else { 
                 g.Nodes[0].TargetNode = restNodes[PlayerController.Instance.Rng.Next(restNodes.Count)];
                 // Sets up the KillerNode with a support clue.
-                SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNode);
+                ClueFactory.Instance.SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNode);
             }
 
             // Managing ReferenceLookup.
