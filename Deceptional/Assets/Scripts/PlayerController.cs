@@ -31,6 +31,7 @@ namespace Assets.Scripts {
         public System.Random Rng;
 
         public static GameObject NPCParent;
+        public static string LatestLocation;
 
         #region Instance fields & properties
         public GameObject DefaultNPC;
@@ -104,8 +105,9 @@ namespace Assets.Scripts {
         #region Instance methods
 
         public void Awake() {
+            //IO.FileLoader.PrintCurrentDirectory();
             // Initialize RNG
-            if(!UseFixedSeed) {
+            if (!UseFixedSeed) {
                 Seed = (int) DateTime.Now.Ticks;
             }
             Rng = new System.Random(Seed);
@@ -375,6 +377,7 @@ namespace Assets.Scripts {
             SelectedNPC = null;
             // Murder new witness
             string victimName = MurderWitness();
+            LatestLocation = "Nowhere"; // TODO: Insert 'real' location.
             // Clear reference to arrested NPC
             arrestedNPC = null;
             // Cool NPC moods

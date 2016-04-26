@@ -84,13 +84,13 @@ namespace Assets.Scripts {
             Regex cluePattern = new Regex(@"(\[A\])|(\[I\])|(\[D\])");
 
             List<string> templateList = useCockney ? cockneyClueTemplates : englishClueTemplates;
-            List<string> relevantClues;
-            switch (identifier) {
-                case ClueIdentifier.Accusatory:     relevantClues = templateList.Where(s => cluePattern.Match(s).Groups[1].Success).ToList(); break;
-                case ClueIdentifier.Informational:  relevantClues = templateList.Where(s => cluePattern.Match(s).Groups[2].Success).ToList(); break;
-                case ClueIdentifier.Descriptive:    relevantClues = templateList.Where(s => cluePattern.Match(s).Groups[3].Success).ToList(); break;
-                default:                            relevantClues = templateList; break;
-            }
+            List<string> relevantClues = IO.FileLoader.GetTemplates(identifier);
+            //switch (identifier) {
+            //    case ClueIdentifier.Accusatory:     relevantClues = templateList.Where(s => cluePattern.Match(s).Groups[1].Success).ToList(); break;
+            //    case ClueIdentifier.Informational:  relevantClues = templateList.Where(s => cluePattern.Match(s).Groups[2].Success).ToList(); break;
+            //    case ClueIdentifier.Descriptive:    relevantClues = templateList.Where(s => cluePattern.Match(s).Groups[3].Success).ToList(); break;
+            //    default:                            relevantClues = templateList; break;
+            //}
             int index = PlayerController.Instance.Rng.Next(relevantClues.Count);
             return relevantClues[index];
         }

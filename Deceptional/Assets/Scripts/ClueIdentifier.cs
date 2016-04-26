@@ -7,6 +7,9 @@ namespace Assets.Scripts {
     public enum ClueIdentifier {
         Accusatory,
         Informational,
-        Descriptive
+        Descriptive,
+        MurderLocation,
+        PeopleLocation,
+        Pointer
     }
 }

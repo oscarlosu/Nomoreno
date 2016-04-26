@@ -67,7 +67,7 @@ namespace Assets.Scripts {
                     Node lieTargetNode = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
 
                     // Current liar should initially tell the truth about his target, since references are flipped upon graph merge.
-                    var lieIdentifier = liars.Contains(n.TargetNode.NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
+                    var lieIdentifier = liars.Contains(n.TargetNodes.First().NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
                     n_lie = ClueFactory.Instance.CreateSupportNode(lieTargetNode, n.NPC, lieIdentifier);
                 }
 
@@ -84,10 +84,10 @@ namespace Assets.Scripts {
         #region Graph Rigging
         private static void SetupReference(Graph g, Node n) {
             n.IsVisited = false;
-            if (g.ReferenceLookup.ContainsKey(n.TargetNode))
-                g.ReferenceLookup[n.TargetNode].Add(n);
+            if (g.ReferenceLookup.ContainsKey(n.TargetNodes.First()))
+                g.ReferenceLookup[n.TargetNodes.First()].Add(n);
             else
-                g.ReferenceLookup.Add(n.TargetNode, new List<Node>() { n });
+                g.ReferenceLookup.Add(n.TargetNodes.First(), new List<Node>() { n });
         }
 
         private static void SetupLieReference(Graph truthGraph, Graph lieGraph, Node n) {
@@ -96,14 +96,14 @@ namespace Assets.Scripts {
             if (truthGraph.ReferenceLookup.TryGetValue(n, out refNodes))
                 foreach (Node refN in refNodes) {
                     var newRefClueTemplate = ClueConverter.GetClueTemplate(ClueIdentifier.Accusatory);
-                    refN.NodeClue = new Clue(newRefClueTemplate, refN.TargetNode.NPC, ClueIdentifier.Accusatory, NPCPart.NPCPartType.None);
+                    refN.NodeClue = new Clue(newRefClueTemplate, refN.TargetNodes.First().NPC, ClueIdentifier.Accusatory, NPCPart.NPCPartType.None);
                 }
             // Inverts deceptive statements targeted at NPC hooked to current node.
             if (lieGraph.ReferenceLookup.TryGetValue(n, out refNodes))
                 foreach (Node refN in refNodes)
                     if (!refN.IsDescriptive) {
                         var newRefClueTemplate = ClueConverter.GetClueTemplate(ClueIdentifier.Informational);
-                        refN.NodeClue = new Clue(newRefClueTemplate, refN.TargetNode.NPC, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
+                        refN.NodeClue = new Clue(newRefClueTemplate, refN.TargetNodes.First().NPC, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
                     }
         }
         #endregion
@@ -136,10 +136,10 @@ namespace Assets.Scripts {
                 // Find random NPC which does not currently have a truth statement attached.
                 var hookNPC = NPC.NPCList.Where(npc => !g.Nodes.Any(node => node.NPC.Equals(npc))).FirstOrDefault();
 
-                // Find TargetNode without self-referencing.
+                // Find TargetNodes without self-referencing.
                 Node newTarget = g.Nodes.Where(node => node.NPC != hookNPC).ToList()[PlayerController.Instance.Rng.Next(g.Nodes.Count)];
-                //while (newTarget == newTarget.TargetNode) {
-                if (newTarget == newTarget.TargetNode) {
+                //while (newTarget == newTarget.TargetNodes) {
+                if (newTarget.TargetNodes != null && newTarget == newTarget.TargetNodes.First()) {
                     //newTarget = g.Nodes[r.Next(g.Nodes.Count)];
                     throw new Exception("NewTarget references itself.");
                 }
@@ -155,13 +155,13 @@ namespace Assets.Scripts {
                 restNodes = g.Nodes.Where(n => !n.IsKiller).ToList();
             // If there's not any other NPCs than killer, return g with killer referencing self.
             if (restNodes.Count < 1) {
-                g.Nodes[0].TargetNode = g.Nodes[0];
-                ClueFactory.Instance.SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNode);
+                g.Nodes[0].TargetNodes = new List<Node>() { g.Nodes[0] };
+                ClueFactory.Instance.SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNodes.First());
                 return g;
             } else { 
-                g.Nodes[0].TargetNode = restNodes[PlayerController.Instance.Rng.Next(restNodes.Count)];
+                g.Nodes[0].TargetNodes = new List<Node>() { restNodes[PlayerController.Instance.Rng.Next(restNodes.Count)] };
                 // Sets up the KillerNode with a support clue.
-                ClueFactory.Instance.SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNode);
+                ClueFactory.Instance.SetupSupportNode(g.Nodes[0], g.Nodes[0].TargetNodes.First());
             }
 
             // Managing ReferenceLookup.

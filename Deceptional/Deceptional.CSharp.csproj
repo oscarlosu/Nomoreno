@@ -85,6 +85,7 @@
     <Compile Include="Assets\Scripts\GraphBuilder.cs" />
     <Compile Include="Assets\Scripts\Grid.cs" />
     <Compile Include="Assets\Scripts\HoverOver.cs" />
+    <Compile Include="Assets\Scripts\IO\FileLoader.cs" />
     <Compile Include="Assets\Scripts\MinglingDirector.cs" />
     <Compile Include="Assets\Scripts\NPC.cs" />
     <Compile Include="Assets\Scripts\NPCBehaviour\ITask.cs" />

@@ -31,7 +31,7 @@ namespace Assets.Scripts {
         public Node CreateDescriptiveNode(Node target, NPC hookNPC, int partIdx) {
             var descriptiveNode = new Node() {
                 IsDescriptive = true,
-                TargetNode = target
+                TargetNodes = new List<Node>() { target }
             };
 
             string template = ClueConverter.GetClueTemplate(ClueIdentifier.Descriptive);
@@ -44,7 +44,7 @@ namespace Assets.Scripts {
             }
 
             descriptiveNode.NPC = hookNPC;
-            descriptiveNode.NodeClue = new Clue(template, descriptiveNode.TargetNode.NPC, ClueIdentifier.Descriptive, cluePartType);
+            descriptiveNode.NodeClue = new Clue(template, descriptiveNode.TargetNodes.First().NPC, ClueIdentifier.Descriptive, cluePartType);
 
             return descriptiveNode;
         }
@@ -102,13 +102,34 @@ namespace Assets.Scripts {
         public Node CreateSupportNode(Node target, NPC hookNPC) { return CreateSupportNode(target, hookNPC, ClueIdentifier.Informational); }
         public Node CreateSupportNode(Node target, NPC hookNPC, ClueIdentifier identifier) {
             var supportNode = new Node() {
-                NPC = hookNPC,
-                TargetNode = target
+                NPC = hookNPC
             };
 
             SetupSupportNode(supportNode, target, identifier);
 
             return supportNode;
+        }
+
+        public Node CreatePeopleLocationNode(List<Node> targets, NPC hookNPC) {
+            var peopleLocNode = new Node() {
+                NPC = hookNPC
+            };
+
+            peopleLocNode.TargetNodes = targets;
+            var template = ClueConverter.GetClueTemplate(ClueIdentifier.PeopleLocation);
+            //peopleLocNode.NodeClue = new Clue(template, )
+
+            return peopleLocNode;
+        }
+
+        public Node CreatePointerNode(Node target, NPC hookNPC) {
+            var pointerNode = new Node() {
+                NPC = hookNPC
+            };
+
+            //SetupSupportNode(pointerNode, target, ClueIdentifier.Pointer);
+
+            return pointerNode;
         }
 
         /// <summary>
@@ -119,13 +140,13 @@ namespace Assets.Scripts {
         /// <param name="identifier">The identifier that determines the nature of the statement.</param>
         public void SetupSupportNode(Node baseNode, Node targetNode) { SetupSupportNode(baseNode, targetNode, ClueIdentifier.Informational); }
         public void SetupSupportNode(Node baseNode, Node targetNode, ClueIdentifier identifier) {
-            baseNode.TargetNode = targetNode;
+            baseNode.TargetNodes = new List<Node>() { targetNode };
             var template = ClueConverter.GetClueTemplate(identifier);
-            baseNode.NodeClue = new Clue(template, baseNode.TargetNode.NPC, identifier, NPCPart.NPCPartType.None);
+            baseNode.NodeClue = new Clue(template, baseNode.TargetNodes.First().NPC, identifier, NPCPart.NPCPartType.None);
         }
         #endregion
 
-        #region Misc. Nodes
+        #region Murderer Nodes
         public Node CreateKillerNode() {
             var killerNode = new Node() {
                 NPC = NPC.NPCList.FirstOrDefault(npc => npc.IsKiller),
@@ -133,6 +154,16 @@ namespace Assets.Scripts {
             };
 
             return killerNode;
+        }
+    
+        public Node CreateMurderLocationNode(NPC hookNPC) {
+            var murderNode = new Node() {
+                NPC = hookNPC
+            };
+            
+            //SetupSupportNode(murderNode, null, ClueIdentifier.MurderLocation);
+
+            return murderNode;
         }
         #endregion
         #endregion
