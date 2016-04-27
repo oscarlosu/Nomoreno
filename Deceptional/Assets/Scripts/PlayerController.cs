@@ -19,8 +19,8 @@ namespace Assets.Scripts {
             get {
                 if (instance == null) {
                     instance = (PlayerController)FindObjectOfType(typeof(PlayerController));
-                    if (instance == null)
-                        instance = (new GameObject("PlayerController")).AddComponent<PlayerController>();
+                    //if (instance == null)
+                    //    instance = (new GameObject("PlayerController")).AddComponent<PlayerController>();
                 }
                 return instance;
             }
@@ -120,7 +120,11 @@ namespace Assets.Scripts {
             // Create MinglingDirector;
             var dummy = MinglingDirector.Instance;
 
-            // Generate new day
+
+            TransitionManager.Instance.GameTransition();            
+        }
+
+        public void Begin() {
             StartCoroutine(NextDay());
         }
 

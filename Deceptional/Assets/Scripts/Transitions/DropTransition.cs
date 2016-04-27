@@ -42,7 +42,7 @@ public class DropTransition : Transition {
         State = TransitionState.Done;
     }
     private bool LerpTowardsTarget(int index) {
-        Vector3 dir = Targets[index] - lastTarget;
+        Vector3 dir = Targets[index] - transform.position;
         dir.Normalize();
         float distanceToTarget = Vector3.Distance(transform.position, Targets[index]);
         transform.position = transform.position + dir * Mathf.Min(SpeedCurves[index - 1].Evaluate(elapsedTime), distanceToTarget);

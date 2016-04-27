@@ -13,10 +13,10 @@ public class RotateTransition : Transition {
     private float currentAngle;
 
 
-    public new void Start() {
-        base.Start();
-        Execute();
-    }
+    //public new void Start() {
+    //    base.Start();
+    //    Execute();
+    //}
     public override void Execute() {
         StartCoroutine(RotateAroundCenterAboutAxis());
     }

@@ -30,6 +30,6 @@ public class StartButton : MonoBehaviour, IPointerClickHandler {
         //Debug.Log("DONE");
         transform.position = origPos;
 
-        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
+        TransitionManager.Instance.StartTransition();
     }
 }

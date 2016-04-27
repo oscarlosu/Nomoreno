@@ -184,7 +184,10 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     void OnDestroy() {
         StopAllCoroutines();
         NPC.NPCList.Remove(this);
-        Grid.Instance.FreeCell(currentCell);
+        // No need to clear if there is no grid in the scene
+        if(Grid.Instance != null) {
+            Grid.Instance.FreeCell(currentCell);
+        }        
         currentCell = null;
     }
     #endregion

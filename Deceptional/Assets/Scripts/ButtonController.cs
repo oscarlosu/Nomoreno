@@ -9,7 +9,11 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler
     public string Label;
     public string MethodName;
     public TextMesh TextMesh;
-    private Vector3 origPos;
+       
+    public float SpeedDown = 0.05f;
+    public float SpeedUp = 0.01f;
+
+    private Vector3 startPos;
 
     public enum TriggerMode {
         OnDown,
@@ -18,7 +22,7 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler
     public TriggerMode Mode;
 
     void Start() {
-        origPos = transform.position;
+        startPos = transform.position;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -37,20 +41,18 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler
     }
 
     private IEnumerator AnimateButton() {
-        bool hasMoved = false;
-        while (transform.position.y > origPos.y - 0.25 && !hasMoved) {
-            //Debug.Log(transform.position.y);
-            transform.position -= new Vector3(0, 0.05f, 0);
-            yield return new WaitForSeconds(0.005f);
+        float travelled = 0;
+        while (travelled < 0.25f) {
+            travelled += SpeedDown;
+            transform.position -= new Vector3(0, SpeedDown, 0);
+            yield return null;
         }
-        hasMoved = true;
-        while (transform.position.y < origPos.y && hasMoved) {
-            //Debug.Log(transform.position.y);
-            transform.position += new Vector3(0, 0.01f, 0);
-            yield return new WaitForSeconds(0.005f);
+        travelled = 0;
+        while (travelled < 0.25f) {
+            travelled += SpeedUp;
+            transform.position += new Vector3(0, SpeedUp, 0);
+            yield return null;
         }
-        //Debug.Log("DONE");
-        transform.position = origPos;
 
         if (Mode == TriggerMode.OnUp) {
             MethodBase mb = typeof(PlayerController).GetMethod(MethodName);

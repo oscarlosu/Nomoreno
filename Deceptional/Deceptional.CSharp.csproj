@@ -96,6 +96,7 @@
     <Compile Include="Assets\Scripts\Transitions\DropTransition.cs" />
     <Compile Include="Assets\Scripts\Transitions\RotateTransition.cs" />
     <Compile Include="Assets\Scripts\Transitions\Transition.cs" />
+    <Compile Include="Assets\TransitionManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\3DText.shader" />
