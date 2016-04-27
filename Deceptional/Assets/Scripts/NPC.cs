@@ -177,7 +177,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     void OnDisable() {
         //CanMingle = false;
         StopAllCoroutines();
-        Grid.Instance.FreeCell(currentCell);
+        if (Grid.Instance != null) {
+            Grid.Instance.FreeCell(currentCell);
+        }
         currentCell = null;
     }
 

@@ -4,10 +4,13 @@ using UnityEngine.EventSystems;
 
 public class StartButton : MonoBehaviour, IPointerClickHandler {
 
-    private Vector3 origPos;
+    public float SpeedDown = 0.05f;
+    public float SpeedUp = 0.01f;
+
+    private Vector3 startPos;
 
     void Start() {
-        origPos = transform.position;
+        startPos = transform.position;
     }
 
     public void OnPointerClick(PointerEventData eventData) {
@@ -15,20 +18,18 @@ public class StartButton : MonoBehaviour, IPointerClickHandler {
     }
 
     private IEnumerator AnimateButton() {
-        bool hasMoved = false;
-        while (transform.position.y > origPos.y - 0.25 && !hasMoved) {
-            //Debug.Log(transform.position.y);
-            transform.position -= new Vector3(0, 0.05f, 0);
-            yield return new WaitForSeconds(0.005f);
+        float travelled = 0;
+        while (travelled < 0.25f) {
+            travelled += SpeedDown;
+            transform.position -= transform.up * SpeedDown;
+            yield return null;
         }
-        hasMoved = true;
-        while (transform.position.y < origPos.y && hasMoved) {
-            //Debug.Log(transform.position.y);
-            transform.position += new Vector3(0, 0.01f, 0);
-            yield return new WaitForSeconds(0.005f);
+        travelled = 0;
+        while (travelled < 0.25f) {
+            travelled += SpeedUp;
+            transform.position += transform.up * SpeedUp;
+            yield return null;
         }
-        //Debug.Log("DONE");
-        transform.position = origPos;
 
         TransitionManager.Instance.StartTransition();
     }

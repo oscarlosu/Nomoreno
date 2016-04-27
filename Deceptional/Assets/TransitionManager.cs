@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts;
 
 public class TransitionManager : MonoBehaviour {
     /// <summary>
@@ -22,7 +23,7 @@ public class TransitionManager : MonoBehaviour {
     // Game starting
     public Transition Cameras;
     public Transition Buttons;
-    public Transition WaitingRoomCam;
+    public RotateTransition WaitingRoomCam;
 
 
     // Use this for initialization
@@ -46,10 +47,8 @@ public class TransitionManager : MonoBehaviour {
     private IEnumerator GameCo() {
         Cameras.Execute();
         yield return new WaitUntil(() => Cameras.State == Transition.TransitionState.Done);
-        Buttons.Execute();
-        yield return new WaitUntil(() => Buttons.State == Transition.TransitionState.Done);
         // Rotate waiting room
-        WaitingRoomCam.Execute();
+        WaitingRoomCam.Execute(1);
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
     }
 
@@ -57,12 +56,13 @@ public class TransitionManager : MonoBehaviour {
         StartCoroutine(BeginDayCo());
     }
     private IEnumerator BeginDayCo() {
-        yield break;
-        // Rotate waiting room back
-
         // Tell PlayerController to start next day
-
+        PlayerController.Instance.Begin();
+        // Rotate waiting room back
+        WaitingRoomCam.Execute(-1);
+        yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);        
         // Drop buttons
-
+        Buttons.Execute();
+        yield return new WaitUntil(() => Buttons.State == Transition.TransitionState.Done);
     }
 }

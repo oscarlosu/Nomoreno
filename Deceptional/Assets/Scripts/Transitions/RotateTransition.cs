@@ -18,9 +18,12 @@ public class RotateTransition : Transition {
     //    Execute();
     //}
     public override void Execute() {
-        StartCoroutine(RotateAroundCenterAboutAxis());
+        StartCoroutine(RotateAroundCenterAboutAxis(RotationSense));
     }
-    private IEnumerator RotateAroundCenterAboutAxis() {
+    public void Execute(float sense) {
+        StartCoroutine(RotateAroundCenterAboutAxis(sense));
+    }
+    private IEnumerator RotateAroundCenterAboutAxis(float sense) {
         State = TransitionState.Running;
 
         currentAngle = 0;

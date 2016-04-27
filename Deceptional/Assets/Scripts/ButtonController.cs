@@ -9,7 +9,10 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler
     public string Label;
     public string MethodName;
     public TextMesh TextMesh;
-       
+
+    public GameObject Controller;
+
+
     public float SpeedDown = 0.05f;
     public float SpeedUp = 0.01f;
 
@@ -28,8 +31,9 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         if(Mode == TriggerMode.OnDown) {
-            MethodBase mb = typeof(PlayerController).GetMethod(MethodName);
-            mb.Invoke(PlayerController.Instance, new Object[0]);
+            //MethodBase mb = typeof(PlayerController).GetMethod(MethodName);
+            //mb.Invoke(PlayerController.Instance, new Object[0]);
+            Controller.SendMessage(MethodName);
         }        
         StartCoroutine(AnimateButton());
     }
@@ -44,19 +48,20 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler
         float travelled = 0;
         while (travelled < 0.25f) {
             travelled += SpeedDown;
-            transform.position -= new Vector3(0, SpeedDown, 0);
+            transform.position -= transform.up * SpeedDown;
             yield return null;
         }
         travelled = 0;
         while (travelled < 0.25f) {
             travelled += SpeedUp;
-            transform.position += new Vector3(0, SpeedUp, 0);
+            transform.position += transform.up * SpeedUp;
             yield return null;
         }
 
         if (Mode == TriggerMode.OnUp) {
-            MethodBase mb = typeof(PlayerController).GetMethod(MethodName);
-            mb.Invoke(PlayerController.Instance, new Object[0]);
+            //MethodBase mb = typeof(PlayerController).GetMethod(MethodName);
+            //mb.Invoke(PlayerController.Instance, new Object[0]);
+            Controller.SendMessage(MethodName);
         }
     }
 }

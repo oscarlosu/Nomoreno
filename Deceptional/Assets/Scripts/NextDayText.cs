@@ -10,7 +10,7 @@ public class NextDayText : MonoBehaviour {
         SetRotation();
     }
     private void SetRotation() {
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, 0);
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, Camera.main.transform.eulerAngles.y - 90, transform.eulerAngles.z);
     }
 
 }
