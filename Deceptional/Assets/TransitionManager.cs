@@ -47,6 +47,8 @@ public class TransitionManager : MonoBehaviour {
     private IEnumerator GameCo() {
         Cameras.Execute();
         yield return new WaitUntil(() => Cameras.State == Transition.TransitionState.Done);
+        // Tell PlayerController to generate next day
+        PlayerController.Instance.GenerateNextDay();
         // Rotate waiting room
         WaitingRoomCam.Execute(1);
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
@@ -57,7 +59,7 @@ public class TransitionManager : MonoBehaviour {
     }
     private IEnumerator BeginDayCo() {
         // Tell PlayerController to start next day
-        PlayerController.Instance.Begin();
+        PlayerController.Instance.BeginDay();
         // Rotate waiting room back
         WaitingRoomCam.Execute(-1);
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);        
@@ -65,4 +67,12 @@ public class TransitionManager : MonoBehaviour {
         Buttons.Execute();
         yield return new WaitUntil(() => Buttons.State == Transition.TransitionState.Done);
     }
+
+    public void EndDayTransition() {
+        StartCoroutine(EndDayCo());
+    }
+    private IEnumerator EndDayCo() {
+        throw new System.NotImplementedException();
+    }
+
 }

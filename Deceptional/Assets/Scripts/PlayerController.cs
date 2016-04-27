@@ -124,30 +124,30 @@ namespace Assets.Scripts {
             TransitionManager.Instance.GameTransition();            
         }
 
-        public void Begin() {
-            StartCoroutine(NextDay());
+        public void GenerateNextDay() {
+            StartCoroutine(GenerateNextDayCo());
         }
 
         public void Update() {
             HandleButtons();
-            if (UseRealTime && timeRunning) UpdateRealTime();
+            //if (UseRealTime && timeRunning) UpdateRealTime();
         }
 
         private double oneSecond = 0;
-        private void UpdateRealTime() {
-            currentTime -= Time.deltaTime;
-            oneSecond += Time.deltaTime;
-            if (oneSecond >= 1.0) {
-                oneSecond -= 1; // Animate minute hand.
-                //AnimateRealClock();
-                StartCoroutine(AnimateRealClock());
-            }
+        //private void UpdateRealTime() {
+        //    currentTime -= Time.deltaTime;
+        //    oneSecond += Time.deltaTime;
+        //    if (oneSecond >= 1.0) {
+        //        oneSecond -= 1; // Animate minute hand.
+        //        //AnimateRealClock();
+        //        StartCoroutine(AnimateRealClock());
+        //    }
 
-            if (currentTime <= 0 && timeRunning) {
-                timeRunning = false;
-                StartCoroutine(NextDay());
-            }
-        }
+        //    if (currentTime <= 0 && timeRunning) {
+        //        timeRunning = false;
+        //        StartCoroutine(NextDay());
+        //    }
+        //}
 
         private void HandleButtons() {
             if(CurrentInterrogationTarget == null) {
@@ -249,7 +249,9 @@ namespace Assets.Scripts {
                     // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
                     Dismiss();
                     // Start new day
-                    StartCoroutine(NextDay());
+                    //StartCoroutine(NextDay());
+                    //TransitionManager.Instance.
+                    // TODO
                 }
                 
             }            
@@ -280,8 +282,11 @@ namespace Assets.Scripts {
 
                 HideConversation();
                 UpdateTime();
-                if (!UseRealTime && interactionCount <= 0)
-                    StartCoroutine(NextDay());
+                if (!UseRealTime && interactionCount <= 0) {
+                    //StartCoroutine(NextDay());
+                    //TODO
+                }
+                    
             }            
         }
 
@@ -360,7 +365,7 @@ namespace Assets.Scripts {
             ClockMinuteHandle.localEulerAngles = minuteRotation;
         }
         
-        private IEnumerator NextDay() {
+        private IEnumerator GenerateNextDayCo() {
             yield return new WaitForSeconds(PreNextDayDelay);
             if(CurrentInterrogationTarget != null) {
                 Cell cell = Grid.Instance.GetRandomCell();
@@ -390,12 +395,15 @@ namespace Assets.Scripts {
             ResetClock();
             // Show new day message
             string nextDayText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
-            NewDayLabelHolder.SetActive(true);
+            //NewDayLabelHolder.SetActive(true);
             // Show letters one at a time
             StartCoroutine(CoDisplayText(nextDayText, NewDayTextMesh));
             // Wait a bit
-            yield return new WaitForSeconds(NextDayDelay);
-            NewDayLabelHolder.SetActive(false);
+            //yield return new WaitForSeconds(NextDayDelay);
+            //NewDayLabelHolder.SetActive(false);
+
+        }
+        public void BeginDay() {
             // Show scene
             ShowScene();
             if (UseRealTime) timeRunning = true;

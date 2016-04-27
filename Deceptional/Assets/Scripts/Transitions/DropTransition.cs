@@ -46,6 +46,6 @@ public class DropTransition : Transition {
         dir.Normalize();
         float distanceToTarget = Vector3.Distance(transform.position, Targets[index]);
         transform.position = transform.position + dir * Mathf.Min(SpeedCurves[index - 1].Evaluate(elapsedTime), distanceToTarget);
-        return Mathf.Approximately(Vector3.Distance(transform.position, Targets[index]), 0.0f);
+        return Vector3.Distance(transform.position, Targets[index]) <= Mathf.Epsilon;
     }
 }
