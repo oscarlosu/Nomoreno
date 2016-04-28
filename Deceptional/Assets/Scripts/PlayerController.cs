@@ -125,9 +125,7 @@ namespace Assets.Scripts {
             TransitionManager.Instance.GameTransition();            
         }
 
-        public void GenerateNextDay() {
-            StartCoroutine(GenerateNextDayCo());
-        }
+        
 
         public void Update() {
             HandleButtons();
@@ -236,7 +234,9 @@ namespace Assets.Scripts {
 
         public void Arrest() {
             if(CurrentInterrogationTarget != null) {
-                if (UseRealTime) timeRunning = false;
+                //if (UseRealTime) timeRunning = false;
+                //SelectedNPC = null;
+                //HideConversation();
                 // Check if the acccused NPC is the killer
                 if (CurrentInterrogationTarget.IsKiller) {
                     PrepareArrestSuccess();
@@ -259,7 +259,7 @@ namespace Assets.Scripts {
 
                     TransitionManager.Instance.ArrestTransition(CurrentInterrogationTarget.transform);
                 }
-                
+                //CurrentInterrogationTarget = null;
             }            
         }
 
@@ -371,14 +371,8 @@ namespace Assets.Scripts {
             minuteRotation.y = 0;
             ClockMinuteHandle.localEulerAngles = minuteRotation;
         }
-        
-        private IEnumerator GenerateNextDayCo() {
-            yield return new WaitForSeconds(PreNextDayDelay);
-            if(CurrentInterrogationTarget != null) {
-                Cell cell = Grid.Instance.GetRandomCell();
-                CurrentInterrogationTarget.currentCell = cell;
-                CurrentInterrogationTarget.transform.position = cell.transform.position;
-            }
+
+        public void GenerateNextDay() {
             HideConversation();
             ++currentDay;
             // Hide scene
@@ -402,14 +396,48 @@ namespace Assets.Scripts {
             ResetClock();
             // Show new day message
             string nextDayText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
-            //NewDayLabelHolder.SetActive(true);
             // Show letters one at a time
             StartCoroutine(CoDisplayText(nextDayText, NewDayTextMesh));
-            // Wait a bit
-            //yield return new WaitForSeconds(NextDayDelay);
-            //NewDayLabelHolder.SetActive(false);
-
         }
+
+        //private IEnumerator GenerateNextDayCo() {
+        //    //yield return new WaitForSeconds(PreNextDayDelay);
+        //    //if(CurrentInterrogationTarget != null) {
+        //    //    Cell cell = Grid.Instance.GetRandomCell();
+        //    //    CurrentInterrogationTarget.currentCell = cell;
+        //    //    CurrentInterrogationTarget.transform.position = cell.transform.position;
+        //    //}
+        //    HideConversation();
+        //    ++currentDay;
+        //    // Hide scene
+        //    HideScene();
+        //    // Reset current time and interaction count
+        //    currentTime = DayDuration;
+        //    interactionCount = DailyInteracions;
+        //    // Clear references to NPCs
+        //    CurrentInterrogationTarget = null;
+        //    SelectedNPC = null;
+        //    // Murder new witness
+        //    string victimName = MurderWitness();
+        //    // Clear reference to arrested NPC
+        //    arrestedNPC = null;
+        //    // Cool NPC moods
+        //    foreach (NPC n in NPC.NPCList) { n.CoolMood(); }
+        //    // Generate conversations
+        //    ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
+        //    ConversationHandler.SetupConversations(PercentageLiars);
+        //    // Reset clock
+        //    ResetClock();
+        //    // Show new day message
+        //    string nextDayText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
+        //    //NewDayLabelHolder.SetActive(true);
+        //    // Show letters one at a time
+        //    StartCoroutine(CoDisplayText(nextDayText, NewDayTextMesh));
+        //    // Wait a bit
+        //    //yield return new WaitForSeconds(NextDayDelay);
+        //    //NewDayLabelHolder.SetActive(false);
+
+        //}
         public void BeginDay() {
             // Show scene
             ShowScene();
@@ -448,6 +476,10 @@ namespace Assets.Scripts {
 
         private void ShowScene() {
             NPCS.SetActive(true);
+            foreach(NPC npc in NPC.NPCList) {
+                npc.enabled = false;
+                npc.enabled = true;
+            }
         }
 
         private string MurderWitness() {

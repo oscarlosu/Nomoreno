@@ -94,7 +94,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     /// <summary>
     /// Controller for the name label
     /// </summary>
-    private NameLabel nameLabelScritpt;
+    private NameLabel nameLabelScript;
 
     /// <summary>
     /// References to the mingling icons
@@ -150,7 +150,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Get references to components
         navAgent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-        nameLabelScritpt = NameLabelHolder.GetComponent<NameLabel>();
+        nameLabelScript = NameLabelHolder.GetComponent<NameLabel>();
         Mood = false;
         NPC.NPCList.Add(this);
     }
@@ -163,9 +163,16 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         //Grid.Instance.FreeCell(currentCell);
         currentCell = Grid.Instance.GetRandomCell();
         //transform.position = currentCell.transform.position;
-        navAgent.Warp(currentCell.transform.position);
+        //navAgent.Warp(currentCell.transform.position);
+        if(!navAgent.enabled) {
+            Debug.Log(Name + " was in the cage");
+        }
+        navAgent.enabled = false;
+        transform.position = currentCell.transform.position;
+        navAgent.enabled = true;
 
         NameLabelHolder.transform.GetComponentInChildren<TextMesh>().text = Name;
+        ShowNameLabel();
 
         Emoji.enabled = false;
         CurrentBehaviour = Behaviour.None;
@@ -248,7 +255,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * RotationSpeed);
         // Update rotation of name label
-        nameLabelScritpt.UpdateRotation();
+        nameLabelScript.UpdateRotation();
         // Return true if target reached
         return Mathf.Approximately(Quaternion.Angle(transform.rotation, lookRotation), 0.0f);
     }
@@ -256,7 +263,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     private bool RotateTowards(Quaternion targetRotation) {
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * RotationSpeed);
         // Update rotation of name label
-        nameLabelScritpt.UpdateRotation();
+        nameLabelScript.UpdateRotation();
         // Return true if target reached
         return Mathf.Approximately(Quaternion.Angle(transform.rotation, targetRotation), 0.0f);
     }

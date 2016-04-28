@@ -43,7 +43,10 @@ public class TransitionManager : MonoBehaviour {
     // Use this for initialization
     void Awake() {
         //DontDestroyOnLoad(gameObject);
-        camController = WaitingRoomCam.gameObject.GetComponent<CameraController>();
+        if(WaitingRoomCam != null) {
+            camController = WaitingRoomCam.gameObject.GetComponent<CameraController>();
+        }
+        
     }
 
     public void StartTransition() {
@@ -114,16 +117,19 @@ public class TransitionManager : MonoBehaviour {
         CageDrop.Execute();
         yield return new WaitUntil(() => CageDrop.State == Transition.TransitionState.Done);
         // Parent accused to cage
+        NavMeshAgent navAg = arrested.GetComponent<NavMeshAgent>();
+        navAg.enabled = false;
+        Transform parent = arrested.parent;
         arrested.SetParent(CageDrop.transform);
-        // Lift cage
+        // Lift cage and rotate waiting room
         CageLift.Execute();
-        yield return new WaitUntil(() => CageLift.State == Transition.TransitionState.Done);
-        // Unparent accuse from cage
-        arrested.SetParent(null);
-        // Rotate waiting room
         camController.enabled = false;
         WaitingRoomCam.Execute(-1);
-        yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
+        yield return new WaitUntil(() => CageLift.State == Transition.TransitionState.Done && WaitingRoomCam.State == Transition.TransitionState.Done);
+        // Unparent accused from cage
+        arrested.SetParent(parent);        
+        // Tell PlayerController to generate next day
+        PlayerController.Instance.GenerateNextDay();
     }
 
     public void EndGameTransition() {
