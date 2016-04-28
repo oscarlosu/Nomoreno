@@ -29,18 +29,18 @@ public class RotateTransition : Transition {
         currentAngle = 0;
         // Lerp towards current target
         elapsedTime = 0;
-        while (!LerpTowardsTarget()) {
+        while (!LerpTowardsTarget(sense)) {
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         State = TransitionState.Done;
     }
-    private bool LerpTowardsTarget() {
+    private bool LerpTowardsTarget(float sense) {
 
         float remaining = TargetAngle - currentAngle;
         float angleInc = Mathf.Min(Speed.Evaluate(elapsedTime), remaining);
-        transform.RotateAround(Center, Axis, RotationSense * angleInc);
+        transform.RotateAround(Center, sense * Axis, angleInc);
         currentAngle += angleInc;
         return Mathf.Approximately(currentAngle - TargetAngle, 0.0f);
 

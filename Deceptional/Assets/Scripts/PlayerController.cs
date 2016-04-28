@@ -71,6 +71,7 @@ namespace Assets.Scripts {
         
 
         public ButtonController CallInButton;
+        public ButtonController PlatformButton;
         //public GameObject DismissButton;
         public GameObject NPCS;
         public TextMesh NewDayTextMesh;
@@ -133,7 +134,7 @@ namespace Assets.Scripts {
             //if (UseRealTime && timeRunning) UpdateRealTime();
         }
 
-        private double oneSecond = 0;
+        //private double oneSecond = 0;
         //private void UpdateRealTime() {
         //    currentTime -= Time.deltaTime;
         //    oneSecond += Time.deltaTime;
@@ -164,6 +165,13 @@ namespace Assets.Scripts {
                 CallInButton.ChangeButton("CALL\nIN", "CallIn");
             }
         }
+
+        public void PrepareArrestSuccess() {
+            // Victory
+            NewDayTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name + "\n\nPress any key to restart";
+            PlatformButton.ChangeButton("RETURN TO\nMENU", "EndGameTransition");
+        }
+
 
         public void CallIn() {
             if (SelectedNPC == null || SelectedNPC == CurrentInterrogationTarget) return;
@@ -231,14 +239,12 @@ namespace Assets.Scripts {
                 if (UseRealTime) timeRunning = false;
                 // Check if the acccused NPC is the killer
                 if (CurrentInterrogationTarget.IsKiller) {
-                    // Victory
-                    NewDayTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name + "\n\nPress any key to restart";
-                    NewDayLabelHolder.SetActive(true);
-                    StartCoroutine(WaitForRestart());
+                    PrepareArrestSuccess();
+                    //StartCoroutine(WaitForRestart());
+                    TransitionManager.Instance.ArrestTransition(CurrentInterrogationTarget.transform);
                 } else if (NPC.NPCList.Count <= 1) {
                     // Game Over
                     NewDayTextMesh.text = "On day " + currentDay + " the detective\n hadn't arrested the murderer\n but since everyone else was dead, \nthere was no real need anymore...";
-                    NewDayLabelHolder.SetActive(true);
                     StartCoroutine(WaitForRestart());
                 } else { 
                     // Make NPC angry
@@ -246,12 +252,12 @@ namespace Assets.Scripts {
                     CurrentInterrogationTarget.MoodDays = 1;
                     // Save reference to arrested NPC
                     arrestedNPC = CurrentInterrogationTarget;
+
+                    // TODO: Is this necessary?
                     // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
-                    Dismiss();
-                    // Start new day
-                    //StartCoroutine(NextDay());
-                    //TransitionManager.Instance.
-                    // TODO
+                    //Dismiss();
+
+                    TransitionManager.Instance.ArrestTransition(CurrentInterrogationTarget.transform);
                 }
                 
             }            
@@ -285,6 +291,7 @@ namespace Assets.Scripts {
                 if (!UseRealTime && interactionCount <= 0) {
                     //StartCoroutine(NextDay());
                     //TODO
+                    TransitionManager.Instance.DayOverTransition();
                 }
                     
             }            
@@ -426,7 +433,11 @@ namespace Assets.Scripts {
                 yield return null;
             }
             //Application.LoadLevel(0);
-                 
+            LoadMenu();
+
+        }
+
+        public void LoadMenu() {
             UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         }
 
