@@ -71,6 +71,8 @@ public class TransitionManager : MonoBehaviour {
         camController.enabled = false;
         WaitingRoomCam.Execute(-1);
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
+        // Show text
+        PlayerController.Instance.ShowPlatformText();
     }
 
     public void BeginDayTransition() {
@@ -88,13 +90,22 @@ public class TransitionManager : MonoBehaviour {
         yield return new WaitUntil(() => ButtonsIn.State == Transition.TransitionState.Done);
     }
 
-    public void DayOverTransition() {
-        StartCoroutine(DayOverCo());
+    public void DayOverTransition(bool gameFinished) {
+        StartCoroutine(DayOverCo(gameFinished));
     }
-    private IEnumerator DayOverCo() {
-        ButtonsOut.Execute();
-        Clock.Execute(-1);
-        yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done && ButtonsOut.State == Transition.TransitionState.Done);        
+    private IEnumerator DayOverCo(bool gameFinished) {
+        if(gameFinished) {
+            // Clear platform text
+            PlayerController.Instance.ClearPlatformText();
+            camController.enabled = false;
+            WaitingRoomCam.Execute(-1);
+            yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
+            PlayerController.Instance.ShowPlatformText();
+        } else {
+            ButtonsOut.Execute();
+            Clock.Execute(-1);
+            yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done && ButtonsOut.State == Transition.TransitionState.Done);
+        } 
     }
 
     public void EndDayTransition() {
@@ -107,12 +118,13 @@ public class TransitionManager : MonoBehaviour {
         camController.enabled = false;
         WaitingRoomCam.Execute(-1);
         yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done && WaitingRoomCam.State == Transition.TransitionState.Done);
+        PlayerController.Instance.ShowPlatformText();
     }
 
-    public void ArrestTransition(Transform arrested) {
-        StartCoroutine(ArrestCo(arrested));
+    public void ArrestTransition(Transform arrested, bool gameFinished) {
+        StartCoroutine(ArrestCo(arrested, gameFinished));
     }
-    private IEnumerator ArrestCo(Transform arrested) {
+    private IEnumerator ArrestCo(Transform arrested, bool gameFinished) {
         // Drop cage
         CageDrop.Execute();
         yield return new WaitUntil(() => CageDrop.State == Transition.TransitionState.Done);
@@ -121,6 +133,8 @@ public class TransitionManager : MonoBehaviour {
         navAg.enabled = false;
         Transform parent = arrested.parent;
         arrested.SetParent(CageDrop.transform);
+        // Clear platform text
+        PlayerController.Instance.ClearPlatformText();
         // Lift cage and rotate waiting room
         CageLift.Execute();
         camController.enabled = false;
@@ -128,8 +142,15 @@ public class TransitionManager : MonoBehaviour {
         yield return new WaitUntil(() => CageLift.State == Transition.TransitionState.Done && WaitingRoomCam.State == Transition.TransitionState.Done);
         // Unparent accused from cage
         arrested.SetParent(parent);        
-        // Tell PlayerController to generate next day
-        PlayerController.Instance.GenerateNextDay();
+        
+        if(gameFinished) {
+            PlayerController.Instance.ClearScene();
+        } else {
+            // Tell PlayerController to generate next day
+            PlayerController.Instance.GenerateNextDay();
+        }
+        PlayerController.Instance.ShowPlatformText();
+
     }
 
     public void EndGameTransition() {

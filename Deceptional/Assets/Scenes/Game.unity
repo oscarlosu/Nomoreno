@@ -1248,7 +1248,7 @@ GameObject:
   - 102: {fileID: 151669319}
   - 114: {fileID: 151669321}
   m_Layer: 8
-  m_Name: NewDayText
+  m_Name: PlatformText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6259,7 +6259,7 @@ MonoBehaviour:
   Controller: {fileID: 788544643}
   SpeedDown: 0.05
   SpeedUp: 0.01
-  Mode: 0
+  Mode: 1
 --- !u!65 &1071961600
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11472,6 +11472,18 @@ Prefab:
       propertyPath: NameText
       value: 
       objectReference: {fileID: 1424532848}
+    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
+      propertyPath: PlatformTextMesh
+      value: 
+      objectReference: {fileID: 151669319}
+    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
+      propertyPath: NumberOfNPCS
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
+      propertyPath: NumberOfDescriptiveClues
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
   m_IsPrefabParent: 0

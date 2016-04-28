@@ -62,10 +62,7 @@ namespace Assets.Scripts {
             }
         }
         private NPC arrestedNPC;
-        public bool UseRealTime;
-        private bool timeRunning;
         public int DailyInteracions;
-        public float DayDuration; // In seconds
         public int NumberOfNPCS;
         public int NumberOfDescriptiveClues;
         
@@ -74,18 +71,14 @@ namespace Assets.Scripts {
         public ButtonController PlatformButton;
         //public GameObject DismissButton;
         public GameObject NPCS;
-        public TextMesh NewDayTextMesh;
+        public TextMesh PlatformTextMesh;
         public TextMesh StatementTextMesh;
         public Transform ClockHourHandle;
         public Transform ClockMinuteHandle;
         public GameObject NewDayLabelHolder;
 
         private int interactionCount;
-        public float currentTime;
         private int currentDay;
-
-        public int NextDayDelay;
-        public int PreNextDayDelay;
 
         public Camera InterrogationRoomCamera;
         public Transform SelectionSpotlight;
@@ -98,6 +91,10 @@ namespace Assets.Scripts {
         public int MaxMinglers;
         public int MinMinglers;
 
+
+
+        private string platformText;
+
         #endregion
 
         #region Instance methods
@@ -108,8 +105,6 @@ namespace Assets.Scripts {
                 Seed = (int) DateTime.Now.Ticks;
             }
             Rng = new System.Random(Seed);
-            //Hack to make sure currentTime is DayDuration
-            currentTime = DayDuration;
             conversationCoroutines = new List<Coroutine>();
             currentDay = 0;
             // Initialize NPCParent
@@ -119,7 +114,7 @@ namespace Assets.Scripts {
             // Generate NPCs 
             NPCHandler.GenerateMultipleWitnesses(NumberOfNPCS);
             // Create MinglingDirector;
-            var dummy = MinglingDirector.Instance;
+            //var dummy = MinglingDirector.Instance;
 
 
             TransitionManager.Instance.GameTransition();            
@@ -129,24 +124,7 @@ namespace Assets.Scripts {
 
         public void Update() {
             HandleButtons();
-            //if (UseRealTime && timeRunning) UpdateRealTime();
         }
-
-        //private double oneSecond = 0;
-        //private void UpdateRealTime() {
-        //    currentTime -= Time.deltaTime;
-        //    oneSecond += Time.deltaTime;
-        //    if (oneSecond >= 1.0) {
-        //        oneSecond -= 1; // Animate minute hand.
-        //        //AnimateRealClock();
-        //        StartCoroutine(AnimateRealClock());
-        //    }
-
-        //    if (currentTime <= 0 && timeRunning) {
-        //        timeRunning = false;
-        //        StartCoroutine(NextDay());
-        //    }
-        //}
 
         private void HandleButtons() {
             if(CurrentInterrogationTarget == null) {
@@ -164,11 +142,7 @@ namespace Assets.Scripts {
             }
         }
 
-        public void PrepareArrestSuccess() {
-            // Victory
-            NewDayTextMesh.text = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name + "\n\nPress any key to restart";
-            PlatformButton.ChangeButton("RETURN TO\nMENU", "EndGameTransition");
-        }
+        
 
 
         public void CallIn() {
@@ -232,20 +206,31 @@ namespace Assets.Scripts {
             StatementTextMesh.gameObject.SetActive(false);
         }
 
+        public void PrepareArrestSuccess() {
+            // Victory
+            platformText = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name;
+            PlatformButton.ChangeButton("RETURN TO\nMENU", "EndGameTransition");
+        }
+
+        public void PrepareGameOver() {
+            // Game Over
+            platformText = "On day " + currentDay + " the detective\n hadn't arrested the murderer\n but since everyone else was dead, \nthere was no real need anymore...";
+            PlatformButton.ChangeButton("RETURN TO\nMENU", "EndGameTransition");
+        }
+        public void ShowPlatformText() {
+            // Show letters one at a time
+            StartCoroutine(CoDisplayText(platformText, PlatformTextMesh));
+        }
+
         public void Arrest() {
             if(CurrentInterrogationTarget != null) {
-                //if (UseRealTime) timeRunning = false;
-                //SelectedNPC = null;
-                //HideConversation();
                 // Check if the acccused NPC is the killer
                 if (CurrentInterrogationTarget.IsKiller) {
                     PrepareArrestSuccess();
-                    //StartCoroutine(WaitForRestart());
-                    TransitionManager.Instance.ArrestTransition(CurrentInterrogationTarget.transform);
-                } else if (NPC.NPCList.Count <= 1) {
-                    // Game Over
-                    NewDayTextMesh.text = "On day " + currentDay + " the detective\n hadn't arrested the murderer\n but since everyone else was dead, \nthere was no real need anymore...";
-                    StartCoroutine(WaitForRestart());
+                    TransitionManager.Instance.ArrestTransition(CurrentInterrogationTarget.transform, true);
+                } else if (NPC.NPCList.Count <= 2) {
+                    PrepareGameOver();
+                    TransitionManager.Instance.ArrestTransition(CurrentInterrogationTarget.transform, true);
                 } else { 
                     // Make NPC angry
                     CurrentInterrogationTarget.Mood = true;
@@ -256,10 +241,8 @@ namespace Assets.Scripts {
                     // TODO: Is this necessary?
                     // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
                     //Dismiss();
-
-                    TransitionManager.Instance.ArrestTransition(CurrentInterrogationTarget.transform);
-                }
-                //CurrentInterrogationTarget = null;
+                    TransitionManager.Instance.ArrestTransition(CurrentInterrogationTarget.transform, false);
+                }                
             }            
         }
 
@@ -288,10 +271,17 @@ namespace Assets.Scripts {
 
                 HideConversation();
                 UpdateTime();
-                if (!UseRealTime && interactionCount <= 0) {
+                if (interactionCount <= 0) {
                     //StartCoroutine(NextDay());
                     //TODO
-                    TransitionManager.Instance.DayOverTransition();
+
+                    if (NPC.NPCList.Count <= 2) {
+                        PrepareGameOver();
+                        TransitionManager.Instance.DayOverTransition(true);
+                    } else {
+                        TransitionManager.Instance.DayOverTransition(false);
+                    }
+                        
                 }
                     
             }            
@@ -329,7 +319,7 @@ namespace Assets.Scripts {
             // Update interactions
             interactionCount--;
             // Animate clock
-            if (!UseRealTime) StartCoroutine(AnimateClock());
+            StartCoroutine(AnimateClock());
         }
 
         private IEnumerator AnimateClock() {
@@ -350,19 +340,6 @@ namespace Assets.Scripts {
             ClockMinuteHandle.localEulerAngles = minuteRotation;
         }
 
-        private IEnumerator AnimateRealClock() {
-            Vector3 hourRotation = ClockHourHandle.localEulerAngles;
-            Vector3 minuteRotation = ClockMinuteHandle.localEulerAngles;
-            // We want to rotate the hour handle to rotate 1/2 a degree.
-            // We also want the minute handle to rotate to next second.
-            var accelerator = 600 / DayDuration;
-            minuteRotation.y += 6.0f * accelerator;
-            ClockMinuteHandle.localEulerAngles = minuteRotation;
-            hourRotation.y += 0.5f * accelerator;
-            ClockHourHandle.localEulerAngles = hourRotation;
-            yield return null;
-        }
-
         private void ResetClock() {
             Vector3 hourRotation = ClockHourHandle.localEulerAngles;
             Vector3 minuteRotation = ClockMinuteHandle.localEulerAngles;
@@ -371,18 +348,27 @@ namespace Assets.Scripts {
             minuteRotation.y = 0;
             ClockMinuteHandle.localEulerAngles = minuteRotation;
         }
-
-        public void GenerateNextDay() {
+        public void ClearScene() {
             HideConversation();
-            ++currentDay;
             // Hide scene
             HideScene();
-            // Reset current time and interaction count
-            currentTime = DayDuration;
+            // Reset interaction count
             interactionCount = DailyInteracions;
             // Clear references to NPCs
             CurrentInterrogationTarget = null;
             SelectedNPC = null;
+            // Reset clock
+            ResetClock();            
+        }
+
+        public void ClearPlatformText() {
+            PlatformTextMesh.text = "";
+        }
+
+        public void GenerateNextDay() {
+            ClearScene();
+            ClearPlatformText();
+            ++currentDay;
             // Murder new witness
             string victimName = MurderWitness();
             // Clear reference to arrested NPC
@@ -392,56 +378,14 @@ namespace Assets.Scripts {
             // Generate conversations
             ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
             ConversationHandler.SetupConversations(PercentageLiars);
-            // Reset clock
-            ResetClock();
             // Show new day message
-            string nextDayText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
-            // Show letters one at a time
-            StartCoroutine(CoDisplayText(nextDayText, NewDayTextMesh));
+            platformText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
+            
         }
 
-        //private IEnumerator GenerateNextDayCo() {
-        //    //yield return new WaitForSeconds(PreNextDayDelay);
-        //    //if(CurrentInterrogationTarget != null) {
-        //    //    Cell cell = Grid.Instance.GetRandomCell();
-        //    //    CurrentInterrogationTarget.currentCell = cell;
-        //    //    CurrentInterrogationTarget.transform.position = cell.transform.position;
-        //    //}
-        //    HideConversation();
-        //    ++currentDay;
-        //    // Hide scene
-        //    HideScene();
-        //    // Reset current time and interaction count
-        //    currentTime = DayDuration;
-        //    interactionCount = DailyInteracions;
-        //    // Clear references to NPCs
-        //    CurrentInterrogationTarget = null;
-        //    SelectedNPC = null;
-        //    // Murder new witness
-        //    string victimName = MurderWitness();
-        //    // Clear reference to arrested NPC
-        //    arrestedNPC = null;
-        //    // Cool NPC moods
-        //    foreach (NPC n in NPC.NPCList) { n.CoolMood(); }
-        //    // Generate conversations
-        //    ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
-        //    ConversationHandler.SetupConversations(PercentageLiars);
-        //    // Reset clock
-        //    ResetClock();
-        //    // Show new day message
-        //    string nextDayText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
-        //    //NewDayLabelHolder.SetActive(true);
-        //    // Show letters one at a time
-        //    StartCoroutine(CoDisplayText(nextDayText, NewDayTextMesh));
-        //    // Wait a bit
-        //    //yield return new WaitForSeconds(NextDayDelay);
-        //    //NewDayLabelHolder.SetActive(false);
-
-        //}
         public void BeginDay() {
             // Show scene
             ShowScene();
-            if (UseRealTime) timeRunning = true;
             // Mingling phase
             ExecuteMinglePhase();
         }
@@ -493,7 +437,7 @@ namespace Assets.Scripts {
                     //index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
                     index = UseFixedSeed ? new System.Random(Seed).Next(NPC.NPCList.Count) : new System.Random(DateTime.Now.Millisecond).Next(NPC.NPCList.Count);
                     target = NPC.NPCList[index];
-                } while (NPC.NPCList[index].IsKiller || arrestedNPC == target);
+                } while (NPC.NPCList[index].IsKiller || (arrestedNPC == target && NPC.NPCList.Count > 2));
                 // Save victim's name
                 name = target.Name;
                 // Remove from list

@@ -14,7 +14,6 @@ public class DropTransition : Transition {
     public List<AnimationCurve> SpeedCurves;
 
     private float elapsedTime;
-    private Vector3 lastTarget;
 
 
     //public new void Start() {
@@ -28,9 +27,8 @@ public class DropTransition : Transition {
         State = TransitionState.Running;
         transform.position = Targets[0];
         // Go from startPos through all the targets
-        for(int i = 1; i < Targets.Count; ++i) {
-            // Set last target to previous
-            lastTarget = Targets[i - 1];
+        for (int i = 1; i < Targets.Count; ++i) {
+
             // Lerp towards current target
             elapsedTime = 0;
             while (!LerpTowardsTarget(i)) {

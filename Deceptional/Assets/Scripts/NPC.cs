@@ -415,7 +415,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         //yield return new WaitUntil(() => CurrentBehaviour == Behaviour.MingleReady);
         // Face other NPC
         // Store original rotation
-        Quaternion originalRotation = transform.rotation;
+        //Quaternion originalRotation = transform.rotation;
         //transform.LookAt(other.transform);
         while (!RotateTowards(other.transform)) {
             yield return null;
