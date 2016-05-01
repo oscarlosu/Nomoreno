@@ -114,6 +114,7 @@
     <Compile Include="Assets\Scripts\Editor\GridEditor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Resources\Statements\startstatement.txt" />
     <None Include="Assets\Resources\Statements\templates\accusation.txt" />
     <None Include="Assets\Resources\Statements\templates\description.txt" />
     <None Include="Assets\Resources\Statements\templates\ignorance.txt" />

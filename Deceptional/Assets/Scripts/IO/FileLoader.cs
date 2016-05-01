@@ -23,7 +23,7 @@ namespace Assets.Scripts.IO {
         /// Opens the file containing NPC names and reads them into a string list, seperating on new-line characters.
         /// Differentiates between male and female names.
         /// </summary>
-        /// <returns>A list of all defined NPC names</returns>
+        /// <returns>A list of all defined NPC names.</returns>
         public static List<string> GetNames(bool maleNames) {
             var names = UnityEngine.Resources.Load<UnityEngine.TextAsset>(@"Statements/variables/names");
             string[] namesArray = names.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
@@ -33,11 +33,21 @@ namespace Assets.Scripts.IO {
                 return namesArray.Where(s => s.StartsWith("[F]")).Select(s => s.Replace("[F]", "").Trim()).ToList();
             }
         }
+        /// <summary>
+        /// Opens the file containing NPC part names and reads them into a string list, seperating on new-line characters.
+        /// </summary>
+        /// <returns>A list of all defined NPC parts.</returns>
         public static List<string> GetParts() {
             var parts = UnityEngine.Resources.Load<UnityEngine.TextAsset>(@"Statements/variables/parts");
             return parts.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
+        /// <summary>
+        /// Opens the file containing clue templates and reads them into a string list, seperating on new-line characters.
+        /// Differentiates between every clue class.
+        /// </summary>
+        /// <param name="identifier">The identifier describing which clues should be returned.</param>
+        /// <returns>A list of all clues identifying as the supplied identifier.</returns>
         public static List<string> GetTemplates(ClueIdentifier identifier) {
             string filePath = @"Statements/templates/";
             switch (identifier) {

@@ -31,7 +31,6 @@ namespace Assets.Scripts {
         public System.Random Rng;
 
         public static GameObject NPCParent;
-        public static string LatestLocation;
 
         #region Instance fields & properties
         public GameObject DefaultNPC;
@@ -376,8 +375,8 @@ namespace Assets.Scripts {
             CurrentInterrogationTarget = null;
             SelectedNPC = null;
             // Murder new witness
-            string victimName = MurderWitness();
-            LatestLocation = "Nowhere"; // TODO: Insert 'real' location.
+            string victimName = Clue.LatestVictimName = MurderWitness();
+            //LatestLocation = "Nowhere"; // TODO: Insert 'real' location.
             // Clear reference to arrested NPC
             arrestedNPC = null;
             // Cool NPC moods

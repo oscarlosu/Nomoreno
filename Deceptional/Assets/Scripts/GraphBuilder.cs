@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Assets.Scripts {
-    public static class GraphBuilder {        
+    public static class GraphBuilder {
+        private static CaseHandler caseHandler;
         public static Graph BuildLieGraph(int descriptiveLies, int miscLies, int hidingDescriptive, Graph truthGraph) {
             // Calculating amount of liars.
             int liarCount = descriptiveLies + hidingDescriptive + miscLies;
@@ -68,20 +69,32 @@ namespace Assets.Scripts {
 
                     // Current liar cannot accuse any other liar of being a liar, but all other clues are fine.
                     //var lieIdentifier = liars.Contains(n.TargetNodes.First().NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
-                    ClueIdentifier lieIdentifier;
+                    //ClueIdentifier lieIdentifier;
                     // Roll max is 5 if a single target is the liar, else it is 4 to avoid accusations against liars.
                     var roll =
                         n.NodeClue.Identifier != ClueIdentifier.PeopleLocation && !liars.Contains(n.TargetNodes.First().NPC) ?
                         PlayerController.Instance.Rng.Next(4) :
                         PlayerController.Instance.Rng.Next(3);
                     switch (roll) {
-                        case 0: lieIdentifier = ClueIdentifier.MurderLocation; break;
-                        case 1: lieIdentifier = ClueIdentifier.PeopleLocation; break;
-                        case 2: lieIdentifier = ClueIdentifier.Pointer; break;
-                        case 3: lieIdentifier = ClueIdentifier.Accusatory; break;
+                        case 0:
+                            n_lie = ClueFactory.Instance.CreateMurderLocationNode(
+                                lieTargetNode, 
+                                n.NPC,
+                                caseHandler.NPCLocations.Keys.ElementAt(PlayerController.Instance.Rng.Next(caseHandler.NPCLocations.Keys.Count))
+                            );
+                            break;
+                        case 1:
+                            n_lie = ClueFactory.Instance.CreatePeopleLocationNode(
+                                new List<Node> { lieTargetNode }, 
+                                n.NPC,
+                                caseHandler.NPCLocations.Keys.ElementAt(PlayerController.Instance.Rng.Next(caseHandler.NPCLocations.Keys.Count))
+                            );
+                            break;
+                        case 2: n_lie = ClueFactory.Instance.CreatePointerNode(lieTargetNode, n.NPC); break;
+                        case 3: n_lie = ClueFactory.Instance.CreateSupportNode(lieTargetNode, n.NPC, ClueIdentifier.Accusatory); break;
                         default: throw new Exception("GraphBuilder tried to access invalid ClueIdentifier index.");
                     }
-                    n_lie = ClueFactory.Instance.CreateSupportNode(lieTargetNode, n.NPC, lieIdentifier);
+                    //n_lie = ClueFactory.Instance.CreateSupportNode(lieTargetNode, n.NPC, lieIdentifier);
                 }
 
                 lieGraph.Nodes.Add(n_lie);
@@ -115,6 +128,7 @@ namespace Assets.Scripts {
             if (lieGraph.ReferenceLookup.TryGetValue(n, out refNodes))
                 foreach (Node refN in refNodes)
                     if (refN.NodeClue.Identifier == ClueIdentifier.Accusatory) {
+                        //refN = ClueFactory.Instance.CreatePeopleLocationNode(refN.TargetNodes, refN.NPC, caseHandler.NPCLocations.Keys.ElementAt(PlayerController.Instance.Rng.Next(caseHandler.NPCLocations.Keys.Count)));
                         var newRefClueTemplate = ClueConverter.GetClueTemplate(ClueIdentifier.PeopleLocation);
                         refN.NodeClue = new Clue(newRefClueTemplate, refN.TargetNodes.First().NPC, ClueIdentifier.PeopleLocation, NPCPart.NPCPartType.None);
                     }
@@ -143,7 +157,7 @@ namespace Assets.Scripts {
             
             // Adding Killer Node
             g.Nodes.Add(ClueFactory.Instance.CreateKillerNode());
-            CaseHandler caseHandler = new CaseHandler(NPC.NPCList, "McDonald's Diner");
+            caseHandler = new CaseHandler(NPC.NPCList);
 
             // Adds descriptive nodes and hooks them to the killer node.
             // TODO: Take into account the location of the NPCs

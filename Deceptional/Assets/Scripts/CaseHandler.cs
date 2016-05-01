@@ -10,6 +10,18 @@ namespace Assets.Scripts {
 
         public string MurderLocation { get; set; }
 
+        public CaseHandler(List<NPC> NPCs) {
+            List<string> locations = IO.FileLoader.GetLocations();
+            foreach (string loc in locations) { NPCLocations.Add(loc, new List<NPC>()); }
+
+            MurderLocation = locations[PlayerController.Instance.Rng.Next(locations.Count)];
+
+            foreach (NPC npc in NPCs) {
+                var npcLoc = locations[PlayerController.Instance.Rng.Next(locations.Count)];
+                NPCLocations[npcLoc].Add(npc);
+            }
+        }
+
         public CaseHandler(List<NPC> NPCs, string murderLocation) {
             List<string> locations = IO.FileLoader.GetLocations();
             foreach (string loc in locations) { NPCLocations.Add(loc, new List<NPC>()); }
