@@ -39,6 +39,8 @@ public class TransitionManager : MonoBehaviour {
     public Transition CamerasOut;
 
     private CameraController camController;
+    // Help
+    public GameObject Help;
 
     // Use this for initialization
     void Awake() {
@@ -179,5 +181,9 @@ public class TransitionManager : MonoBehaviour {
         CamerasOut.Execute();
         yield return new WaitUntil(() => CamerasOut.State == Transition.TransitionState.Done);
         PlayerController.Instance.LoadMenu();
+    }
+
+    public void ToggleHelpTransition() {
+        Help.SetActive(!Help.activeSelf);
     }
 }

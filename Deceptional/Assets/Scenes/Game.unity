@@ -4966,6 +4966,7 @@ MonoBehaviour:
   CageDrop: {fileID: 541688062}
   CageLift: {fileID: 541688061}
   CamerasOut: {fileID: 1433376663}
+  Help: {fileID: 25668352}
 --- !u!4 &788544645
 Transform:
   m_ObjectHideFlags: 0
@@ -6007,9 +6008,7 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 963625197}
-  m_Text: 'CALL
-
-    IN'
+  m_Text: RESTART
   m_OffsetZ: 0
   m_CharacterSize: 0.05
   m_LineSpacing: 1
@@ -7113,10 +7112,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 412539a539e25444dac90557758ba75a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Label: CALL\nIN
-  MethodName: CallIn
+  Label: '?'
+  MethodName: ToggleHelpTransition
   TextMesh: {fileID: 364618894}
-  Controller: {fileID: 77969353}
+  Controller: {fileID: 788544643}
   SpeedDown: 0.05
   SpeedUp: 0.01
   Mode: 0
@@ -8839,7 +8838,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1400338587}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Options
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12536,10 +12535,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 412539a539e25444dac90557758ba75a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Label: CALL\nIN
-  MethodName: CallIn
+  Label: RESTART
+  MethodName: EndGameTransition
   TextMesh: {fileID: 963625199}
-  Controller: {fileID: 77969353}
+  Controller: {fileID: 788544643}
   SpeedDown: 0.05
   SpeedUp: 0.01
   Mode: 0
