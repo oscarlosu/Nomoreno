@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts;
 
 public class Grid : MonoBehaviour {
     private static Grid instance = null;
@@ -30,7 +31,8 @@ public class Grid : MonoBehaviour {
     public Cell GetRandomCell() {
         Cell cell = null;
         if (FreeCells.Count > 0) {
-            int index = Random.Range(0, FreeCells.Count);
+            //int index = Random.Range(0, FreeCells.Count);
+            int index = PlayerController.Instance.Rng.Next(0, FreeCells.Count);
             cell = FreeCells[index];
             FreeCells.RemoveAt(index);
             cell.Free = false;

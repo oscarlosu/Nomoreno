@@ -468,7 +468,8 @@ namespace Assets.Scripts {
                 NPC target;
                 do {
                     //index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
-                    index = UseFixedSeed ? new System.Random(Seed).Next(NPC.NPCList.Count) : new System.Random(DateTime.Now.Millisecond).Next(NPC.NPCList.Count);
+                    //index = UseFixedSeed ? new System.Random(Seed).Next(NPC.NPCList.Count) : new System.Random(DateTime.Now.Millisecond).Next(NPC.NPCList.Count);
+                    index = Rng.Next(0, NPC.NPCList.Count);
                     target = NPC.NPCList[index];
                 } while (NPC.NPCList[index].IsKiller || (arrestedNPC == target && NPC.NPCList.Count > 2));
                 // Save victim's name
