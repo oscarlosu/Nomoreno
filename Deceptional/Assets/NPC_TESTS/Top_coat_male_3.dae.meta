@@ -1,38 +1,57 @@
 fileFormatVersion: 2
-guid: 802b58bc5a5833b4e82de23f4b3b8fc5
-timeCreated: 1458059883
+guid: 0d9e8c72e486d2642a2b4d4e4ea8c710
+timeCreated: 1461688439
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: Hat
-    100002: Head_hands
-    100004: Jacket
-    100006: //RootNode
-    100008: Pants
-    100010: Shoes
-    400000: Hat
-    400002: Head_hands
-    400004: Jacket
-    400006: //RootNode
-    400008: Pants
-    400010: Shoes
-    2300000: Hat
-    2300002: Head_hands
-    2300004: Jacket
-    2300006: Pants
-    2300008: Shoes
-    3300000: Hat
-    3300002: Head_hands
-    3300004: Jacket
-    3300006: Pants
-    3300008: Shoes
-    4300000: Jacket
-    4300002: Pants
-    4300004: Shoes
-    4300006: Hat
-    4300008: Head_hands
+    100000: Chest_skin
+    100002: elbow_left_skin
+    100004: Elbow_Right_skin
+    100006: Foot_Left_skin
+    100008: Foot_Right_skin
+    100010: Hand_left_skin
+    100012: Hand_right_skin
+    100014: Head_skin
+    100016: Hip_left_skin
+    100018: Hip_Right_skin
+    100020: Knee_Left_skin
+    100022: Knee_Right_skin
+    100024: neck_skin
+    100026: Root_skin
+    100028: Shoulder_left_skin
+    100030: Shoulder_Right_skin
+    100032: Toe_Left_skin
+    100034: Toe_Right_skin
+    100036: Top_coat_male
+    100038: //RootNode
+    100040: Wrist_left_skin
+    100042: Wrist_Right_skin
+    400000: Chest_skin
+    400002: elbow_left_skin
+    400004: Elbow_Right_skin
+    400006: Foot_Left_skin
+    400008: Foot_Right_skin
+    400010: Hand_left_skin
+    400012: Hand_right_skin
+    400014: Head_skin
+    400016: Hip_left_skin
+    400018: Hip_Right_skin
+    400020: Knee_Left_skin
+    400022: Knee_Right_skin
+    400024: neck_skin
+    400026: Root_skin
+    400028: Shoulder_left_skin
+    400030: Shoulder_Right_skin
+    400032: Toe_Left_skin
+    400034: Toe_Right_skin
+    400036: Top_coat_male
+    400038: //RootNode
+    400040: Wrist_left_skin
+    400042: Wrist_Right_skin
+    4300000: Top_coat_male
     9500000: //RootNode
+    13700000: Top_coat_male
   materials:
     importMaterials: 1
     materialName: 0
@@ -47,7 +66,7 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -91,7 +110,7 @@ ModelImporter:
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

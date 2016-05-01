@@ -6,7 +6,6 @@ using System.Text;
 namespace Assets.Scripts {
     public enum ClueIdentifier {
         Accusatory,
-        Informational,
         Descriptive,
         MurderLocation,
         PeopleLocation,

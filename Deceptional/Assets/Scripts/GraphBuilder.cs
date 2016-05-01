@@ -66,8 +66,21 @@ namespace Assets.Scripts {
                     possibleTargets = truthGraph.Nodes.Where(node => node.NPC != n.NPC).ToList();
                     Node lieTargetNode = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
 
-                    // Current liar should initially tell the truth about his target, since references are flipped upon graph merge.
-                    var lieIdentifier = liars.Contains(n.TargetNodes.First().NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
+                    // Current liar cannot accuse any other liar of being a liar, but all other clues are fine.
+                    //var lieIdentifier = liars.Contains(n.TargetNodes.First().NPC) ? ClueIdentifier.Accusatory : ClueIdentifier.Informational;
+                    ClueIdentifier lieIdentifier;
+                    // Roll max is 5 if a single target is the liar, else it is 4 to avoid accusations against liars.
+                    var roll =
+                        n.NodeClue.Identifier != ClueIdentifier.PeopleLocation && !liars.Contains(n.TargetNodes.First().NPC) ?
+                        PlayerController.Instance.Rng.Next(4) :
+                        PlayerController.Instance.Rng.Next(3);
+                    switch (roll) {
+                        case 0: lieIdentifier = ClueIdentifier.MurderLocation; break;
+                        case 1: lieIdentifier = ClueIdentifier.PeopleLocation; break;
+                        case 2: lieIdentifier = ClueIdentifier.Pointer; break;
+                        case 3: lieIdentifier = ClueIdentifier.Accusatory; break;
+                        default: throw new Exception("GraphBuilder tried to access invalid ClueIdentifier index.");
+                    }
                     n_lie = ClueFactory.Instance.CreateSupportNode(lieTargetNode, n.NPC, lieIdentifier);
                 }
 
@@ -101,9 +114,9 @@ namespace Assets.Scripts {
             // Inverts deceptive statements targeted at NPC hooked to current node.
             if (lieGraph.ReferenceLookup.TryGetValue(n, out refNodes))
                 foreach (Node refN in refNodes)
-                    if (!refN.IsDescriptive) {
-                        var newRefClueTemplate = ClueConverter.GetClueTemplate(ClueIdentifier.Informational);
-                        refN.NodeClue = new Clue(newRefClueTemplate, refN.TargetNodes.First().NPC, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
+                    if (refN.NodeClue.Identifier == ClueIdentifier.Accusatory) {
+                        var newRefClueTemplate = ClueConverter.GetClueTemplate(ClueIdentifier.PeopleLocation);
+                        refN.NodeClue = new Clue(newRefClueTemplate, refN.TargetNodes.First().NPC, ClueIdentifier.PeopleLocation, NPCPart.NPCPartType.None);
                     }
         }
         #endregion
@@ -121,20 +134,50 @@ namespace Assets.Scripts {
             /// WorkFlow:
             // Add Killer Node.
             // Add/Setup Descriptive Nodes.
-            // Add/Setup Support Nodes.
+            // Add/Setup Pointers.
+            // Add/Setup Murder Location (Entire murdercase?).
+            // Add/Setup People Locations (Inspired by murdercase?).
+            // Add/Setup Accusations. (Add after adding lies?).
             // Setup Killer Node.
             Graph g = new Graph();
-
+            
             // Adding Killer Node
             g.Nodes.Add(ClueFactory.Instance.CreateKillerNode());
+            CaseHandler caseHandler = new CaseHandler(NPC.NPCList, "McDonald's Diner");
 
-            // Adds descriptive nodes and hooks them to the kiler node.
-            g.Nodes.AddRange(ClueFactory.Instance.CreateDescriptiveNodes(g.Nodes[0], descriptiveCount));
+            // Adds descriptive nodes and hooks them to the killer node.
+            // TODO: Take into account the location of the NPCs
+            var descriptiveNodes = ClueFactory.Instance.CreateDescriptiveNodes(g.Nodes[0], descriptiveCount); 
+            g.Nodes.AddRange(descriptiveNodes);
 
+            // Adds one truthful pointer for each descriptive node.
+            // TODO: Take into account the location of the NPCs
+            foreach (Node node in descriptiveNodes) {
+                var hookNPC = NPC.NPCList.Where(npc => !g.Nodes.Any(n => n.NPC.Equals(npc))).FirstOrDefault();
+                g.Nodes.Add(ClueFactory.Instance.CreatePointerNode(node, hookNPC));
+            }
+
+            var murderLocationClues = 2;
+            var peopleLocationClues = 2;
             // Creating support Nodes
             while (g.Nodes.Count < nodeCount) {
                 // Find random NPC which does not currently have a truth statement attached.
                 var hookNPC = NPC.NPCList.Where(npc => !g.Nodes.Any(node => node.NPC.Equals(npc))).FirstOrDefault();
+                if (--murderLocationClues >= 0) {
+                    g.Nodes.Add(ClueFactory.Instance.CreateMurderLocationNode(g.Nodes[0], hookNPC, caseHandler.MurderLocation));
+                    continue;
+                }
+                
+                if (--peopleLocationClues >= 0) {
+                    // TODO: Make sure this takes random targets, not just "the first 3"
+                    string location;
+                    // Avoiding desolate locations, as these gives errors during ClueStatement construction.
+                    do { location = caseHandler.NPCLocations.Keys.ElementAt(PlayerController.Instance.Rng.Next(caseHandler.NPCLocations.Keys.Count)); }
+                    while (caseHandler.NPCLocations[location].Count < 1);
+                    var targets = g.Nodes.Where(node => caseHandler.NPCLocations[location].Any(npc => npc == node.NPC)).ToList();
+                    g.Nodes.Add(ClueFactory.Instance.CreatePeopleLocationNode(targets, hookNPC, location));
+                    continue;
+                }
 
                 // Find TargetNodes without self-referencing.
                 Node newTarget = g.Nodes.Where(node => node.NPC != hookNPC).ToList()[PlayerController.Instance.Rng.Next(g.Nodes.Count)];

@@ -69,8 +69,7 @@ namespace Assets.Scripts {
                 var hookNPC = nonKillers.FirstOrDefault();
                 returnList.Add(CreateDescriptiveNode(targetNode, hookNPC, partIdx));
                 nonKillers.Remove(hookNPC);
-            }
-            else if (count == 2) {
+            } else if (count == 2) {
                 int excludeIdx = PlayerController.Instance.Rng.Next(3);
                 for (int i = 0; i < 3; i++) {
                     // Skip one body part
@@ -79,8 +78,7 @@ namespace Assets.Scripts {
                     returnList.Add(CreateDescriptiveNode(targetNode, hookNPC, i));
                     nonKillers.Remove(hookNPC);
                 }
-            }
-            else {
+            } else {
                 for (int i = 0; i < count; i++) {
                     var hookNPC = nonKillers.FirstOrDefault();
                     returnList.Add(CreateDescriptiveNode(targetNode, hookNPC, i % 3));
@@ -92,14 +90,14 @@ namespace Assets.Scripts {
         }
         #endregion
 
-        #region Support Nodes (Accusatory/Informative)
+        #region Support Nodes (Murder Location, People Location, Pointer, Accusation)
         /// <summary>
         /// Creates a node, hooked to a NPC, and attaches a support clue to it, referencing the target Node.
         /// </summary>
         /// <param name="target">The Node containing target information.</param>
         /// <param name="hookNPC">The NPC related to this Node.</param>
         /// <returns>A new support node, connected to the hookNPC.</returns>
-        public Node CreateSupportNode(Node target, NPC hookNPC) { return CreateSupportNode(target, hookNPC, ClueIdentifier.Informational); }
+        public Node CreateSupportNode(Node target, NPC hookNPC) { return CreateSupportNode(target, hookNPC, ClueIdentifier.PeopleLocation); }
         public Node CreateSupportNode(Node target, NPC hookNPC, ClueIdentifier identifier) {
             var supportNode = new Node() {
                 NPC = hookNPC
@@ -110,14 +108,14 @@ namespace Assets.Scripts {
             return supportNode;
         }
 
-        public Node CreatePeopleLocationNode(List<Node> targets, NPC hookNPC) {
+        public Node CreatePeopleLocationNode(List<Node> targets, NPC hookNPC, string location) {
             var peopleLocNode = new Node() {
-                NPC = hookNPC
+                NPC = hookNPC,
+                TargetNodes = targets
             };
 
-            peopleLocNode.TargetNodes = targets;
             var template = ClueConverter.GetClueTemplate(ClueIdentifier.PeopleLocation);
-            //peopleLocNode.NodeClue = new Clue(template, )
+            peopleLocNode.NodeClue = new Clue(template, targets.Select(node => node.NPC).ToList(), ClueIdentifier.PeopleLocation, NPCPart.NPCPartType.None) { Location = location };
 
             return peopleLocNode;
         }
@@ -128,8 +126,26 @@ namespace Assets.Scripts {
             };
 
             //SetupSupportNode(pointerNode, target, ClueIdentifier.Pointer);
+            pointerNode.TargetNodes = new List<Node>() { target };
+            var template = ClueConverter.GetClueTemplate(ClueIdentifier.Pointer);
+            pointerNode.NodeClue = new Clue(template, target.NPC, ClueIdentifier.Pointer, NPCPart.NPCPartType.None);
 
             return pointerNode;
+        }
+
+        // Doesn't actually "need" the target for the statement to make sense.
+        // Target is included to avoid exceptions during graph generation.
+        public Node CreateMurderLocationNode(Node target, NPC hookNPC, string location) {
+            var murderNode = new Node() {
+                NPC = hookNPC,
+                TargetNodes = new List<Node>() { target }
+            };
+
+            //SetupSupportNode(murderNode, null, ClueIdentifier.MurderLocation);
+            var template = ClueConverter.GetClueTemplate(ClueIdentifier.MurderLocation);
+            murderNode.NodeClue = new Clue(template, new List<NPC>(), ClueIdentifier.MurderLocation, NPCPart.NPCPartType.None) { Location = location };
+
+            return murderNode;
         }
 
         /// <summary>
@@ -138,7 +154,7 @@ namespace Assets.Scripts {
         /// <param name="baseNode">The Node in need of a clue.</param>
         /// <param name="targetNode">The Node containing target information.</param>
         /// <param name="identifier">The identifier that determines the nature of the statement.</param>
-        public void SetupSupportNode(Node baseNode, Node targetNode) { SetupSupportNode(baseNode, targetNode, ClueIdentifier.Informational); }
+        public void SetupSupportNode(Node baseNode, Node targetNode) { SetupSupportNode(baseNode, targetNode, ClueIdentifier.PeopleLocation); }
         public void SetupSupportNode(Node baseNode, Node targetNode, ClueIdentifier identifier) {
             baseNode.TargetNodes = new List<Node>() { targetNode };
             var template = ClueConverter.GetClueTemplate(identifier);
@@ -154,16 +170,6 @@ namespace Assets.Scripts {
             };
 
             return killerNode;
-        }
-    
-        public Node CreateMurderLocationNode(NPC hookNPC) {
-            var murderNode = new Node() {
-                NPC = hookNPC
-            };
-            
-            //SetupSupportNode(murderNode, null, ClueIdentifier.MurderLocation);
-
-            return murderNode;
         }
         #endregion
         #endregion

@@ -67,7 +67,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     public Vector3 PoliceBoxPosition;
     private Animator anim;
 
-    private NPC mingleTarget;
+    //private NPC mingleTarget;
     public float BehaviourChangeChance;
 
     public float MinglingDistance;
@@ -491,8 +491,8 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
             return Agree;
         } else if (IsDisagree(other.Conversation.ActualClue)) {
             return Disagree;
-        } else if (IsHappy(other)) {
-            return Trust;
+        //} else if (IsHappy(other)) {
+        //    return Trust;
         } else if (IsAngry(other)) {
             return Distrust;
         } else {
@@ -518,7 +518,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
             // Supportive or  Accusatory
             else {
                 // Same target
-                if (Conversation.ActualClue.Target == other.Target) {
+                if (Conversation.ActualClue.Targets.Any(npc => other.Targets.Any(oNPC => npc == oNPC))) {
                     return true;
                 } else {
                     return false;
@@ -547,28 +547,29 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
             else {
                 return false;
             }
-        } else if ((Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && other.Identifier == ClueIdentifier.Informational) ||
-                    (Conversation.ActualClue.Identifier == ClueIdentifier.Informational && other.Identifier == ClueIdentifier.Accusatory)) {
-            if (Conversation.ActualClue.Target == other.Target) {
-                return true;
-            }
+        // Cannot reasonably be converted to match new statements.
+        //} else if ((Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && other.Identifier == ClueIdentifier.Informational) ||
+        //            (Conversation.ActualClue.Identifier == ClueIdentifier.Informational && other.Identifier == ClueIdentifier.Accusatory)) {
+        //    if (Conversation.ActualClue.Target == other.Target) {
+        //        return true;
+        //    }
         }
         return false;
     }
-    public bool IsHappy(NPC other) {
-        if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
-            other.Conversation.ActualClue.Target == this) ||
-            (Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
-            Conversation.ActualClue.Target == other)) {
-            return true;
-        }
-        return false;
-    }
+    //public bool IsHappy(NPC other) {
+    //    if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
+    //        other.Conversation.ActualClue.Target == this) ||
+    //        (Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
+    //        Conversation.ActualClue.Target == other)) {
+    //        return true;
+    //    }
+    //    return false;
+    //}
     public bool IsAngry(NPC other) {
         if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
-            other.Conversation.ActualClue.Target == this) ||
+            other.Conversation.ActualClue.Targets.Contains(this)) ||
             (Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
-            Conversation.ActualClue.Target == other)) {
+            Conversation.ActualClue.Targets.Contains(other))) {
             return true;
         }
         return false;
