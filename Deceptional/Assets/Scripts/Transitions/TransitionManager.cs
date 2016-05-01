@@ -76,7 +76,8 @@ public class TransitionManager : MonoBehaviour {
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
         // Show text
         PlayerController.Instance.ShowPlatformText();
-		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
+        PlayerController.Instance.ShowCalendarText();
+        PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
 
     public void BeginDayTransition() {

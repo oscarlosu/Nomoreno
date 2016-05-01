@@ -19,6 +19,9 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
             }
             return NPC.npcList;
         }
+        set {
+            npcList = value;
+        }
     }
     /// <summary>
     /// Name of the NPC

@@ -3294,12 +3294,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 0.7
-  m_Text: 'Interviewing
-
-    period
-
-
-    10:00 - 20:00'
+  m_Text: 
 --- !u!222 &399072590
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -13021,6 +13016,10 @@ Prefab:
       propertyPath: DefaultNPC
       value: 
       objectReference: {fileID: 131382, guid: 8d7bca9c50f0b9c47a9e8965a812e8ca, type: 2}
+    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
+      propertyPath: CalendarTextMesh
+      value: 
+      objectReference: {fileID: 399072589}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
   m_IsPrefabParent: 0

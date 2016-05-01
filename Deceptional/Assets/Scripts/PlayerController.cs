@@ -97,6 +97,7 @@ namespace Assets.Scripts {
         public UnityEngine.UI.Text PlatformTextMesh;
         public UnityEngine.UI.Text NameText;
         public UnityEngine.UI.Text StatementTextMesh;
+        public UnityEngine.UI.Text CalendarTextMesh;
 
 
         public enum ControllerState {
@@ -240,6 +241,10 @@ namespace Assets.Scripts {
             // Show letters one at a time
             StartCoroutine(CoDisplayText(platformText, PlatformTextMesh));
         }
+        public void ShowCalendarText() {            
+            // Show letters one at a time
+            StartCoroutine(CoDisplayText("Day " + currentDay + "\n\n" + "10:00 - 20:00", CalendarTextMesh));
+        }
 
         public void Arrest() {
 			if(State == ControllerState.Enabled && CurrentInterrogationTarget != null) {
@@ -318,7 +323,13 @@ namespace Assets.Scripts {
             }
 
             // TODO: Shuffle npc list
-
+            List<NPC> shuffledList = new List<NPC>();
+            while(NPC.NPCList.Count > 0) { 
+                int index = Rng.Next(0, NPC.NPCList.Count);
+                shuffledList.Add(NPC.NPCList[index]);
+                NPC.NPCList.RemoveAt(index);
+            }
+            NPC.NPCList = shuffledList;
 
             // Select minglers
             int nMinglers = Rng.Next(PlayerController.Instance.MinMinglers, PlayerController.Instance.MaxMinglers + 1);
@@ -401,7 +412,7 @@ namespace Assets.Scripts {
             ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
             ConversationHandler.SetupConversations(PercentageLiars);
             // Show new day message
-            platformText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
+            platformText = "Day " + currentDay + "\n\n" + victimName + " has\n been murdered.";
             
         }
 
