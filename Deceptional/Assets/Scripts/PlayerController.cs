@@ -71,8 +71,7 @@ namespace Assets.Scripts {
         public ButtonController PlatformButton;
         //public GameObject DismissButton;
         public GameObject NPCS;
-        public TextMesh PlatformTextMesh;
-        public TextMesh StatementTextMesh;
+        
         public Transform ClockHourHandle;
         public Transform ClockMinuteHandle;
         public GameObject NewDayLabelHolder;
@@ -85,7 +84,7 @@ namespace Assets.Scripts {
 
         private List<Coroutine> conversationCoroutines;
         public float PercentageLiars;
-        public TextMesh NameText;
+        
         public float SelectionSpotlightYOffset;
 
         public int MaxMinglers;
@@ -95,9 +94,12 @@ namespace Assets.Scripts {
 
         private string platformText;
 
+        public UnityEngine.UI.Text PlatformTextMesh;
+        public UnityEngine.UI.Text NameText;
+        public UnityEngine.UI.Text StatementTextMesh;
 
 
-		public enum ControllerState {
+        public enum ControllerState {
 			Disabled,
 			Enabled
 		}
@@ -204,7 +206,7 @@ namespace Assets.Scripts {
             conversationCoroutines.Add(inst);
         }
 
-        private IEnumerator CoDisplayText(string text, TextMesh textField) {            
+        private IEnumerator CoDisplayText(string text, UnityEngine.UI.Text textField) {            
             // Show letters one at a time
             textField.text = "";
             for(int i = 0; i < text.Length; ++i) {

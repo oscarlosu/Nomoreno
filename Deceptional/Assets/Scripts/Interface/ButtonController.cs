@@ -9,9 +9,11 @@ public class ButtonController : MonoBehaviour, IPointerDownHandler
 {
     public string Label;
     public string MethodName;
-    public TextMesh TextMesh;
+    //public TextMesh TextMesh;
 
     public GameObject Controller;
+
+    public UnityEngine.UI.Text TextField;
 
 
     public float SpeedDown = 0.05f;
@@ -45,7 +47,7 @@ public class ButtonController : MonoBehaviour, IPointerDownHandler
 
     public void ChangeButton(string newLabel, string newMethodName) {
         Label = newLabel;
-        TextMesh.text = newLabel;
+        TextField.text = newLabel;
         MethodName = newMethodName;
     }
 

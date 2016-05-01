@@ -173,7 +173,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         transform.position = currentCell.transform.position;
         navAgent.enabled = true;
 
-        NameLabelHolder.transform.GetComponentInChildren<TextMesh>().text = Name;
+        NameLabelHolder.transform.GetComponentInChildren<UnityEngine.UI.Text>().text = Name;
         ShowNameLabel();
 
         Emoji.enabled = false;
