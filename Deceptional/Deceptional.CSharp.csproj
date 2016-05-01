@@ -81,7 +81,6 @@
     <Compile Include="Assets\Scripts\Interface\ButtonController.cs" />
     <Compile Include="Assets\Scripts\Interface\CameraController.cs" />
     <Compile Include="Assets\Scripts\Interface\HoverOver.cs" />
-    <Compile Include="Assets\Scripts\Interface\StartButton.cs" />
     <Compile Include="Assets\Scripts\MinglingDirector.cs" />
     <Compile Include="Assets\Scripts\NPC.cs" />
     <Compile Include="Assets\Scripts\NPCBehaviour\ITask.cs" />
