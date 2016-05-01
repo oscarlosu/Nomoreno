@@ -95,11 +95,19 @@ namespace Assets.Scripts {
 
         private string platformText;
 
+
+
+		public enum ControllerState {
+			Disabled,
+			Enabled
+		}
+		public ControllerState State;
         #endregion
 
         #region Instance methods
 
         public void Awake() {
+			State = ControllerState.Disabled;
             // Initialize RNG
             if(!UseFixedSeed) {
                 Seed = (int) DateTime.Now.Ticks;
@@ -123,7 +131,7 @@ namespace Assets.Scripts {
         
 
         public void Update() {
-            HandleButtons();
+            //HandleButtons();
         }
 
         private void HandleButtons() {
@@ -146,15 +154,24 @@ namespace Assets.Scripts {
 
 
         public void CallIn() {
-            if (SelectedNPC == null || SelectedNPC == CurrentInterrogationTarget) return;
+			if (State == ControllerState.Disabled || 
+				SelectedNPC == null || CurrentInterrogationTarget != null) {
+				return;
+			}
+			State = ControllerState.Disabled;
+			CallInButton.ChangeButton("DISMISS", "Dismiss");
             // Dismiss whoever is in the interrogation room
-            Dismiss();
+            //Dismiss();
             // Set current interrogation target
             CurrentInterrogationTarget = SelectedNPC;
             // Make NPC go to interrogation room
             CurrentInterrogationTarget.GoToInterrogation();
         }
-        
+		public void HandleNPCReachedInterrogation() {
+			State = ControllerState.Enabled;
+			DisplayConversation();
+		}
+
         public void DisplayConversation() {
             // Display name on wall
             NameText.text = CurrentInterrogationTarget.Name + " says:";
@@ -223,7 +240,7 @@ namespace Assets.Scripts {
         }
 
         public void Arrest() {
-            if(CurrentInterrogationTarget != null) {
+			if(State == ControllerState.Enabled && CurrentInterrogationTarget != null) {
                 // Check if the acccused NPC is the killer
                 if (CurrentInterrogationTarget.IsKiller) {
                     PrepareArrestSuccess();
@@ -247,7 +264,8 @@ namespace Assets.Scripts {
         }
 
         public void Accuse() {
-            if (CurrentInterrogationTarget != null && !CurrentInterrogationTarget.Mood) {
+			if (State == ControllerState.Enabled && 
+				CurrentInterrogationTarget != null && !CurrentInterrogationTarget.Mood) {
                 // Count interaction and update time.
                 UpdateTime();
                 // Hide text
@@ -263,10 +281,12 @@ namespace Assets.Scripts {
         }
 
         public void Dismiss() {
-            if(CurrentInterrogationTarget != null) {
+			if(State == ControllerState.Enabled && 
+				CurrentInterrogationTarget != null) {
                 CurrentInterrogationTarget.GoToWaiting();
                 CurrentInterrogationTarget = null;
 
+				CallInButton.ChangeButton("CALL\nIN", "CallIn");
                 ExecuteMinglePhase();
 
                 HideConversation();

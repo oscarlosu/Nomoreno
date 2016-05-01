@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using Assets.Scripts;
 using System.Linq;
+using System;
 
 public class NPC : MonoBehaviour, IPointerClickHandler {
 
@@ -143,6 +144,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
             return false;
         }
     }
+
 
     #region MonoBehaviour methods
     // Use this for initialization
@@ -463,8 +465,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Set animation state
         anim.SetBool("Walk", false);
         CurrentBehaviour = Behaviour.Interrogated;
+
         // Inform Player Controller of arrival
-        PlayerController.Instance.DisplayConversation();
+		PlayerController.Instance.HandleNPCReachedInterrogation();
         yield return null;
     }
 
