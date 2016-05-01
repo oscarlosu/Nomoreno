@@ -124,9 +124,12 @@
     <None Include="Assets\Statements\templates\murderLocation.txt" />
     <None Include="Assets\Statements\templates\peopleLocation.txt" />
     <None Include="Assets\Statements\templates\specificPointer.txt" />
+    <None Include="Assets\Statements\variables\hats.txt" />
+    <None Include="Assets\Statements\variables\items.txt" />
+    <None Include="Assets\Statements\variables\legs.txt" />
     <None Include="Assets\Statements\variables\locations.txt" />
     <None Include="Assets\Statements\variables\names.txt" />
-    <None Include="Assets\Statements\variables\parts.txt" />
+    <None Include="Assets\Statements\variables\torso.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
