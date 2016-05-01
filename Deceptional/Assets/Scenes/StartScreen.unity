@@ -127,9 +127,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Title: {fileID: 2126271405}
   StartButton: {fileID: 1554744633}
-  Cameras: {fileID: 0}
-  Buttons: {fileID: 0}
+  CamerasIn: {fileID: 0}
+  ButtonsIn: {fileID: 0}
   WaitingRoomCam: {fileID: 0}
+  ButtonsOut: {fileID: 0}
+  Clock: {fileID: 0}
+  CageDrop: {fileID: 0}
+  CageLift: {fileID: 0}
+  CamerasOut: {fileID: 0}
 --- !u!1 &593508146
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,7 +623,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.1892301, g: 0.19247405, b: 0.25735295, a: 1}
+  m_BackGroundColor: {r: 0.14273356, g: 0.14434008, b: 0.17647058, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0

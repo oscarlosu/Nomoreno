@@ -63,6 +63,7 @@ public class TransitionManager : MonoBehaviour {
         StartCoroutine(GameCo());
     }
     private IEnumerator GameCo() {
+		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
         CamerasIn.Execute();
         yield return new WaitUntil(() => CamerasIn.State == Transition.TransitionState.Done);
         // Tell PlayerController to generate next day
@@ -73,12 +74,16 @@ public class TransitionManager : MonoBehaviour {
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
         // Show text
         PlayerController.Instance.ShowPlatformText();
+		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
 
     public void BeginDayTransition() {
-        StartCoroutine(BeginDayCo());
+		if(PlayerController.Instance.State == PlayerController.ControllerState.Enabled) {
+			StartCoroutine(BeginDayCo());
+		}        
     }
     private IEnumerator BeginDayCo() {
+		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
         // Tell PlayerController to start next day
         PlayerController.Instance.BeginDay();
         // Rotate waiting room back
@@ -88,12 +93,14 @@ public class TransitionManager : MonoBehaviour {
         // Drop buttons
         ButtonsIn.Execute();
         yield return new WaitUntil(() => ButtonsIn.State == Transition.TransitionState.Done);
+		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
 
     public void DayOverTransition(bool gameFinished) {
         StartCoroutine(DayOverCo(gameFinished));
     }
     private IEnumerator DayOverCo(bool gameFinished) {
+		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
         if(gameFinished) {
             // Clear platform text
             PlayerController.Instance.ClearPlatformText();
@@ -105,13 +112,17 @@ public class TransitionManager : MonoBehaviour {
             ButtonsOut.Execute();
             Clock.Execute(-1);
             yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done && ButtonsOut.State == Transition.TransitionState.Done);
-        } 
+        }
+		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
 
     public void EndDayTransition() {
-        StartCoroutine(EndDayCo());
+		if(PlayerController.Instance.State == PlayerController.ControllerState.Enabled) {
+        	StartCoroutine(EndDayCo());
+		}
     }
     private IEnumerator EndDayCo() {
+		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
         // Tell PlayerController to generate next day
         PlayerController.Instance.GenerateNextDay();
         Clock.Execute(1);
@@ -119,12 +130,16 @@ public class TransitionManager : MonoBehaviour {
         WaitingRoomCam.Execute(-1);
         yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done && WaitingRoomCam.State == Transition.TransitionState.Done);
         PlayerController.Instance.ShowPlatformText();
+		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
 
     public void ArrestTransition(Transform arrested, bool gameFinished) {
-        StartCoroutine(ArrestCo(arrested, gameFinished));
+		if(PlayerController.Instance.State == PlayerController.ControllerState.Enabled) {
+        	StartCoroutine(ArrestCo(arrested, gameFinished));
+		}
     }
     private IEnumerator ArrestCo(Transform arrested, bool gameFinished) {
+		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
         // Drop cage
         CageDrop.Execute();
         yield return new WaitUntil(() => CageDrop.State == Transition.TransitionState.Done);
@@ -150,13 +165,17 @@ public class TransitionManager : MonoBehaviour {
             PlayerController.Instance.GenerateNextDay();
         }
         PlayerController.Instance.ShowPlatformText();
+		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
 
     }
 
     public void EndGameTransition() {
-        StartCoroutine(EndGameCo());
+		if(PlayerController.Instance.State == PlayerController.ControllerState.Enabled) {
+        	StartCoroutine(EndGameCo());
+		}
     }
     private IEnumerator EndGameCo() {
+		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
         CamerasOut.Execute();
         yield return new WaitUntil(() => CamerasOut.State == Transition.TransitionState.Done);
         PlayerController.Instance.LoadMenu();
