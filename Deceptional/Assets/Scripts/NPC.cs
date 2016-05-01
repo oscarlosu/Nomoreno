@@ -6,7 +6,7 @@ using Assets.Scripts;
 using System.Linq;
 using System;
 
-public class NPC : MonoBehaviour, IPointerClickHandler {
+public class NPC : MonoBehaviour, IPointerDownHandler {
 
     /// <summary>
     /// List of existing NPCS
@@ -203,7 +203,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     }
     #endregion
 
-    public void OnPointerClick(PointerEventData eventData) {
+    public void OnPointerDown(PointerEventData eventData) {
         PlayerController.Instance.SelectedNPC = this;
     }
 

@@ -3,8 +3,9 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using Assets.Scripts;
 using System.Reflection;
+using System;
 
-public class ButtonController : MonoBehaviour, IPointerClickHandler
+public class ButtonController : MonoBehaviour, IPointerDownHandler
 {
     public string Label;
     public string MethodName;
@@ -22,15 +23,25 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler
     }
     public TriggerMode Mode;
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if(Mode == TriggerMode.OnDown) {
+
+    public void OnPointerDown(PointerEventData eventData) {
+        if (Mode == TriggerMode.OnDown) {
             //MethodBase mb = typeof(PlayerController).GetMethod(MethodName);
             //mb.Invoke(PlayerController.Instance, new Object[0]);
             Controller.SendMessage(MethodName);
-        }        
+        }
         StartCoroutine(AnimateButton());
     }
+
+    //public void OnPointerClick(PointerEventData eventData)
+    //{
+    //    if(Mode == TriggerMode.OnDown) {
+    //        //MethodBase mb = typeof(PlayerController).GetMethod(MethodName);
+    //        //mb.Invoke(PlayerController.Instance, new Object[0]);
+    //        Controller.SendMessage(MethodName);
+    //    }        
+    //    StartCoroutine(AnimateButton());
+    //}
 
     public void ChangeButton(string newLabel, string newMethodName) {
         Label = newLabel;
@@ -58,4 +69,6 @@ public class ButtonController : MonoBehaviour, IPointerClickHandler
             Controller.SendMessage(MethodName);
         }
     }
+
+    
 }
