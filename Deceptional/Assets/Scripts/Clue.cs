@@ -13,7 +13,8 @@ namespace Assets.Scripts {
         public List<NPC> Targets { get; set; }
         public ClueIdentifier Identifier { get; set; }
         public NPCPart.NPCPartType NPCPartType { get; set; }
-        public NPCPart.NPCPartDescription NPCDescription { get; set; }
+        //public NPCPart.NPCPartDescription NPCDescription { get; set; }
+        public string NPCDescription { get; set; }
         public string Location { get; set; }
 
         public Clue(string template, NPC target, ClueIdentifier identifier, NPCPart.NPCPartType targetPart) {
@@ -22,7 +23,8 @@ namespace Assets.Scripts {
             Identifier = identifier;
             NPCPartType = targetPart;
             switch (NPCPartType) {
-                case NPCPart.NPCPartType.None:  NPCDescription = NPCPart.NPCPartDescription.Black; break; // Black used as placeholder, value should be irrelevant.
+                //case NPCPart.NPCPartType.None:  NPCDescription = NPCPart.NPCPartDescription.Black; break; // Black used as placeholder, value should be irrelevant.
+                case NPCPart.NPCPartType.None:  NPCDescription = string.Empty; break;
                 case NPCPart.NPCPartType.Hat:   NPCDescription = Targets[0].Head.Description; break;
                 case NPCPart.NPCPartType.Shirt: NPCDescription = Targets[0].Torso.Description; break;
                 case NPCPart.NPCPartType.Pants: NPCDescription = Targets[0].Legs.Description; break;
@@ -38,7 +40,8 @@ namespace Assets.Scripts {
             Identifier = identifier;
             NPCPartType = targetPart;
             switch (NPCPartType) {
-                case NPCPart.NPCPartType.None: NPCDescription = NPCPart.NPCPartDescription.Black; break; // Black used as placeholder, value should be irrelevant.
+                //case NPCPart.NPCPartType.None: NPCDescription = NPCPart.NPCPartDescription.Black; break; // Black used as placeholder, value should be irrelevant.
+                case NPCPart.NPCPartType.None: NPCDescription = string.Empty; break;
                 case NPCPart.NPCPartType.Hat: NPCDescription = Targets[0].Head.Description; break;
                 case NPCPart.NPCPartType.Shirt: NPCDescription = Targets[0].Torso.Description; break;
                 case NPCPart.NPCPartType.Pants: NPCDescription = Targets[0].Legs.Description; break;
@@ -65,7 +68,7 @@ namespace Assets.Scripts {
                     case "namelist": clueBuilder.Replace(m.Value, SerializeTargets(Targets)); break;
                     case "location": clueBuilder.Replace(m.Value, Location); break;
                     case "item":     // Falls into part case.
-                    case "part":     clueBuilder.Replace(m.Value, NPCPartType.ToString()); break;
+                    case "part":     clueBuilder.Replace(m.Value, NPCDescription); break;
                     case "victim":   clueBuilder.Replace(m.Value, LatestVictimName); break;
                     case "gender":   break;
                     default: throw new Exception(string.Format("Found unexpected token {0} while constructing statement.", m.Value));

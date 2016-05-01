@@ -9,8 +9,8 @@ public class Grid : MonoBehaviour {
         get {
             if (instance == null) {
                 instance = (Grid)FindObjectOfType(typeof(Grid));
-                if (instance == null)
-                    instance = (new GameObject("Grid")).AddComponent<Grid>();
+                //if (instance == null)
+                //    instance = (new GameObject("Grid")).AddComponent<Grid>();
             }
             return instance;
         }

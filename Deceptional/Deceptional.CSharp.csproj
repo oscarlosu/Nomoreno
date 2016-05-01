@@ -70,7 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AIDirector.cs" />
-    <Compile Include="Assets\Scripts\ButtonController.cs" />
     <Compile Include="Assets\Scripts\CaseHandler.cs" />
     <Compile Include="Assets\Scripts\Cell.cs" />
     <Compile Include="Assets\Scripts\Clue.cs" />
@@ -83,9 +82,9 @@
     <Compile Include="Assets\Scripts\GraphBuilder.cs" />
     <Compile Include="Assets\Scripts\Grid.cs" />
     <Compile Include="Assets\Scripts\IO\FileLoader.cs" />
+    <Compile Include="Assets\Scripts\Interface\ButtonController.cs" />
     <Compile Include="Assets\Scripts\Interface\CameraController.cs" />
     <Compile Include="Assets\Scripts\Interface\HoverOver.cs" />
-    <Compile Include="Assets\Scripts\Interface\StartButton.cs" />
     <Compile Include="Assets\Scripts\MinglingDirector.cs" />
     <Compile Include="Assets\Scripts\NPC.cs" />
     <Compile Include="Assets\Scripts\NPCBehaviour\ITask.cs" />
@@ -100,6 +99,7 @@
     <Compile Include="Assets\Scripts\Transitions\DropTransition.cs" />
     <Compile Include="Assets\Scripts\Transitions\RotateTransition.cs" />
     <Compile Include="Assets\Scripts\Transitions\Transition.cs" />
+    <Compile Include="Assets\Scripts\Transitions\TransitionManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Statements\startstatement.txt" />
@@ -110,9 +110,11 @@
     <None Include="Assets\Resources\Statements\templates\peopleLocation.txt" />
     <None Include="Assets\Resources\Statements\templates\specificPointer.txt" />
     <None Include="Assets\Resources\Statements\variables\gender.txt" />
+    <None Include="Assets\Resources\Statements\variables\hats.txt" />
+    <None Include="Assets\Resources\Statements\variables\legs.txt" />
     <None Include="Assets\Resources\Statements\variables\locations.txt" />
     <None Include="Assets\Resources\Statements\variables\names.txt" />
-    <None Include="Assets\Resources\Statements\variables\parts.txt" />
+    <None Include="Assets\Resources\Statements\variables\torso.txt" />
     <None Include="Assets\Shaders\3DText.shader" />
     <None Include="Assets\Statements\templates\accusation.txt" />
     <None Include="Assets\Statements\templates\description.txt" />
@@ -120,9 +122,12 @@
     <None Include="Assets\Statements\templates\murderLocation.txt" />
     <None Include="Assets\Statements\templates\peopleLocation.txt" />
     <None Include="Assets\Statements\templates\specificPointer.txt" />
+    <None Include="Assets\Statements\variables\hats.txt" />
+    <None Include="Assets\Statements\variables\items.txt" />
+    <None Include="Assets\Statements\variables\legs.txt" />
     <None Include="Assets\Statements\variables\locations.txt" />
     <None Include="Assets\Statements\variables\names.txt" />
-    <None Include="Assets\Statements\variables\parts.txt" />
+    <None Include="Assets\Statements\variables\torso.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

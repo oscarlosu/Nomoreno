@@ -48,13 +48,16 @@ namespace Assets.Scripts {
             npc.Name = GetRandomName(npcGender, useFullNames);
             
             // TODO: Control for murderer similarity
-            NPCPart.NPCPartDescription randomDesc;
-            var maxValue = Enum.GetValues(typeof(NPCPart.NPCPartDescription)).Length;
-            randomDesc = (NPCPart.NPCPartDescription)PlayerController.Instance.Rng.Next(maxValue);
+            int randomDesc;
+            //var maxValue = Enum.GetValues(typeof(NPCPart.NPCPartDescription)).Length;
+            var maxValue = IO.FileLoader.GetParts(NPCPart.NPCPartType.Hat).Count;
+            randomDesc = PlayerController.Instance.Rng.Next(maxValue);
             var newHead = new NPCPart(NPCPart.NPCPartType.Hat, randomDesc);
-            randomDesc = (NPCPart.NPCPartDescription)PlayerController.Instance.Rng.Next(maxValue);
+            maxValue = IO.FileLoader.GetParts(NPCPart.NPCPartType.Hat).Count;
+            randomDesc = PlayerController.Instance.Rng.Next(maxValue);
             var newTorso = new NPCPart(NPCPart.NPCPartType.Shirt, randomDesc);
-            randomDesc = (NPCPart.NPCPartDescription)PlayerController.Instance.Rng.Next(maxValue);
+            maxValue = IO.FileLoader.GetParts(NPCPart.NPCPartType.Hat).Count;
+            randomDesc = PlayerController.Instance.Rng.Next(maxValue);
             var newLegs = new NPCPart(NPCPart.NPCPartType.Pants, randomDesc);
 
             npc.Assemble(newHead, newTorso, newLegs);

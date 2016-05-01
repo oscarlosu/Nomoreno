@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: e689f99bcc45deb4599b545f6f095565
+timeCreated: 1462103711
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 3
+  fontSize: 300
+  forceTextureCase: -2
+  characterSpacing: 1
+  characterPadding: 0
+  includeFontData: 1
+  fontNames:
+  - Mechanical Bd
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c91d76cbd174efe4aaa490d46c089586, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

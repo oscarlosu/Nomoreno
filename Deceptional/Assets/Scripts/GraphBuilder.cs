@@ -126,12 +126,12 @@ namespace Assets.Scripts {
                 }
             // Inverts deceptive statements targeted at NPC hooked to current node.
             if (lieGraph.ReferenceLookup.TryGetValue(n, out refNodes))
-                foreach (Node refN in refNodes)
-                    if (refN.NodeClue.Identifier == ClueIdentifier.Accusatory) {
-                        //refN = ClueFactory.Instance.CreatePeopleLocationNode(refN.TargetNodes, refN.NPC, caseHandler.NPCLocations.Keys.ElementAt(PlayerController.Instance.Rng.Next(caseHandler.NPCLocations.Keys.Count)));
-                        var newRefClueTemplate = ClueConverter.GetClueTemplate(ClueIdentifier.PeopleLocation);
-                        refN.NodeClue = new Clue(newRefClueTemplate, refN.TargetNodes.First().NPC, ClueIdentifier.PeopleLocation, NPCPart.NPCPartType.None);
-                    }
+                foreach (Node refN in refNodes) { }
+                    //if (refN.NodeClue.Identifier == ClueIdentifier.Accusatory) {
+                    //    //refN = ClueFactory.Instance.CreatePeopleLocationNode(refN.TargetNodes, refN.NPC, caseHandler.NPCLocations.Keys.ElementAt(PlayerController.Instance.Rng.Next(caseHandler.NPCLocations.Keys.Count)));
+                    //    var newRefClueTemplate = ClueConverter.GetClueTemplate(ClueIdentifier.PeopleLocation);
+                    //    refN.NodeClue = new Clue(newRefClueTemplate, refN.TargetNodes.First().NPC, ClueIdentifier.PeopleLocation, NPCPart.NPCPartType.None);
+                    //}
         }
         #endregion
 

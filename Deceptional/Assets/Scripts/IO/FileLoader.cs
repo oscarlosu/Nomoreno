@@ -37,8 +37,15 @@ namespace Assets.Scripts.IO {
         /// Opens the file containing NPC part names and reads them into a string list, seperating on new-line characters.
         /// </summary>
         /// <returns>A list of all defined NPC parts.</returns>
-        public static List<string> GetParts() {
-            var parts = UnityEngine.Resources.Load<UnityEngine.TextAsset>(@"Statements/variables/parts");
+        public static List<string> GetParts(NPCPart.NPCPartType partType) {
+            string filePath = @"Statements/variables/";
+            switch (partType) {
+                case NPCPart.NPCPartType.Hat:   filePath += "hats"; break;
+                case NPCPart.NPCPartType.Shirt: filePath += "torso"; break;
+                case NPCPart.NPCPartType.Pants: filePath += "legs"; break;
+                default: throw new ArgumentException("Invalid part type supplied. Only 'Hat', 'Shirt' & 'Pants' are valid.");
+            }
+            var parts = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
             return parts.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
@@ -61,6 +68,12 @@ namespace Assets.Scripts.IO {
 
             var templates = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
             return templates.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+
+        public static List<string> GetLimericks() {
+            string filePath = @"Statements/startstatement";
+            var limericks = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
+            return limericks.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
     }
 }

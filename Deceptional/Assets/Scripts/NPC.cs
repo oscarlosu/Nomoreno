@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using Assets.Scripts;
 using System.Linq;
+using System;
 
-public class NPC : MonoBehaviour, IPointerClickHandler {
+public class NPC : MonoBehaviour, IPointerDownHandler {
 
     /// <summary>
     /// List of existing NPCS
@@ -94,7 +95,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     /// <summary>
     /// Controller for the name label
     /// </summary>
-    private NameLabel nameLabelScritpt;
+    private NameLabel nameLabelScript;
 
     /// <summary>
     /// References to the mingling icons
@@ -144,13 +145,14 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         }
     }
 
+
     #region MonoBehaviour methods
     // Use this for initialization
     void Awake() {
         // Get references to components
         navAgent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-        nameLabelScritpt = NameLabelHolder.GetComponent<NameLabel>();
+        nameLabelScript = NameLabelHolder.GetComponent<NameLabel>();
         Mood = false;
         NPC.NPCList.Add(this);
     }
@@ -163,9 +165,16 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         //Grid.Instance.FreeCell(currentCell);
         currentCell = Grid.Instance.GetRandomCell();
         //transform.position = currentCell.transform.position;
-        navAgent.Warp(currentCell.transform.position);
+        //navAgent.Warp(currentCell.transform.position);
+        if(!navAgent.enabled) {
+            Debug.Log(Name + " was in the cage");
+        }
+        navAgent.enabled = false;
+        transform.position = currentCell.transform.position;
+        navAgent.enabled = true;
 
-        NameLabelHolder.transform.GetComponentInChildren<TextMesh>().text = Name;
+        NameLabelHolder.transform.GetComponentInChildren<UnityEngine.UI.Text>().text = Name;
+        ShowNameLabel();
 
         Emoji.enabled = false;
         CurrentBehaviour = Behaviour.None;
@@ -177,19 +186,24 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     void OnDisable() {
         //CanMingle = false;
         StopAllCoroutines();
-        Grid.Instance.FreeCell(currentCell);
+        if (Grid.Instance != null) {
+            Grid.Instance.FreeCell(currentCell);
+        }
         currentCell = null;
     }
 
     void OnDestroy() {
         StopAllCoroutines();
         NPC.NPCList.Remove(this);
-        Grid.Instance.FreeCell(currentCell);
+        // No need to clear if there is no grid in the scene
+        if(Grid.Instance != null) {
+            Grid.Instance.FreeCell(currentCell);
+        }        
         currentCell = null;
     }
     #endregion
 
-    public void OnPointerClick(PointerEventData eventData) {
+    public void OnPointerDown(PointerEventData eventData) {
         PlayerController.Instance.SelectedNPC = this;
     }
 
@@ -243,7 +257,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * RotationSpeed);
         // Update rotation of name label
-        nameLabelScritpt.UpdateRotation();
+        nameLabelScript.UpdateRotation();
         // Return true if target reached
         return Mathf.Approximately(Quaternion.Angle(transform.rotation, lookRotation), 0.0f);
     }
@@ -251,7 +265,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
     private bool RotateTowards(Quaternion targetRotation) {
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * RotationSpeed);
         // Update rotation of name label
-        nameLabelScritpt.UpdateRotation();
+        nameLabelScript.UpdateRotation();
         // Return true if target reached
         return Mathf.Approximately(Quaternion.Angle(transform.rotation, targetRotation), 0.0f);
     }
@@ -403,7 +417,7 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         //yield return new WaitUntil(() => CurrentBehaviour == Behaviour.MingleReady);
         // Face other NPC
         // Store original rotation
-        Quaternion originalRotation = transform.rotation;
+        //Quaternion originalRotation = transform.rotation;
         //transform.LookAt(other.transform);
         while (!RotateTowards(other.transform)) {
             yield return null;
@@ -451,8 +465,9 @@ public class NPC : MonoBehaviour, IPointerClickHandler {
         // Set animation state
         anim.SetBool("Walk", false);
         CurrentBehaviour = Behaviour.Interrogated;
+
         // Inform Player Controller of arrival
-        PlayerController.Instance.DisplayConversation();
+		PlayerController.Instance.HandleNPCReachedInterrogation();
         yield return null;
     }
 
