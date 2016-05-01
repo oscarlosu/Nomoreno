@@ -14,7 +14,8 @@ public class DropTransition : Transition {
     public List<AnimationCurve> SpeedCurves;
 
     private float elapsedTime;
-
+    private float travelledDistance;
+    private float targetDistance;
 
     //public new void Start() {
     //    base.Start();
@@ -31,6 +32,8 @@ public class DropTransition : Transition {
 
             // Lerp towards current target
             elapsedTime = 0;
+            travelledDistance = 0;
+            targetDistance = Vector3.Distance(transform.position, Targets[i]);
             while (!LerpTowardsTarget(i)) {
                 elapsedTime += Time.deltaTime;
                 yield return null;
@@ -42,8 +45,10 @@ public class DropTransition : Transition {
     private bool LerpTowardsTarget(int index) {
         Vector3 dir = Targets[index] - transform.position;
         dir.Normalize();
-        float distanceToTarget = Vector3.Distance(transform.position, Targets[index]);
-        transform.position = transform.position + dir * Mathf.Min(SpeedCurves[index - 1].Evaluate(elapsedTime), distanceToTarget);
-        return Vector3.Distance(transform.position, Targets[index]) <= Mathf.Epsilon;
+        float remainingDistance = targetDistance - travelledDistance;
+        float stepLength = Mathf.Min(SpeedCurves[index - 1].Evaluate(elapsedTime), remainingDistance);
+        travelledDistance += stepLength;
+        transform.position = transform.position + dir * stepLength;
+        return travelledDistance >= targetDistance;
     }
 }
