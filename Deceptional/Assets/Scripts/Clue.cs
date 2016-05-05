@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Assets.Scripts {
     public struct Clue {
-        public static string LatestVictimName { get; set; }
+        public static NPC LatestVictim { get; set; }
 
         public string Statement { get { return ConstructClue(); } }
         public string Template { get; set; }
@@ -69,7 +69,7 @@ namespace Assets.Scripts {
                     case "location": clueBuilder.Replace(m.Value, Location); break;
                     case "item":     // Falls into part case.
                     case "part":     clueBuilder.Replace(m.Value, NPCDescription); break;
-                    case "victim":   clueBuilder.Replace(m.Value, LatestVictimName); break;
+                    case "victim":   clueBuilder.Replace(m.Value, LatestVictim.Name); break;
                     case "gender":   break;
                     default: throw new Exception(string.Format("Found unexpected token {0} while constructing statement.", m.Value));
                 }

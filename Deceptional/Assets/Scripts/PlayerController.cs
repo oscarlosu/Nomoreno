@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Assets.Scripts {
@@ -392,22 +392,39 @@ namespace Assets.Scripts {
             ClearPlatformText();
             ++currentDay;
             // Murder new witness
-            string victimName = Clue.LatestVictimName = MurderWitness();
+            Clue.LatestVictim = MurderWitness();
             //LatestLocation = "Nowhere"; // TODO: Insert 'real' location.
             // Clear reference to arrested NPC
             arrestedNPC = null;
             // Cool NPC moods
             foreach (NPC n in NPC.NPCList) { n.CoolMood(); }
             // Generate conversations
-            ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, AIDirector.Instance.NumberOfDescriptiveClues);
+            // TODO: Add variables for location clues and pointers.
+            ConversationHandler.TruthGraph = GraphBuilder.BuildGraph(AIDirector.Instance.NumberOfDescriptiveClues, 3, 2, 3);
             ConversationHandler.SetupConversations(AIDirector.Instance.PercentageLiars, AIDirector.Instance.PercentageDescriptiveLiars);
             // Reset clock
             ResetClock();
             // Show new day message
             var dayStartStatements = IO.FileLoader.GetLimericks();
-            platformText = TextWrapper.BreakLine(dayStartStatements[Rng.Next(dayStartStatements.Count)].Replace("[name]", victimName));
+            platformText = TextWrapper.BreakLine(ConstructDayStatement(dayStartStatements[Rng.Next(dayStartStatements.Count)], Clue.LatestVictim.Name, Clue.LatestVictim.IsMale));
             //platformText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
             
+        }
+
+        #region Pronouns
+        private static List<string> malePronouns = new List<string>() { "man", "he", "his", "men", "him", "Mister" };
+        private static List<string> femalePronouns = new List<string>() { "woman", "she", "hers", "women", "her", "Miss" };
+        #endregion
+        private string ConstructDayStatement(string limerick, string name, bool isMale) {
+            Regex genderRegex = new Regex(@"(\[gender\[(\d)\]\])");
+            var genderMatches = genderRegex.Matches(limerick);
+            foreach (Match m in genderMatches) {
+                var pronoun = isMale ? malePronouns[int.Parse(m.Groups[2].Value) - 1] : femalePronouns[int.Parse(m.Groups[2].Value) - 1];
+                limerick = limerick.Replace(m.Value, pronoun);
+            }
+            limerick = limerick.Replace("[name]", name);
+
+            return limerick;
         }
 
         public void BeginDay() {
@@ -453,8 +470,8 @@ namespace Assets.Scripts {
             }
         }
 
-        private string MurderWitness() {
-            string name = "Nobody";
+        private NPC MurderWitness() {
+            NPC victim = null;
             // Only murder if there is more than one NPC
             if (NPC.NPCList.Count > 1) {
                 // Find an NPC that is not the killer
@@ -466,13 +483,13 @@ namespace Assets.Scripts {
                     target = NPC.NPCList[index];
                 } while (NPC.NPCList[index].IsKiller || (arrestedNPC == target && NPC.NPCList.Count > 2));
                 // Save victim's name
-                name = target.Name;
+                victim = target;
                 // Remove from list
                 NPC.NPCList.RemoveAt(index);
                 // Destroy game object
                 Destroy(target.gameObject);
             }
-            return name;
+            return victim;
         }
         #endregion
     }
