@@ -13131,15 +13131,9 @@ Prefab:
       value: 
       objectReference: {fileID: 131382, guid: 8d7bca9c50f0b9c47a9e8965a812e8ca, type: 2}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
-<<<<<<< HEAD
       propertyPath: Difficulty
       value: 10
       objectReference: {fileID: 0}
-=======
-      propertyPath: CalendarTextMesh
-      value: 
-      objectReference: {fileID: 399072589}
->>>>>>> 9e5b326f1d79cacdbb3e2822e71e1cd6e9f190cc
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
   m_IsPrefabParent: 0

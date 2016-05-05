@@ -416,13 +416,9 @@ namespace Assets.Scripts {
             // Reset clock
             ResetClock();
             // Show new day message
-<<<<<<< HEAD
             var dayStartStatements = IO.FileLoader.GetLimericks();
             platformText = TextWrapper.BreakLine(ConstructDayStatement(dayStartStatements[Rng.Next(dayStartStatements.Count)], Clue.LatestVictim.Name, Clue.LatestVictim.IsMale));
             //platformText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
-=======
-            platformText = "Day " + currentDay + "\n\n" + victimName + " has\n been murdered.";
->>>>>>> 9e5b326f1d79cacdbb3e2822e71e1cd6e9f190cc
             
         }
 
@@ -494,12 +490,8 @@ namespace Assets.Scripts {
                 NPC target;
                 do {
                     //index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
-<<<<<<< HEAD
                     index = Rng.Next(NPC.NPCList.Count);
-=======
                     //index = UseFixedSeed ? new System.Random(Seed).Next(NPC.NPCList.Count) : new System.Random(DateTime.Now.Millisecond).Next(NPC.NPCList.Count);
-                    index = Rng.Next(0, NPC.NPCList.Count);
->>>>>>> 9e5b326f1d79cacdbb3e2822e71e1cd6e9f190cc
                     target = NPC.NPCList[index];
                 } while (NPC.NPCList[index].IsKiller || (arrestedNPC == target && NPC.NPCList.Count > 2));
                 // Save victim's name
