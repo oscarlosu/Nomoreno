@@ -48,7 +48,7 @@ public class CameraController : MonoBehaviour {
     }
 
     private bool InputDown() {
-        if (Input.touchSupported) {
+        if (Input.touchSupported && Input.touchCount > 0) {
             return Input.GetTouch(0).phase == TouchPhase.Began;        }
         else {
             return Input.GetMouseButtonDown(0);
@@ -56,7 +56,7 @@ public class CameraController : MonoBehaviour {
     }
 
     private bool InputMaintained() {
-        if (Input.touchSupported) {
+        if (Input.touchSupported && Input.touchCount > 0) {
             return Input.GetTouch(0).phase == TouchPhase.Moved;
         } else {
             return Input.GetMouseButton(0);

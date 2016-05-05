@@ -896,12 +896,7 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11461638, guid: 8d7bca9c50f0b9c47a9e8965a812e8ca, type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 11461638, guid: 8d7bca9c50f0b9c47a9e8965a812e8ca, type: 2}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8d7bca9c50f0b9c47a9e8965a812e8ca, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &72216507
@@ -6114,7 +6109,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EventMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967291
 --- !u!81 &932275348
 AudioListener:
   m_ObjectHideFlags: 0
@@ -12492,7 +12487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EventMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967291
 --- !u!114 &1763930933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13018,7 +13013,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 405696, guid: 8cfae813ff314164fa2c13d09d7379bf, type: 2}
       propertyPath: m_RootOrder
-      value: 14
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 187672, guid: 8cfae813ff314164fa2c13d09d7379bf, type: 2}
       propertyPath: m_IsActive
@@ -13064,7 +13059,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 468672, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: CallInButton
