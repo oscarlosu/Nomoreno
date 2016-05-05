@@ -265,6 +265,7 @@ namespace Assets.Scripts {
                     // TODO: Is this necessary?
                     // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
                     //Dismiss();
+                    CallInButton.ChangeButton("CALL\nIN", "CallIn");
                     TransitionManager.Instance.ArrestTransition(CurrentInterrogationTarget.transform, false);
                 }                
             }            
