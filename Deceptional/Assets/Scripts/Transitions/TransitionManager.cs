@@ -35,6 +35,7 @@ public class TransitionManager : MonoBehaviour {
     // Arrest
     public Transition CageDrop;
     public Transition CageLift;
+	public GameObject CageBase;
     // End game
     public Transition CamerasOut;
 
@@ -76,7 +77,8 @@ public class TransitionManager : MonoBehaviour {
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
         // Show text
         PlayerController.Instance.ShowPlatformText();
-		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
+        PlayerController.Instance.ShowCalendarText();
+        PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
 
     public void BeginDayTransition() {
@@ -142,6 +144,8 @@ public class TransitionManager : MonoBehaviour {
     }
     private IEnumerator ArrestCo(Transform arrested, bool gameFinished) {
 		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
+		// Disable cage base
+		CageBase.SetActive(false);
         // Drop cage
         CageDrop.Execute();
         yield return new WaitUntil(() => CageDrop.State == Transition.TransitionState.Done);
@@ -152,6 +156,8 @@ public class TransitionManager : MonoBehaviour {
         arrested.SetParent(CageDrop.transform);
         // Clear platform text
         PlayerController.Instance.ClearPlatformText();
+		// Enable cage base
+		CageBase.SetActive(true);
         // Lift cage and rotate waiting room
         CageLift.Execute();
         camController.enabled = false;

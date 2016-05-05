@@ -19,6 +19,9 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
             }
             return NPC.npcList;
         }
+        set {
+            npcList = value;
+        }
     }
     /// <summary>
     /// Name of the NPC
@@ -163,10 +166,16 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         warped = false;
         // Place npc on random empty position
         //Grid.Instance.FreeCell(currentCell);
-        currentCell = Grid.Instance.GetRandomCell();
+        
+        //currentCell = Grid.Instance.GetRandomCell();
+        currentCell = Grid.Instance.GetIsolatedCell();
+
+
+
+
         //transform.position = currentCell.transform.position;
         //navAgent.Warp(currentCell.transform.position);
-        if(!navAgent.enabled) {
+        if (!navAgent.enabled) {
             Debug.Log(Name + " was in the cage");
         }
         navAgent.enabled = false;
@@ -388,7 +397,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         // Select destination
         Grid.Instance.FreeCell(currentCell);
         currentCell = null;
-        currentCell = Grid.Instance.GetRandomCell();
+        //currentCell = Grid.Instance.GetRandomCell();
+        currentCell = Grid.Instance.GetIsolatedCell();
         navAgent.SetDestination(currentCell.transform.position);
         // Set animator state
         anim.SetBool("Walk", true);
@@ -479,8 +489,11 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
             warped = false;
         }
         ShowNameLabel();
-        currentCell = Grid.Instance.GetRandomCell();
-        
+
+        //currentCell = Grid.Instance.GetRandomCell();
+        currentCell = Grid.Instance.GetIsolatedCell();
+
+
         CurrentBehaviour = Behaviour.Moving;
         // Set animation state
         anim.SetBool("Walk", true);

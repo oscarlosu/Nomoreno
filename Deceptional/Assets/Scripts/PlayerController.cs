@@ -97,6 +97,7 @@ namespace Assets.Scripts {
         public UnityEngine.UI.Text PlatformTextMesh;
         public UnityEngine.UI.Text NameText;
         public UnityEngine.UI.Text StatementTextMesh;
+        public UnityEngine.UI.Text CalendarTextMesh;
 
 
         public enum ControllerState {
@@ -236,6 +237,10 @@ namespace Assets.Scripts {
             // Show letters one at a time
             StartCoroutine(CoDisplayText(platformText, PlatformTextMesh));
         }
+        public void ShowCalendarText() {            
+            // Show letters one at a time
+            StartCoroutine(CoDisplayText("Day " + currentDay + "\n\n" + "10:00 - 20:00", CalendarTextMesh));
+        }
 
         public void Arrest() {
 			if(State == ControllerState.Enabled && CurrentInterrogationTarget != null) {
@@ -314,7 +319,13 @@ namespace Assets.Scripts {
             }
 
             // TODO: Shuffle npc list
-
+            List<NPC> shuffledList = new List<NPC>();
+            while(NPC.NPCList.Count > 0) { 
+                int index = Rng.Next(0, NPC.NPCList.Count);
+                shuffledList.Add(NPC.NPCList[index]);
+                NPC.NPCList.RemoveAt(index);
+            }
+            NPC.NPCList = shuffledList;
 
             // Select minglers
             int nMinglers = Rng.Next(PlayerController.Instance.MinMinglers, PlayerController.Instance.MaxMinglers + 1);
@@ -405,9 +416,13 @@ namespace Assets.Scripts {
             // Reset clock
             ResetClock();
             // Show new day message
+<<<<<<< HEAD
             var dayStartStatements = IO.FileLoader.GetLimericks();
             platformText = TextWrapper.BreakLine(ConstructDayStatement(dayStartStatements[Rng.Next(dayStartStatements.Count)], Clue.LatestVictim.Name, Clue.LatestVictim.IsMale));
             //platformText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
+=======
+            platformText = "Day " + currentDay + "\n\n" + victimName + " has\n been murdered.";
+>>>>>>> 9e5b326f1d79cacdbb3e2822e71e1cd6e9f190cc
             
         }
 
@@ -479,7 +494,12 @@ namespace Assets.Scripts {
                 NPC target;
                 do {
                     //index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
+<<<<<<< HEAD
                     index = Rng.Next(NPC.NPCList.Count);
+=======
+                    //index = UseFixedSeed ? new System.Random(Seed).Next(NPC.NPCList.Count) : new System.Random(DateTime.Now.Millisecond).Next(NPC.NPCList.Count);
+                    index = Rng.Next(0, NPC.NPCList.Count);
+>>>>>>> 9e5b326f1d79cacdbb3e2822e71e1cd6e9f190cc
                     target = NPC.NPCList[index];
                 } while (NPC.NPCList[index].IsKiller || (arrestedNPC == target && NPC.NPCList.Count > 2));
                 // Save victim's name

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts;
 
 public class Grid : MonoBehaviour {
     private static Grid instance = null;
@@ -17,9 +18,12 @@ public class Grid : MonoBehaviour {
     }
     public List<Cell> Cells;
     public List<Cell> FreeCells;
+    public List<Cell> IsolatedCells;
 
     public float CellSideLength;
     private float ErrorMargin = 0.5f;
+
+    public int MaxSearchAttempts = 20;
 	
     public void FreeCell(Cell cell) {
         if(cell != null && !cell.Free) {
@@ -30,12 +34,39 @@ public class Grid : MonoBehaviour {
     public Cell GetRandomCell() {
         Cell cell = null;
         if (FreeCells.Count > 0) {
-            int index = Random.Range(0, FreeCells.Count);
+            int index = PlayerController.Instance.Rng.Next(0, FreeCells.Count);
             cell = FreeCells[index];
             FreeCells.RemoveAt(index);
             cell.Free = false;
         }
         return cell;
+    }
+
+    public Cell GetIsolatedCell() {
+        Cell cell = null;
+        if (FreeCells.Count > 0) {
+            int index = 0;
+            for(int i = 0; i < MaxSearchAttempts; ++i) {
+                index = PlayerController.Instance.Rng.Next(0, FreeCells.Count);
+                cell = FreeCells[index];
+                if(IsIsolated(cell)) {
+                    break;
+                }
+            }
+            FreeCells.RemoveAt(index);
+            cell.Free = false;
+
+        }
+        return cell;
+    }
+
+    private bool IsIsolated(Cell cell) {
+        foreach(Cell adj in cell.Adjacent) {
+            if(!adj.Free) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void TakeCell (Cell cell) {
