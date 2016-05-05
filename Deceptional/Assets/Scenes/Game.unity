@@ -3800,7 +3800,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 541688059}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.07, y: 35, z: -179.29}
+  m_LocalPosition: {x: -2.07, y: 55, z: -179.29}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 72216508}
@@ -3852,7 +3852,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   State: 0
   Targets:
-  - {x: -2.07, y: 35, z: -179.29}
+  - {x: -2.07, y: 55, z: -179.29}
   - {x: -2.07, y: 15.999, z: -179.29}
   SpeedCurves:
   - serializedVersion: 2
@@ -12486,7 +12486,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1763930926}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cca3acd7c07cfcd4ab6ce3b8ad9f8553, type: 3}
   m_Name: 
