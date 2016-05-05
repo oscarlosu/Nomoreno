@@ -30,24 +30,11 @@ public class CameraController : MonoBehaviour {
     }
 	// Update is called once per frame
 	void Update () {
-        //if(Input.touchSupported) {
-        //       if(Input.GetTouch(0).phase == TouchPhase.Began) {
-        //           MouseDown = true;
-        //           currentClickPos = cam.ScreenToWorldPoint(Input.GetTouch(0).position);
-        //       } else if(MouseDown && Input.GetTouch(0).phase == TouchPhase.Moved) {
-        //           lastClickPos = currentClickPos;
-        //           currentClickPos = cam.ScreenToWorldPoint(Input.GetTouch(0).position);
-        //           // Apply rotation to camera
-        //           Vector3 start = lastClickPos - center;
-        //           Vector3 end = currentClickPos - center;
-        //           transform.RotateAround(Vector3.zero, Vector3.up, CalculateAngle(start, end));
-        //       }
-        //   } else {
-        if (Input.GetMouseButtonDown(0)) {
-            mouseDownOnPlatform = UpdateCurrentClickPos();
+        if (InputDown()) {
+        mouseDownOnPlatform = UpdateCurrentClickPos();
         } else if (mouseDownOnPlatform) {
             lastClickPos = currentClickPos;
-            if (Input.GetMouseButton(0)) {
+            if (InputMaintained()) {
                 if(UpdateCurrentClickPos()) {
                     mouseDownOnPlatform = true;
                     UpdateCameraVelocity();
@@ -55,11 +42,26 @@ public class CameraController : MonoBehaviour {
             } else {
                 mouseDownOnPlatform = false;
             }
-        }
+        }            
         velocity += (Mathf.Sign(-velocity) * Mathf.Min(Drag, Mathf.Abs(velocity)));
         transform.RotateAround(center, Vector3.up, velocity * Time.deltaTime);
-        //RotationWithMouseWheel();
-        //}        
+    }
+
+    private bool InputDown() {
+        if (Input.touchSupported) {
+            return Input.GetTouch(0).phase == TouchPhase.Began;        }
+        else {
+            return Input.GetMouseButtonDown(0);
+        }
+    }
+
+    private bool InputMaintained() {
+        if (Input.touchSupported) {
+            return Input.GetTouch(0).phase == TouchPhase.Moved ||
+                   Input.GetTouch(0).phase == TouchPhase.Stationary;
+        } else {
+            return Input.GetMouseButton(0);
+        }
     }
 
     private void UpdateCameraVelocity() {
@@ -73,7 +75,12 @@ public class CameraController : MonoBehaviour {
     }
 
     private bool UpdateCurrentClickPos() {
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray;
+        if (Input.touchSupported) {
+            ray = cam.ScreenPointToRay(Input.GetTouch(0).position);
+        } else {
+            ray = cam.ScreenPointToRay(Input.mousePosition);
+        }
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 100)) {
             currentClickPos = hit.point;
