@@ -27,7 +27,7 @@ GameObject:
   - 224: {fileID: 22438426}
   - 223: {fileID: 22398494}
   - 114: {fileID: 11491300}
-  - 114: {fileID: 11499238}
+  - 114: {fileID: 11498484}
   m_Layer: 2
   m_Name: NameHolder
   m_TagString: Untagged
@@ -535,7 +535,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &11499238
+--- !u!114 &11498484
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -543,9 +543,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 102044}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7249683c93c692f43a08e16944216455, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ef0897b6be5db841b7689d0bcc60305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotationOffset: 0
 --- !u!136 &13614080
 CapsuleCollider:
   m_ObjectHideFlags: 1

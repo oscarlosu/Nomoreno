@@ -265,8 +265,6 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         Vector3 direction = (target.position - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * RotationSpeed);
-        // Update rotation of name label
-        nameLabelScript.UpdateRotation();
         // Return true if target reached
         return Mathf.Approximately(Quaternion.Angle(transform.rotation, lookRotation), 0.0f);
     }
