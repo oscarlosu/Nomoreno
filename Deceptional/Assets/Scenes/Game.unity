@@ -896,12 +896,7 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11461638, guid: 8d7bca9c50f0b9c47a9e8965a812e8ca, type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 11461638, guid: 8d7bca9c50f0b9c47a9e8965a812e8ca, type: 2}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8d7bca9c50f0b9c47a9e8965a812e8ca, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &72216507
@@ -2509,6 +2504,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 298244586}
+  - 114: {fileID: 298244587}
   m_Layer: 0
   m_Name: PlatformBack
   m_TagString: Untagged
@@ -2523,13 +2519,25 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 298244585}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.74, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1486560999}
   - {fileID: 2043677865}
   m_Father: {fileID: 0}
   m_RootOrder: 9
+--- !u!114 &298244587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 298244585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ef0897b6be5db841b7689d0bcc60305, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationOffset: -82.80086
 --- !u!1 &305839297
 GameObject:
   m_ObjectHideFlags: 0
@@ -5306,6 +5314,9 @@ MonoBehaviour:
   WaitingRoomCam: {fileID: 1763930934}
   ButtonsOut: {fileID: 1201508507}
   Clock: {fileID: 1313398164}
+  PlatformBackController: {fileID: 298244587}
+  BeginDayButtonEnter: {fileID: 1486561001}
+  BeginDayButtonExit: {fileID: 1486561000}
   CageDrop: {fileID: 541688062}
   CageLift: {fileID: 541688061}
   CageBase: {fileID: 1223448434}
@@ -6114,7 +6125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EventMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967291
 --- !u!81 &932275348
 AudioListener:
   m_ObjectHideFlags: 0
@@ -10359,8 +10370,10 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1486560999}
+  - 114: {fileID: 1486561001}
+  - 114: {fileID: 1486561000}
   m_Layer: 0
-  m_Name: Button_BeingDay
+  m_Name: Button_BeginDay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10373,13 +10386,128 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1486560998}
   m_LocalRotation: {x: -0.05661611, y: 0.001764393, z: 0.9983945, w: -0.00015135968}
-  m_LocalPosition: {x: -3.63, y: -1.85, z: -0.05}
+  m_LocalPosition: {x: -3.63, y: -60, z: -0.05}
   m_LocalScale: {x: 2, y: 1, z: 2}
   m_Children:
   - {fileID: 53440873}
   - {fileID: 1071961598}
   m_Father: {fileID: 298244586}
   m_RootOrder: 0
+--- !u!114 &1486561000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1486560998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39e91f3ae051bd4a86df550ade7762d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  State: 0
+  Targets:
+  - {x: -3.63, y: -3.66, z: -0.05}
+  - {x: -3.63, y: -4.5, z: -0.05}
+  - {x: -3.63, y: 30, z: -0.05}
+  SpeedCurves:
+  - serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  - serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+--- !u!114 &1486561001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1486560998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b39e91f3ae051bd4a86df550ade7762d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  State: 0
+  Targets:
+  - {x: -3.63, y: -60, z: -0.05}
+  - {x: -3.63, y: -3.1, z: -0.05}
+  - {x: -3.63, y: -4.5, z: -0.05}
+  - {x: -3.63, y: -3.66, z: -0.05}
+  SpeedCurves:
+  - serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  - serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 0.7997088
+      value: 1.003805
+      inSlope: 0.014718595
+      outSlope: 0.014718595
+      tangentMode: 0
+    - time: 0.999008
+      value: 0.30290017
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  - serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
 --- !u!1 &1488045624
 GameObject:
   m_ObjectHideFlags: 0
@@ -12450,7 +12578,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: -10
-  far clip plane: 50
+  far clip plane: 40
   field of view: 60
   orthographic: 1
   orthographic size: 12.6
@@ -12492,7 +12620,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EventMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967291
 --- !u!114 &1763930933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13018,7 +13146,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 405696, guid: 8cfae813ff314164fa2c13d09d7379bf, type: 2}
       propertyPath: m_RootOrder
-      value: 14
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 187672, guid: 8cfae813ff314164fa2c13d09d7379bf, type: 2}
       propertyPath: m_IsActive
@@ -13064,7 +13192,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 468672, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: CallInButton
@@ -14117,14 +14245,14 @@ RectTransform:
   m_GameObject: {fileID: 2043677861}
   m_LocalRotation: {x: -0.46842292, y: -0.529698, z: -0.5296981, w: 0.46842286}
   m_LocalPosition: {x: 0, y: 0, z: 0.66}
-  m_LocalScale: {x: 199.25314, y: 199.25314, z: 90.0005}
+  m_LocalScale: {x: 199.25317, y: 199.25314, z: 90.0005}
   m_Children:
   - {fileID: 1147533231}
   m_Father: {fileID: 298244586}
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 2.7, y: -1.73}
+  m_AnchoredPosition: {x: 2.7, y: -3.56}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2048508454

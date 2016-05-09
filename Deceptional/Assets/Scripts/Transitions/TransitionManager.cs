@@ -30,8 +30,9 @@ public class TransitionManager : MonoBehaviour {
     // End day
 
     // New day
-
-
+	public FaceMainCamera PlatformBackController;
+	public Transition BeginDayButtonEnter;
+	public Transition BeginDayButtonExit;
     // Arrest
     public Transition CageDrop;
     public Transition CageLift;
@@ -78,6 +79,9 @@ public class TransitionManager : MonoBehaviour {
         // Show text
         PlayerController.Instance.ShowPlatformText();
         PlayerController.Instance.ShowCalendarText();
+		// Drop begin day button
+		BeginDayButtonEnter.Execute();
+		yield return new WaitUntil(() => BeginDayButtonEnter.State == Transition.TransitionState.Done);
         PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
 
@@ -88,8 +92,13 @@ public class TransitionManager : MonoBehaviour {
     }
     private IEnumerator BeginDayCo() {
 		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
+		// Disable rotation of Platform back
+		PlatformBackController.enabled = false;
         // Tell PlayerController to start next day
         PlayerController.Instance.BeginDay();
+		// Lift begin day button
+		BeginDayButtonExit.Execute();
+		yield return new WaitUntil(() => BeginDayButtonExit.State == Transition.TransitionState.Done);
         // Rotate waiting room back
         WaitingRoomCam.Execute(1);
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
@@ -97,6 +106,8 @@ public class TransitionManager : MonoBehaviour {
         // Drop buttons
         ButtonsIn.Execute();
         yield return new WaitUntil(() => ButtonsIn.State == Transition.TransitionState.Done);
+		// Enable rotation of Platform back
+		PlatformBackController.enabled = true;
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
 
@@ -134,6 +145,10 @@ public class TransitionManager : MonoBehaviour {
         WaitingRoomCam.Execute(-1);
         yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done && WaitingRoomCam.State == Transition.TransitionState.Done);
         PlayerController.Instance.ShowPlatformText();
+		// Drop begin day button
+		BeginDayButtonEnter.Execute();
+		yield return new WaitUntil(() => BeginDayButtonEnter.State == Transition.TransitionState.Done);
+
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
 
@@ -173,6 +188,10 @@ public class TransitionManager : MonoBehaviour {
             PlayerController.Instance.GenerateNextDay();
         }
         PlayerController.Instance.ShowPlatformText();
+		// Drop begin day button
+		BeginDayButtonEnter.Execute();
+		yield return new WaitUntil(() => BeginDayButtonEnter.State == Transition.TransitionState.Done);
+
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
 
     }
