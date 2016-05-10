@@ -3848,15 +3848,15 @@ MonoBehaviour:
   - serializedVersion: 2
     m_Curve:
     - time: 0
+      value: 0
+      inSlope: 0.6666667
+      outSlope: 0.6666667
+      tangentMode: 10
+    - time: 1.5
       value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      inSlope: 0.6666667
+      outSlope: 0.6666667
+      tangentMode: 10
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
@@ -3880,13 +3880,18 @@ MonoBehaviour:
     m_Curve:
     - time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 1
       inSlope: 2
       outSlope: 2
+      tangentMode: 0
+    - time: 1
+      value: 0.86525595
+      inSlope: 0.23186207
+      outSlope: 0.23186207
+      tangentMode: 0
+    - time: 4
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -10407,35 +10412,19 @@ MonoBehaviour:
   State: 0
   Targets:
   - {x: -3.63, y: -3.66, z: -0.05}
-  - {x: -3.63, y: -4.5, z: -0.05}
-  - {x: -3.63, y: 30, z: -0.05}
+  - {x: -3.63, y: -60, z: -0.05}
   SpeedCurves:
   - serializedVersion: 2
     m_Curve:
     - time: 0
-      value: 0
+      value: 10
       inSlope: 0
       outSlope: 0
       tangentMode: 0
     - time: 1
-      value: 1
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  - serializedVersion: 2
-    m_Curve:
-    - time: 0
-      value: 0
+      value: 10
       inSlope: 0
       outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 1
-      inSlope: 2
-      outSlope: 2
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
