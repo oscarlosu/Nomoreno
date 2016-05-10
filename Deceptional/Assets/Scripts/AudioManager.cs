@@ -15,8 +15,18 @@ public class AudioManager : MonoBehaviour {
     List<AudioSource> usedSources;
 
     void Awake () {
+        // if an audio manager already exists in the scene, self destroy
+        if(Instance != null) {
+            Destroy(this.gameObject);
+            return;
+        }
         // Initialize singleton
         Instance = this;
+        // Initialise lists
+        freeSources = new List<AudioSource>();
+        usedSources = new List<AudioSource>();
+        // Dont destroy on load
+        DontDestroyOnLoad(gameObject);
         // Start pool maintenance routine
         StartCoroutine(MaintainPool());
     }
@@ -61,13 +71,16 @@ public class AudioManager : MonoBehaviour {
         source = freeSources[freeSources.Count - 1];
         freeSources.RemoveAt(freeSources.Count - 1);
         usedSources.Add(source);
+        source.gameObject.SetActive(true);
         return source;
     }
 
     private void RefillPool() {
         int missing = Mathf.Max(0, poolSize - freeSources.Count);
         for(int i = 0; i < missing; ++i) {
-            freeSources.Add(Instantiate(audioSourcePrefab));
+            AudioSource source = Instantiate(audioSourcePrefab);
+            source.transform.SetParent(transform);
+            freeSources.Add(source);
         }
     }
 
@@ -83,6 +96,7 @@ public class AudioManager : MonoBehaviour {
         if(index >= 0) {
             usedSources.RemoveAt(index);
             freeSources.Add(source);
+            source.gameObject.SetActive(false);
         }
     }
 
