@@ -19,6 +19,7 @@ namespace Assets.Scripts.IO {
             // Splits the text document at linebreaks, removes empty entries and returns the data as a list.
             return locations.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
+
         /// <summary>
         /// Opens the file containing NPC names and reads them into a string list, seperating on new-line characters.
         /// Differentiates between male and female names.
@@ -69,6 +70,21 @@ namespace Assets.Scripts.IO {
             var templates = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
             return templates.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
+        #region Subtemplates
+        public static List<string> GetAlibis() {
+            string filePath = @"Statements/templates/alibilocation";
+            var templates = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
+
+            return templates.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+
+        public static List<string> GetIncriminates() {
+            string filePath = @"Statements/templates/incriminatinglocation";
+            var templates = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
+
+            return templates.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+        #endregion
 
         public static List<string> GetLimericks() {
             string filePath = @"Statements/startstatement";

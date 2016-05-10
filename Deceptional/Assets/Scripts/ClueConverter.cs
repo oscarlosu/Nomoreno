@@ -11,6 +11,12 @@ namespace Assets.Scripts {
             int index = PlayerController.Instance.Rng.Next(relevantClues.Count);
             return relevantClues[index];
         }
+
+        public static string GetLocationSubTemplate(bool isAlibi) {
+            List<string> relevantClues = isAlibi ? IO.FileLoader.GetAlibis() : IO.FileLoader.GetIncriminates();
+            int index = PlayerController.Instance.Rng.Next(relevantClues.Count);
+            return relevantClues[index];
+        }
         
         private static string CocknifyPronoun(string pronoun) {
             if (pronoun == "he" || pronoun == "his" || pronoun == "him" || pronoun == "hers" || pronoun == "her")

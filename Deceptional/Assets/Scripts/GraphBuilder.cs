@@ -251,7 +251,8 @@ namespace Assets.Scripts {
                 killerNode = ClueFactory.Instance.CreateKillerNode();
                 g.Nodes.Add(killerNode);
                 // This sets up the murderer with a People Location clue to the crime scene.
-                ClueFactory.Instance.SetupSupportNode(killerNode, caseHandler.NPCLocations[caseHandler.MurderLocation]);
+                var targetLoc = caseHandler.NPCLocations.Keys.ElementAt(PlayerController.Instance.Rng.Next(caseHandler.NPCLocations.Count));
+                ClueFactory.Instance.SetupMultiSupportNode(killerNode, caseHandler.NPCLocations[targetLoc], targetLoc);
                 hasKiller = true;
                 // The killer, explaining the people at the murder location, is a valid pointer target.
                 pointerTargets.Add(killerNode);

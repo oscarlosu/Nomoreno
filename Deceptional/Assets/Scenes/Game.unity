@@ -848,8 +848,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Label: ACCUSE\nOF\nLYING
   MethodName: Accuse
-  Controller: {fileID: 77969353}
-  TextField: {fileID: 1007484909}
+  Controller: {fileID: 0}
+  TextField: {fileID: 0}
   SpeedDown: 0.05
   SpeedUp: 0.01
   Mode: 0
@@ -961,10 +961,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 72216507}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &77969353 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 114114, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
-  m_PrefabInternal: {fileID: 1880119730}
 --- !u!1 &80709417
 GameObject:
   m_ObjectHideFlags: 0
@@ -1093,8 +1089,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Label: END\nDAY
   MethodName: EndDayTransition
-  Controller: {fileID: 788544643}
-  TextField: {fileID: 1240061623}
+  Controller: {fileID: 0}
+  TextField: {fileID: 0}
   SpeedDown: 0.05
   SpeedUp: 0.01
   Mode: 0
@@ -3184,8 +3180,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Label: ARREST
   MethodName: Arrest
-  Controller: {fileID: 77969353}
-  TextField: {fileID: 1207050811}
+  Controller: {fileID: 0}
+  TextField: {fileID: 0}
   SpeedDown: 0.05
   SpeedUp: 0.01
   Mode: 0
@@ -7464,8 +7460,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Label: '?'
   MethodName: ToggleHelpTransition
-  Controller: {fileID: 788544643}
-  TextField: {fileID: 107227410}
+  Controller: {fileID: 0}
+  TextField: {fileID: 0}
   SpeedDown: 0.05
   SpeedUp: 0.01
   Mode: 0
@@ -12671,9 +12667,9 @@ MonoBehaviour:
   lastClickPos: {x: 0, y: 0, z: 0}
   currentClickPos: {x: 0, y: 0, z: 0}
   center: {x: 0, y: 0, z: 0}
-  MaximumSpeed: 25
-  Drag: 3
-  MinAngle: 2
+  MaximumSpeed: 0
+  Drag: 0
+  MinAngle: 0
 --- !u!114 &1763930934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13287,7 +13283,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: UseFixedSeed
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: DefaultNPC
@@ -13441,8 +13437,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Label: RESTART
   MethodName: EndGameTransition
-  Controller: {fileID: 788544643}
-  TextField: {fileID: 293616770}
+  Controller: {fileID: 0}
+  TextField: {fileID: 0}
   SpeedDown: 0.05
   SpeedUp: 0.01
   Mode: 0
@@ -14789,8 +14785,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Label: CALL\nIN
   MethodName: CallIn
-  Controller: {fileID: 77969353}
-  TextField: {fileID: 1249097040}
+  Controller: {fileID: 0}
+  TextField: {fileID: 0}
   SpeedDown: 0.05
   SpeedUp: 0.01
   Mode: 0
