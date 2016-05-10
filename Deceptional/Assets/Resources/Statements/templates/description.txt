@@ -1,5 +1,5 @@
 The murderer was wearing a [part].
-The murderer is a [gender].
+The murderer is a [gender[1]].
 Awright geeezzaa! I saw da murder 'appen! I was so scared, I 'id benearf da windowsill, I was shaking! I peaked up an' saw a [part] turning, an' quickly ducked down again! Sorted mate.
 I was openin' me shop, I 'eard some commoshun in da street, when I wen' ter look I just saw a glimpse ov da murderer and saw a [part]
 Lawd above! I 'eard a scream so I rushed ter see what 'appened, I saw [victim] lyin' dead in da ground. Out ov da corner ov me eye a saw someone turnin' da corner wiv a [item].

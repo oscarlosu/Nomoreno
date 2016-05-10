@@ -97,7 +97,7 @@ namespace Assets.Scripts {
         /// <param name="target">The Node containing target information.</param>
         /// <param name="hookNPC">The NPC related to this Node.</param>
         /// <returns>A new support node, connected to the hookNPC.</returns>
-        public Node CreateSupportNode(NPC target, NPC hookNPC) { return CreateSupportNode(target, hookNPC, ClueIdentifier.PeopleLocation); }
+        public Node CreateSupportNode(NPC target, NPC hookNPC) { return CreateSupportNode(target, hookNPC, ClueIdentifier.Accusatory); }
         public Node CreateSupportNode(NPC target, NPC hookNPC, ClueIdentifier identifier) {
             var supportNode = new Node() {
                 NPC = hookNPC

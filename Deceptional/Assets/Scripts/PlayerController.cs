@@ -412,7 +412,7 @@ namespace Assets.Scripts {
             foreach (NPC n in NPC.NPCList) { n.CoolMood(); }
             // Generate conversations
             // TODO: Add variables for location clues and pointers.
-            ConversationHandler.TruthGraph = GraphBuilder.BuildGraph(AIDirector.Instance.NumberOfDescriptiveClues, 3, 2, 3);
+            ConversationHandler.TruthGraph = GraphBuilder.BuildGraph(AIDirector.Instance.NumberOfDescriptiveClues, 2, 2, 2);
             ConversationHandler.SetupConversations(AIDirector.Instance.PercentageLiars, AIDirector.Instance.PercentageDescriptiveLiars);
             // Reset clock
             ResetClock();

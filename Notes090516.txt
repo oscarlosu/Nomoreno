@@ -1,0 +1,29 @@
+BUGS:
+Liars have no location on their 2nd clue.
+Statement tokens not properly serialized
+	- "The murderer is a [gender]"
+	- One statement contains token '[him]'(?)
+Accusations against liars count even if liar has already caved
+Almost all liars have Accusational truth statements.
+
+SUGGESTIONS:
+Add color descriptors to torso pieces.
+Arrest possibility before end of day should be obvious.
+
+NOTES:
+liars (seed: 0):
+D1:
+Name---		Truth---
+- Agatha	MurderLoc
+- Rudolph	Accusation(Lilly)
+- Ann		Accusation(Molly)
+- Frank		Accusation(Abby)
+- August	Accusation(Abby)
+- Maria		Accusation(Claude)
+- Lilly		Accusation(Abby)
+- Jacob		Accusation(Anna)
+- Molly		Accusation(Claude)
+- Anna		Accusation(Becky)
+- Abby		Accusation(Frank)
+- Becky		Accusation(Jacob)
+- Claude	Accusation(Claude)

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 namespace Assets.Scripts {
-    public struct Clue {
+    public class Clue {
         public static NPC LatestVictim { get; set; }
 
         public string Statement { get { return ConstructClue(); } }
