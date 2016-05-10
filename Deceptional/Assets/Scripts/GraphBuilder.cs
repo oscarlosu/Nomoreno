@@ -271,8 +271,9 @@ namespace Assets.Scripts {
 
             /* DESCRIPTIVE NODES */
             if (!hasDescriptions) {
-                pointerTargets.AddRange(ClueFactory.Instance.CreateDescriptiveNodes(killerNode.NPC, descriptions));
-                g.Nodes.AddRange(pointerTargets);
+                var descriptiveNodes = ClueFactory.Instance.CreateDescriptiveNodes(killerNode.NPC, remainingNPCs, descriptions);
+                pointerTargets.AddRange(descriptiveNodes);
+                g.Nodes.AddRange(descriptiveNodes);
                 hasDescriptions = true;
                 remainingNPCs.RemoveAll(npc => pointerTargets.Select(node => node.NPC).Contains(npc));
             }
@@ -368,17 +369,18 @@ namespace Assets.Scripts {
                 lieGraph.Nodes.Add(newLie);
             }
 
-            if (miscLies > 0) { UnityEngine.Debug.LogWarning("RemainingNPCs has been exhausted before all lies distributed!"); }
+            if (miscLies > 0) { UnityEngine.Debug.LogWarning(string.Format("RemainingNPCs has been exhausted before all lies distributed! {0} lies remaining.", miscLies)); }
 
             return lieGraph;
         }
 
         public static void AttachAccusationsToGraph(Graph truth, Graph lies) {
             var remainingNPCs = NPC.NPCList.Where(npc => !truth.Nodes.Select(node => node.NPC).Contains(npc));
-            var liars = lies.Nodes.Select(node => node.NPC).ToList();
+            var liars = lies.Nodes.Select(node => node.NPC);
 
             foreach (NPC npc in remainingNPCs) {
-                Node accusation = ClueFactory.Instance.CreateSupportNode(liars[PlayerController.Instance.Rng.Next(liars.Count)], npc);
+                var possibleTargets = liars.Where(n => n != npc).ToList();
+                Node accusation = ClueFactory.Instance.CreateAccusationNode(possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)], npc);
                 truth.Nodes.Add(accusation);
             }
         }

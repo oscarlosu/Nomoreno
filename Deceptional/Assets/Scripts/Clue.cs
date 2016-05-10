@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
 namespace Assets.Scripts {
-    public class Clue {
+    public struct Clue {
         public static NPC LatestVictim { get; set; }
 
         public string Statement { get { return ConstructClue(); } }
@@ -13,7 +13,6 @@ namespace Assets.Scripts {
         public List<NPC> Targets { get; set; }
         public ClueIdentifier Identifier { get; set; }
         public NPCPart.NPCPartType NPCPartType { get; set; }
-        //public NPCPart.NPCPartDescription NPCDescription { get; set; }
         public string NPCDescription { get; set; }
         public string Location { get; set; }
 
@@ -23,7 +22,6 @@ namespace Assets.Scripts {
             Identifier = identifier;
             NPCPartType = targetPart;
             switch (NPCPartType) {
-                //case NPCPart.NPCPartType.None:  NPCDescription = NPCPart.NPCPartDescription.Black; break; // Black used as placeholder, value should be irrelevant.
                 case NPCPart.NPCPartType.None:  NPCDescription = string.Empty; break;
                 case NPCPart.NPCPartType.Hat:   NPCDescription = Targets[0].Head.Description; break;
                 case NPCPart.NPCPartType.Shirt: NPCDescription = Targets[0].Torso.Description; break;
@@ -40,9 +38,8 @@ namespace Assets.Scripts {
             Identifier = identifier;
             NPCPartType = targetPart;
             switch (NPCPartType) {
-                //case NPCPart.NPCPartType.None: NPCDescription = NPCPart.NPCPartDescription.Black; break; // Black used as placeholder, value should be irrelevant.
-                case NPCPart.NPCPartType.None: NPCDescription = string.Empty; break;
-                case NPCPart.NPCPartType.Hat: NPCDescription = Targets[0].Head.Description; break;
+                case NPCPart.NPCPartType.None:  NPCDescription = string.Empty; break;
+                case NPCPart.NPCPartType.Hat:   NPCDescription = Targets[0].Head.Description; break;
                 case NPCPart.NPCPartType.Shirt: NPCDescription = Targets[0].Torso.Description; break;
                 case NPCPart.NPCPartType.Pants: NPCDescription = Targets[0].Legs.Description; break;
                 default: throw new Exception("NPCPart unidentifiable");
@@ -56,7 +53,6 @@ namespace Assets.Scripts {
         /// <returns>Returns the fully generated statement.</returns>
         public string ConstructClue() {
             StringBuilder clueBuilder = new StringBuilder(Template);
-            //clueBuilder.Remove(0, 3); // Unneccessary due to FileLoader keeping track of clue classification.
 
             // Inserting correct pronoun
             var matches = cluePattern.Matches(Template);
