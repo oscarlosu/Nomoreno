@@ -276,7 +276,30 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
 
     }
 
-    
+    private void AnimateWalk() {
+        anim.SetBool("Talk", false);
+        anim.SetBool("Walk", true);
+        anim.SetBool("None", false);
+    }
+
+    private void AnimateIdle() {
+        anim.SetFloat("AnimOffset", (float)PlayerController.Instance.Rng.NextDouble());
+        anim.SetBool("Talk", false);
+        anim.SetBool("Walk", false);
+        anim.SetBool("None", false);
+    }
+
+    private void AnimateTalk() {
+        anim.SetBool("Talk", true);
+        anim.SetBool("Walk", false);
+        anim.SetBool("None", false);
+    }
+
+    private void AnimateNone() {
+        anim.SetBool("Talk", false);
+        anim.SetBool("Walk", false);
+        anim.SetBool("None", true);
+    }
 
     public void CoolMood() {
         if (Mood)
@@ -292,17 +315,6 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     }
     public void HideNameLabel() {
         NameLabelHolder.SetActive(false);
-    }
-
-    private IEnumerator HandleWalkAnimation() {
-        // Start walk animation        
-        anim.SetBool("Walk", true);
-        // Wait for agent to reach destination
-        do {
-            yield return null;
-        } while (!HasReachedDestination());
-        // Stop walk animation
-        anim.SetBool("Walk", false);
     }
 
     private bool RotateTowards(Transform target) {
@@ -391,6 +403,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     private void Wait() {
         CurrentBehaviour = Behaviour.Waiting;
         // Set idle animation
+        AnimateIdle();
     }
 
     private IEnumerator Mingle(List<NPC> targets) {
@@ -405,7 +418,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         // Change state
         CurrentBehaviour = Behaviour.Mingling;
         // Set animator state
-        anim.SetBool("Walk", true);
+        AnimateWalk();
         // Inform target of mingling start
         target.WaitForMingle(this);
         // Navigate to target
@@ -417,18 +430,16 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         yield return null;   
         // Wait until near enough to the target
         yield return new WaitUntil(() => this.HasReachedDestination());
-        //while(!Mathf.Approximately(navAgent.remainingDistance, 0.0f)) {
-        //    yield return null;
-            
-        //}
-        //Debug.Log("Reached target");
-        target.CurrentBehaviour = Behaviour.MingleReady;
         // Set animator state
-        anim.SetBool("Walk", false);
+        AnimateNone();
         // Face other NPC
         while (!RotateTowards(target.transform)) {
             yield return null; // Replace with WaitUntil(RotateTowards(target.transform));
-        }        
+        }
+        // Set state so that other NOPC knows that the mingling can start
+        target.CurrentBehaviour = Behaviour.MingleReady;
+        // Set animator state
+        AnimateTalk();
         // Display result of mingling
         Emoji.sprite = GetMingleResult(target);
         Emoji.enabled = true;
@@ -444,13 +455,13 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         currentCell = Grid.Instance.GetIsolatedCell();
         navAgent.SetDestination(currentCell.transform.position);
         // Set animator state
-        anim.SetBool("Walk", true);
+        AnimateWalk();
         // Wait until target is reached
         do {
             yield return null;
         } while (!HasReachedDestination());
         // Set animation state
-        anim.SetBool("Walk", false);
+        AnimateIdle();
     }
 
     private IEnumerator CoWaitForMingle(NPC other) {
@@ -459,19 +470,16 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
 
 
         Debug.Log(Name + " receives mingle from " + other.Name);
-        // Start animation
-        anim.SetBool("Walk", false);
+        // Walk animation
+        AnimateIdle();
         //MingleReady = false;
         // Wait for other NPC to get near
         // Wait for distance to be lower than threshold, instead of mingling signal from initiator?
         while (CurrentBehaviour != Behaviour.MingleReady) {
             yield return null;
         }
-        //yield return new WaitUntil(() => CurrentBehaviour == Behaviour.MingleReady);
-        // Face other NPC
-        // Store original rotation
-        //Quaternion originalRotation = transform.rotation;
-        //transform.LookAt(other.transform);
+        // Dont want any animation during rotation
+        AnimateNone();
         while (!RotateTowards(other.transform)) {
             yield return null;
         }
@@ -483,23 +491,16 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
             Debug.LogWarning("No result in mingle with " + Name);
 
         }
+        // Talking animation
+        AnimateTalk();
 
         Emoji.enabled = true;
-        //yield return new WaitForSeconds(MinglingDuration);
-        //yield return new WaitUntil(() => CurrentBehaviour != Behaviour.Mingling);
-        //// Hide emoji
-        //Emoji.enabled = false;
-        //// Face original direction
-        ////transform.rotation = originalRotation;
-        //while (!RotateTowards(originalRotation)) {
-        //    yield return null;
-        //}
+
     }
 
     private IEnumerator CoGoToInterrogation() {
-        //CanMingle = false;
-        // Set animator state
-        anim.SetBool("Walk", true);
+        // Walking animation
+        AnimateWalk();
         // Free cell
         Grid.Instance.FreeCell(currentCell);
         currentCell = null;
@@ -515,8 +516,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         warped = true;
         // Hide name label
         HideNameLabel();
-        // Set animation state
-        anim.SetBool("Walk", false);
+        // Talk animation
+        AnimateTalk();
         CurrentBehaviour = Behaviour.Interrogated;
 
         // Inform Player Controller of arrival
@@ -538,8 +539,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
 
 
         CurrentBehaviour = Behaviour.Moving;
-        // Set animation state
-        anim.SetBool("Walk", true);
+        // Walk animation
+        AnimateWalk();
         // Navigate to waiting room
         navAgent.SetDestination(currentCell.transform.position);
         // Wait until target is reached
@@ -547,10 +548,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
             yield return null;
         } while (!HasReachedDestination());
         // Set animation state
-        anim.SetBool("Walk", false);
-        // Start Waiting coroutine
-        //StartCoroutine(Waiting());
-        // End
+        AnimateIdle();
+
     }
     #endregion
 
