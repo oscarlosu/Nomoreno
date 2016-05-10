@@ -242,8 +242,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         headRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + "head" + gender_suffix);
         headRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + "head" + gender_suffix + material_suffix);
         // Hat
-        hatRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + Hat.GetFileName() + gender_suffix);
-        hatRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + Hat.GetFileName() + gender_suffix + material_suffix);
+        hatRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + Hat.GetFileName());
+        hatRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + Hat.GetFileName() + material_suffix);
         // Torso
         torsoRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + Torso.GetFileName() + gender_suffix);
         torsoRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + Torso.GetFileName() + gender_suffix + material_suffix);
