@@ -4223,6 +4223,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 14
       objectReference: {fileID: 0}
+    - target: {fileID: 8218604, guid: 06b54dea10531e64cb48effaa5baa717, type: 2}
+      propertyPath: m_Volume
+      value: 0.156
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 06b54dea10531e64cb48effaa5baa717, type: 2}
   m_IsPrefabParent: 0
@@ -8155,8 +8159,8 @@ MonoBehaviour:
   State: 0
   Targets:
   - {x: 0, y: 34, z: 0}
-  - {x: 0, y: -0.5, z: 0}
-  - {x: 0, y: 0.5, z: 0}
+  - {x: 0, y: -0.25, z: 0}
+  - {x: 0, y: 0.25, z: 0}
   - {x: 0, y: 0, z: 0}
   SpeedCurves:
   - serializedVersion: 2
@@ -8223,8 +8227,8 @@ MonoBehaviour:
   State: 0
   Targets:
   - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 2, z: 0}
-  - {x: 0, y: -10, z: 0}
+  - {x: 0, y: -0.25, z: 0}
+  - {x: 0, y: 34, z: 0}
   SpeedCurves:
   - serializedVersion: 2
     m_Curve:
@@ -10485,8 +10489,8 @@ MonoBehaviour:
   State: 0
   Targets:
   - {x: -3.63, y: -60, z: -0.05}
-  - {x: -3.63, y: -3.1, z: -0.05}
-  - {x: -3.63, y: -4.5, z: -0.05}
+  - {x: -3.63, y: -3.2, z: -0.05}
+  - {x: -3.63, y: -3.8, z: -0.05}
   - {x: -3.63, y: -3.66, z: -0.05}
   SpeedCurves:
   - serializedVersion: 2
@@ -10497,7 +10501,7 @@ MonoBehaviour:
       outSlope: 0
       tangentMode: 0
     - time: 1
-      value: 1
+      value: 2
       inSlope: 2
       outSlope: 2
       tangentMode: 0
