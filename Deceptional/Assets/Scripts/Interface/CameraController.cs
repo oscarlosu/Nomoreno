@@ -48,16 +48,22 @@ public class CameraController : MonoBehaviour {
     }
 
     private bool InputDown() {
-        if (Input.touchSupported && Input.touchCount > 0) {
-            return Input.GetTouch(0).phase == TouchPhase.Began;        }
-        else {
+        if (Input.touchSupported) {
+			if(Input.touchCount > 0) {
+				return Input.GetTouch(0).phase == TouchPhase.Began;
+			}
+			return false;
+		} else {
             return Input.GetMouseButtonDown(0);
         }
     }
 
     private bool InputMaintained() {
-        if (Input.touchSupported && Input.touchCount > 0) {
-            return Input.GetTouch(0).phase == TouchPhase.Moved;
+        if (Input.touchSupported) {
+			if(Input.touchCount > 0) {
+				return Input.GetTouch(0).phase == TouchPhase.Moved || Input.GetTouch(0).phase == TouchPhase.Stationary;
+			}
+			return false;
         } else {
             return Input.GetMouseButton(0);
         }
