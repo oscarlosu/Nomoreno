@@ -1,0 +1,6 @@
+man/woman[1] 
+he/she[2]
+his/hers[3]
+men/women[4]
+him/her[5]
+Miss/Mister[6]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Assets.Scripts;
 
 public class Conversation
@@ -11,7 +12,7 @@ public class Conversation
     /// <summary>
     /// Only relevant when FirstStatementClue is false
     /// </summary>
-    public Clue SecondStatementClue = new Clue("", null, ClueIdentifier.Informational, NPCPart.NPCPartType.None);
+    public Clue SecondStatementClue = new Clue("", new List<NPC>(), ClueIdentifier.PeopleLocation, NPCPart.NPCPartType.None);
     public readonly string MoodyMessage = "You called me a liar! I'm not gonna talk to you!";
     private bool isTrue = true;
     public bool IsTrue {

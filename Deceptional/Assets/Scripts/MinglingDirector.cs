@@ -40,8 +40,8 @@ namespace Assets.Scripts {
                 //interestNPCs = interestNPCs.Where(npc => minglingClue.Target == npc || interestClues.Any(clue => clue.Equals(npc.Conversation.ActualClue))).ToList();
 
                 interestNPCs = interestNPCs.Where(other => (other.Conversation.ActualClue.Identifier != ClueIdentifier.Descriptive && 
-                                                           (other.Conversation.ActualClue.Target == initiator || other.Conversation.ActualClue.Target == initiatorClue.Target)) || 
-                                                            initiatorClue.Target == other).ToList();
+                                                           (other.Conversation.ActualClue.Targets.Contains(initiator) || other.Conversation.ActualClue.Targets.Any(npc => initiatorClue.Targets.Any(oNPC => npc == oNPC)))) || 
+                                                            initiatorClue.Targets.Contains(other)).ToList();
                 //if (interestNPCs.Count() > 0) {
                 //    interestNPC = interestNPCs.ToList()[new Random(DateTime.Now.Millisecond).Next(interestNPCs.Count())];
                 //    //interestNPC = NPC.NPCList.FirstOrDefault(npc => npc.Conversation.FirstStatementClue.Equals(interestClues.FirstOrDefault()));
