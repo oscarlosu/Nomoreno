@@ -33,16 +33,17 @@ public class AudioManager : MonoBehaviour {
 
     private IEnumerator MaintainPool() {
         while(true) {
-            if(freeSources.Count < poolSize / 2.0f) {
+            FreeFinished();
+            if (freeSources.Count < poolSize / 2.0f) {
                 RefillPool();
             }
             yield return new WaitForSeconds(poolRefillPeriod);
         }
     }
-    public AudioSource Play(AudioClip clip, System.Action<AudioSource> modifier, bool canRepeat = true) {
+    public void Play(AudioClip clip, System.Action<AudioSource> modifier) {
         // Dont do anything if the clip is null
         if (clip == null) {
-            return null;
+            return;
         }
         // Get an audio source
         AudioSource audioSource = GetAudioSource();
@@ -60,7 +61,6 @@ public class AudioManager : MonoBehaviour {
         modifier(audioSource);
         // Play sound
         audioSource.Play();
-        return audioSource;
     }
 
     private AudioSource GetAudioSource() {
@@ -81,6 +81,17 @@ public class AudioManager : MonoBehaviour {
             AudioSource source = Instantiate(audioSourcePrefab);
             source.transform.SetParent(transform);
             freeSources.Add(source);
+        }
+    }
+
+    private void FreeFinished() {
+        for(int i = usedSources.Count - 1; i >= 0; --i) {
+            AudioSource source = usedSources[i];
+            if (!source.isPlaying) {                
+                usedSources.RemoveAt(i);
+                freeSources.Add(source);
+                source.gameObject.SetActive(false);
+            }
         }
     }
 
