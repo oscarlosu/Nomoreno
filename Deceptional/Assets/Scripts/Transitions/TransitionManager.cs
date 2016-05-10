@@ -103,18 +103,21 @@ public class TransitionManager : MonoBehaviour {
         // Tell PlayerController to start next day
         PlayerController.Instance.BeginDay();
 		// Lift begin day button
-		BeginDayButtonExit.Execute();
-		yield return new WaitUntil(() => BeginDayButtonExit.State == Transition.TransitionState.Done);
+		//BeginDayButtonExit.Execute();
+		//yield return new WaitUntil(() => BeginDayButtonExit.State == Transition.TransitionState.Done);
         // Rotate waiting room back
         WaitingRoomCam.Execute(1);
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
         camController.enabled = true;
         // Drop buttons
-        ButtonsIn.Execute();
+		BeginDayButtonExit.Execute();
+		ButtonsIn.Execute();
         yield return new WaitUntil(() => ButtonsIn.State == Transition.TransitionState.Done);
 		// Enable rotation of Platform back
+
 		PlatformBackController.enabled = true;
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
+
     }
     /// <summary>
     /// Transition that happens when the day ends after the player presses the Dismiss button.
