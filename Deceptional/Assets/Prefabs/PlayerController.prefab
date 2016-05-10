@@ -48,6 +48,7 @@ MonoBehaviour:
   NumberOfNPCS: 20
   NumberOfDescriptiveClues: 3
   CallInButton: {fileID: 0}
+  PlatformButton: {fileID: 0}
   NPCS: {fileID: 0}
   NewDayTextMesh: {fileID: 0}
   StatementTextMesh: {fileID: 0}

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
+
 namespace Assets.Scripts {
     public class Node {
-        public Node TargetNode { get; set; }
+        public List<NPC> TargetNodes { get; set; }
         public NPC NPC { get; set; }
         public Clue NodeClue { get; set; }
         public bool IsVisited { get; set; }

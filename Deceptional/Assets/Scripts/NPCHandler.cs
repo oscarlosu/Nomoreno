@@ -7,22 +7,13 @@ using UnityEngine;
 namespace Assets.Scripts {
     public static class NPCHandler {
         #region Static lists        
-        private static List<string> maleFirsts = new List<string>() {
-            "Rudolph", "Davis", "Frank", "August", "Jeremy", "John", "Jacob", "Claude",
-            "Joseph", "Michael", "Elias", "Oliver", "Jimmy", "Amon", "Bart", "Henry",
-            "Giles", "Sam", "Mike", "Tobias"
-        };
+        private static List<string> maleFirsts = IO.FileLoader.GetNames(true);
+        private static List<string> femaleFirsts = IO.FileLoader.GetNames(false);
 
         private static List<string> maleSurs = new List<string>() {
             "Dudley", "Rowley", "Shelton", "Wylde", "Kerley", "Odlam", "Bruslin", "Coogan", "Coffey",
             "Montgomery", "Despard", "Gantley", "Shields", "Paxton", "McHugh", "Footter", "Pilkington",
             "Renehan", "Lyon", "Coughlin", "Goodfellow", "Cookman", "Wickfield"
-        };
-
-        private static List<string> femaleFirsts = new List<string>() {
-            "Agatha", "Ann", "Maria", "Sue", "Mary", "Lilly", "Molly", "Anna", "Abby", "Becky", "Jennie",
-            "Ginny", "Joanna", "Maxine", "Lorraine", "Cynthia", "Lenora", "Allie", "Natalie", "Josephine",
-            "Theodosia", "Dahlia", "Gertie"
         };
 
         private static List<string> femaleSurs = new List<string>() {
@@ -56,13 +47,17 @@ namespace Assets.Scripts {
             npc.IsMale = npcGender;
             npc.Name = GetRandomName(npcGender, useFullNames);
             
-            NPCPart.NPCPartDescription randomDesc;
-            var maxValue = Enum.GetValues(typeof(NPCPart.NPCPartDescription)).Length;
-            randomDesc = (NPCPart.NPCPartDescription)PlayerController.Instance.Rng.Next(maxValue);
+            // TODO: Control for murderer similarity
+            int randomDesc;
+            //var maxValue = Enum.GetValues(typeof(NPCPart.NPCPartDescription)).Length;
+            var maxValue = IO.FileLoader.GetParts(NPCPart.NPCPartType.Hat).Count;
+            randomDesc = PlayerController.Instance.Rng.Next(maxValue);
             var newHead = new NPCPart(NPCPart.NPCPartType.Hat, randomDesc);
-            randomDesc = (NPCPart.NPCPartDescription)PlayerController.Instance.Rng.Next(maxValue);
+            maxValue = IO.FileLoader.GetParts(NPCPart.NPCPartType.Hat).Count;
+            randomDesc = PlayerController.Instance.Rng.Next(maxValue);
             var newTorso = new NPCPart(NPCPart.NPCPartType.Shirt, randomDesc);
-            randomDesc = (NPCPart.NPCPartDescription)PlayerController.Instance.Rng.Next(maxValue);
+            maxValue = IO.FileLoader.GetParts(NPCPart.NPCPartType.Hat).Count;
+            randomDesc = PlayerController.Instance.Rng.Next(maxValue);
             var newLegs = new NPCPart(NPCPart.NPCPartType.Pants, randomDesc);
 
             npc.Assemble(newHead, newTorso, newLegs);

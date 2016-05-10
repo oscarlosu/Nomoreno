@@ -1,0 +1,35 @@
+BUGS:
+Statement tokens not properly serialized
+	- One statement contains token '[him]'(?)
+Accusations against liars count even if liar has already caved
+Almost all liars have Accusational truth statements.
+
+SUGGESTIONS:
+Add color descriptors to torso pieces.
+Arrest possibility before end of day should be obvious.
+
+SEED 0:
+Murderer: 	Ginny 
+Description:	(F, straw hat, jacket, black pants, McDonalds)
+
+D1 Graph:
+Name---		Lie---			Truth---
+- Ginny					Accusation(Davis)
+- John					Pointer(Jennie)
+- Sue					Pointer(Agatha)
+- Davis					PeopleLoc(McDonalds)
+- Joseph				MurderLoc(McDonalds)
+- Jennie				PeopleLoc(McDonalds)
+- Agatha	Pointer(Abby)		MurderLoc(McDonalds)
+- Rudolph	Pointer(Sue)		Accusation(Lilly)
+- Ann		PeopleLoc(BKings)	Accusation(Maria)
+- Frank		Descriptive(shirt)	Accusation(Abby)
+- August	Descriptive(wPants)	Accusation(Abby) 
+- Maria		Descriptive(bowler)	Accusation(Anna)
+- Lilly		Pointer(Abby)		Accusation(Becky)
+- Jacob		Pointer(Lilly)		Accusation(Anna)
+- Molly		Pointer(Lilly)		Accusation(Claude)
+- Anna		Descriptive(sixpence)	Accusation(Becky)
+- Abby		Pointer(Becky)		Accusation(Frank)
+- Becky		PeopleLoc(FUpperwood)	Accusation(Molly)
+- Claude	Descriptive(shirt)	Accusation(August)

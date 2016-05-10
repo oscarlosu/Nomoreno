@@ -10,7 +10,7 @@ public class NameLabel : MonoBehaviour {
         UpdateRotation();
     }
     public void UpdateRotation() {        
-        transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
+        transform.eulerAngles = new Vector3(0, -Camera.main.transform.eulerAngles.y, 0);
     }
 
 }
