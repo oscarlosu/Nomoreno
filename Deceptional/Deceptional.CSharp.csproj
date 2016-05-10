@@ -70,28 +70,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AudioManager.cs" />
-    <Compile Include="Assets\Scripts\Cell.cs" />
-    <Compile Include="Assets\Scripts\Clue.cs" />
-    <Compile Include="Assets\Scripts\ClueConverter.cs" />
     <Compile Include="Assets\Scripts\ClueIdentifier.cs" />
     <Compile Include="Assets\Scripts\Conversation.cs" />
-    <Compile Include="Assets\Scripts\ConversationHandler.cs" />
-    <Compile Include="Assets\Scripts\FaceMainCamera.cs" />
-    <Compile Include="Assets\Scripts\Graph.cs" />
-    <Compile Include="Assets\Scripts\GraphBuilder.cs" />
-    <Compile Include="Assets\Scripts\Grid.cs" />
+    <Compile Include="Assets\Scripts\Generation\AIDirector.cs" />
+    <Compile Include="Assets\Scripts\Generation\CaseHandler.cs" />
+    <Compile Include="Assets\Scripts\Generation\Clue.cs" />
+    <Compile Include="Assets\Scripts\Generation\ClueConverter.cs" />
+    <Compile Include="Assets\Scripts\Generation\ClueFactory.cs" />
+    <Compile Include="Assets\Scripts\Generation\ConversationHandler.cs" />
+    <Compile Include="Assets\Scripts\Generation\Graph.cs" />
+    <Compile Include="Assets\Scripts\Generation\GraphBuilder.cs" />
+    <Compile Include="Assets\Scripts\Generation\NPCHandler.cs" />
+    <Compile Include="Assets\Scripts\Generation\Node.cs" />
+    <Compile Include="Assets\Scripts\IO\FileLoader.cs" />
     <Compile Include="Assets\Scripts\Interface\ButtonController.cs" />
     <Compile Include="Assets\Scripts\Interface\CameraController.cs" />
+    <Compile Include="Assets\Scripts\Interface\FaceMainCamera.cs" />
     <Compile Include="Assets\Scripts\Interface\HoverOver.cs" />
+    <Compile Include="Assets\Scripts\Interface\NameLabel.cs" />
+    <Compile Include="Assets\Scripts\Interface\NextDayText.cs" />
     <Compile Include="Assets\Scripts\MinglingDirector.cs" />
     <Compile Include="Assets\Scripts\NPC.cs" />
-    <Compile Include="Assets\Scripts\NPCBehaviour\ITask.cs" />
-    <Compile Include="Assets\Scripts\NPCBehaviour\TaskState.cs" />
-    <Compile Include="Assets\Scripts\NPCHandler.cs" />
     <Compile Include="Assets\Scripts\NPCPart.cs" />
-    <Compile Include="Assets\Scripts\NameLabel.cs" />
-    <Compile Include="Assets\Scripts\NextDayText.cs" />
-    <Compile Include="Assets\Scripts\Node.cs" />
+    <Compile Include="Assets\Scripts\Navigation\Cell.cs" />
+    <Compile Include="Assets\Scripts\Navigation\Grid.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\TextWrapper.cs" />
     <Compile Include="Assets\Scripts\Transitions\DropTransition.cs" />
@@ -100,19 +102,20 @@
     <Compile Include="Assets\Scripts\Transitions\TransitionManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Resources\Statements\startstatement.txt" />
+    <None Include="Assets\Resources\Statements\templates\accusation.txt" />
+    <None Include="Assets\Resources\Statements\templates\description.txt" />
+    <None Include="Assets\Resources\Statements\templates\ignorance.txt" />
+    <None Include="Assets\Resources\Statements\templates\murderLocation.txt" />
+    <None Include="Assets\Resources\Statements\templates\peopleLocation.txt" />
+    <None Include="Assets\Resources\Statements\templates\specificPointer.txt" />
+    <None Include="Assets\Resources\Statements\variables\gender.txt" />
+    <None Include="Assets\Resources\Statements\variables\hats.txt" />
+    <None Include="Assets\Resources\Statements\variables\legs.txt" />
+    <None Include="Assets\Resources\Statements\variables\locations.txt" />
+    <None Include="Assets\Resources\Statements\variables\names.txt" />
+    <None Include="Assets\Resources\Statements\variables\torso.txt" />
     <None Include="Assets\Shaders\3DText.shader" />
-    <None Include="Assets\Statements\templates\accusation.txt" />
-    <None Include="Assets\Statements\templates\description.txt" />
-    <None Include="Assets\Statements\templates\ignorance.txt" />
-    <None Include="Assets\Statements\templates\murderLocation.txt" />
-    <None Include="Assets\Statements\templates\peopleLocation.txt" />
-    <None Include="Assets\Statements\templates\specificPointer.txt" />
-    <None Include="Assets\Statements\variables\hats.txt" />
-    <None Include="Assets\Statements\variables\items.txt" />
-    <None Include="Assets\Statements\variables\legs.txt" />
-    <None Include="Assets\Statements\variables\locations.txt" />
-    <None Include="Assets\Statements\variables\names.txt" />
-    <None Include="Assets\Statements\variables\torso.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

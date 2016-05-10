@@ -7639,7 +7639,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 100
+    m_FontSize: 70
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -13260,7 +13260,7 @@ Prefab:
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: NewDayLabelHolder
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1147533230}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: InterrogationRoomCamera
       value: 
@@ -13297,6 +13297,10 @@ Prefab:
       propertyPath: Difficulty
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
+      propertyPath: CalendarTextMesh
+      value: 
+      objectReference: {fileID: 399072589}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
   m_IsPrefabParent: 0
