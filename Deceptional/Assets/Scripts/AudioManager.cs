@@ -15,6 +15,11 @@ public class AudioManager : MonoBehaviour {
     List<AudioSource> usedSources;
 
     void Awake () {
+        // if an audio manager already exists in the scene, self destroy
+        if(Instance != null) {
+            Destroy(this.gameObject);
+            return;
+        }
         // Initialize singleton
         Instance = this;
         // Initialise lists
