@@ -52,7 +52,9 @@ public class TransitionManager : MonoBehaviour {
         }
         
     }
-
+    /// <summary>
+    /// Transition that happends when the user presses the Start button. (Start screen drops down)
+    /// </summary>
     public void StartTransition() {
         StartCoroutine(StartCo());
     }
@@ -62,7 +64,9 @@ public class TransitionManager : MonoBehaviour {
         yield return new WaitUntil(() => Title.State == Transition.TransitionState.Done && StartButton.State == Transition.TransitionState.Done);
         UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
-
+    /// <summary>
+    /// Transition that happens when the Game Scene is loaded
+    /// </summary>
     public void GameTransition() {
         StartCoroutine(GameCo());
     }
@@ -84,7 +88,9 @@ public class TransitionManager : MonoBehaviour {
 		yield return new WaitUntil(() => BeginDayButtonEnter.State == Transition.TransitionState.Done);
         PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
-
+    /// <summary>
+    /// Transition that happens at the beginning of each day, after the player presses the Begin Day button.
+    /// </summary>
     public void BeginDayTransition() {
 		if(PlayerController.Instance.State == PlayerController.ControllerState.Enabled) {
 			StartCoroutine(BeginDayCo());
@@ -96,24 +102,24 @@ public class TransitionManager : MonoBehaviour {
 		PlatformBackController.enabled = false;
         // Tell PlayerController to start next day
         PlayerController.Instance.BeginDay();
-		// Lift begin day button
-		//BeginDayButtonExit.Execute();
-		//yield return new WaitUntil(() => BeginDayButtonExit.State == Transition.TransitionState.Done);
         // Rotate waiting room back
         WaitingRoomCam.Execute(1);
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
         camController.enabled = true;
+        // Drop Begin Day button
+        BeginDayButtonExit.Execute();
         // Drop buttons
-		BeginDayButtonExit.Execute();
-		ButtonsIn.Execute();
+        ButtonsIn.Execute();
         yield return new WaitUntil(() => ButtonsIn.State == Transition.TransitionState.Done);
 		// Enable rotation of Platform back
-
 		PlatformBackController.enabled = true;
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
 
     }
-
+    /// <summary>
+    /// Transition that happens when the day ends after the player presses the Dismiss button.
+    /// </summary>
+    /// <param name="gameFinished"></param>
     public void DayOverTransition(bool gameFinished) {
         StartCoroutine(DayOverCo(gameFinished));
     }
@@ -124,16 +130,21 @@ public class TransitionManager : MonoBehaviour {
             PlayerController.Instance.ClearPlatformText();
             camController.enabled = false;
             WaitingRoomCam.Execute(-1);
-            yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
+            ButtonsOut.Execute();
+            yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done &&
+                                             ButtonsOut.State == Transition.TransitionState.Done);
             PlayerController.Instance.ShowPlatformText();
         } else {
             ButtonsOut.Execute();
             Clock.Execute(-1);
-            yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done && ButtonsOut.State == Transition.TransitionState.Done);
+            yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done &&
+                                             ButtonsOut.State == Transition.TransitionState.Done);
         }
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
-
+    /// <summary>
+    /// Transition that happens when the player presses the End Day button.
+    /// </summary>
     public void EndDayTransition() {
 		if(PlayerController.Instance.State == PlayerController.ControllerState.Enabled) {
         	StartCoroutine(EndDayCo());
@@ -154,7 +165,11 @@ public class TransitionManager : MonoBehaviour {
 
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
-
+    /// <summary>
+    /// Transition that happens when the player Arrests someone.
+    /// </summary>
+    /// <param name="arrested"></param>
+    /// <param name="gameFinished"></param>
     public void ArrestTransition(Transform arrested, bool gameFinished) {
 		if(PlayerController.Instance.State == PlayerController.ControllerState.Enabled) {
         	StartCoroutine(ArrestCo(arrested, gameFinished));
@@ -179,8 +194,11 @@ public class TransitionManager : MonoBehaviour {
         // Lift cage and rotate waiting room
         CageLift.Execute();
         camController.enabled = false;
+        ButtonsOut.Execute();
         WaitingRoomCam.Execute(-1);
-        yield return new WaitUntil(() => CageLift.State == Transition.TransitionState.Done && WaitingRoomCam.State == Transition.TransitionState.Done);
+        yield return new WaitUntil(() => CageLift.State == Transition.TransitionState.Done && 
+                                         WaitingRoomCam.State == Transition.TransitionState.Done && 
+                                         ButtonsOut.State == Transition.TransitionState.Done);
         // Unparent accused from cage
         arrested.SetParent(parent);        
         
@@ -198,7 +216,9 @@ public class TransitionManager : MonoBehaviour {
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
 
     }
-
+    /// <summary>
+    /// Transition that happens when the player presses the Return to Start button or the Restart button.
+    /// </summary>
     public void EndGameTransition() {
 		if(PlayerController.Instance.State == PlayerController.ControllerState.Enabled) {
         	StartCoroutine(EndGameCo());
@@ -210,7 +230,9 @@ public class TransitionManager : MonoBehaviour {
         yield return new WaitUntil(() => CamerasOut.State == Transition.TransitionState.Done);
         PlayerController.Instance.LoadMenu();
     }
-
+    /// <summary>
+    /// Transition that happens when the user presses the Help button
+    /// </summary>
     public void ToggleHelpTransition() {
         Help.SetActive(!Help.activeSelf);
     }
