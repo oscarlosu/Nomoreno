@@ -75,6 +75,7 @@
     <Compile Include="Assets\Scripts\ClueIdentifier.cs" />
     <Compile Include="Assets\Scripts\Conversation.cs" />
     <Compile Include="Assets\Scripts\ConversationHandler.cs" />
+    <Compile Include="Assets\Scripts\FaceMainCamera.cs" />
     <Compile Include="Assets\Scripts\Graph.cs" />
     <Compile Include="Assets\Scripts\GraphBuilder.cs" />
     <Compile Include="Assets\Scripts\Grid.cs" />
