@@ -330,7 +330,7 @@ namespace Assets.Scripts {
             // Create non-similar lists.
             // This is to avoid lies accidently aligning with the truth.
             var killer = NPC.NPCList.First(npc => npc.IsKiller);
-            var nonSimilarHats = nonKillerNPCs.Where(npc => npc.Head.Description != killer.Head.Description);
+            var nonSimilarHats = nonKillerNPCs.Where(npc => npc.Hat.Description != killer.Hat.Description);
             var nonSimilarTorsos = nonKillerNPCs.Where(npc => npc.Torso.Description != killer.Torso.Description);
             var nonSimilarPants = nonKillerNPCs.Where(npc => npc.Legs.Description != killer.Legs.Description);
             var possibleTargets = new List<NPC>();

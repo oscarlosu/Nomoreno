@@ -23,7 +23,7 @@ namespace Assets.Scripts {
             NPCPartType = targetPart;
             switch (NPCPartType) {
                 case NPCPart.NPCPartType.None:  NPCDescription = string.Empty; break;
-                case NPCPart.NPCPartType.Hat:   NPCDescription = Targets[0].Head.Description; break;
+                case NPCPart.NPCPartType.Hat:   NPCDescription = Targets[0].Hat.Description; break;
                 case NPCPart.NPCPartType.Shirt: NPCDescription = Targets[0].Torso.Description; break;
                 case NPCPart.NPCPartType.Pants: NPCDescription = Targets[0].Legs.Description; break;
                 default: throw new Exception("NPCPart unidentifiable");
@@ -39,7 +39,7 @@ namespace Assets.Scripts {
             NPCPartType = targetPart;
             switch (NPCPartType) {
                 case NPCPart.NPCPartType.None:  NPCDescription = string.Empty; break;
-                case NPCPart.NPCPartType.Hat:   NPCDescription = Targets[0].Head.Description; break;
+                case NPCPart.NPCPartType.Hat:   NPCDescription = Targets[0].Hat.Description; break;
                 case NPCPart.NPCPartType.Shirt: NPCDescription = Targets[0].Torso.Description; break;
                 case NPCPart.NPCPartType.Pants: NPCDescription = Targets[0].Legs.Description; break;
                 default: throw new Exception("NPCPart unidentifiable");
