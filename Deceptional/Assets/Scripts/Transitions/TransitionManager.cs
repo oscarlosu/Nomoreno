@@ -102,19 +102,16 @@ public class TransitionManager : MonoBehaviour {
 		PlatformBackController.enabled = false;
         // Tell PlayerController to start next day
         PlayerController.Instance.BeginDay();
-		// Lift begin day button
-		//BeginDayButtonExit.Execute();
-		//yield return new WaitUntil(() => BeginDayButtonExit.State == Transition.TransitionState.Done);
         // Rotate waiting room back
         WaitingRoomCam.Execute(1);
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
         camController.enabled = true;
+        // Drop Begin Day button
+        BeginDayButtonExit.Execute();
         // Drop buttons
-		BeginDayButtonExit.Execute();
-		ButtonsIn.Execute();
+        ButtonsIn.Execute();
         yield return new WaitUntil(() => ButtonsIn.State == Transition.TransitionState.Done);
 		// Enable rotation of Platform back
-
 		PlatformBackController.enabled = true;
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
 
@@ -127,19 +124,21 @@ public class TransitionManager : MonoBehaviour {
         StartCoroutine(DayOverCo(gameFinished));
     }
     private IEnumerator DayOverCo(bool gameFinished) {
-		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;        
-        // Clear platform text
-        PlayerController.Instance.ClearPlatformText();
-        camController.enabled = false;
-        WaitingRoomCam.Execute(-1);
-        ButtonsOut.Execute();
-        yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done &&
-                                         ButtonsOut.State == Transition.TransitionState.Done);
-        PlayerController.Instance.ShowPlatformText();
-        if (!gameFinished) {
+		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
+        if(gameFinished) {
+            // Clear platform text
+            PlayerController.Instance.ClearPlatformText();
+            camController.enabled = false;
+            WaitingRoomCam.Execute(-1);
+            ButtonsOut.Execute();
+            yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done &&
+                                             ButtonsOut.State == Transition.TransitionState.Done);
+            PlayerController.Instance.ShowPlatformText();
+        } else {
             ButtonsOut.Execute();
             Clock.Execute(-1);
-            yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done);
+            yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done &&
+                                             ButtonsOut.State == Transition.TransitionState.Done);
         }
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
     }
