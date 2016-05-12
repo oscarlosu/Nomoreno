@@ -1,0 +1,387 @@
+fileFormatVersion: 2
+guid: f98561ff8ebfa6d4189a3b2894bbf7da
+timeCreated: 1462896624
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Chest_skin
+    100002: elbow_left_skin
+    100004: Elbow_Right_skin
+    100006: Foot_Left_skin
+    100008: Foot_Right_skin
+    100010: Hand_left_skin
+    100012: Hand_right_skin
+    100014: hats
+    100016: head
+    100018: Head_skin
+    100020: Hip_left_skin
+    100022: Hip_Right_skin
+    100024: item
+    100026: Knee_Left_skin
+    100028: Knee_Right_skin
+    100030: legs_f
+    100032: legs_m
+    100034: neck_skin
+    100036: //RootNode
+    100038: Root_skin
+    100040: Shoulder_left_skin
+    100042: Shoulder_Right_skin
+    100044: Toe_Left_skin
+    100046: Toe_Right_skin
+    100048: torso
+    100050: Wrist_left_skin
+    100052: Wrist_Right_skin
+    400000: Chest_skin
+    400002: elbow_left_skin
+    400004: Elbow_Right_skin
+    400006: Foot_Left_skin
+    400008: Foot_Right_skin
+    400010: Hand_left_skin
+    400012: Hand_right_skin
+    400014: hats
+    400016: head
+    400018: Head_skin
+    400020: Hip_left_skin
+    400022: Hip_Right_skin
+    400024: item
+    400026: Knee_Left_skin
+    400028: Knee_Right_skin
+    400030: legs_f
+    400032: legs_m
+    400034: neck_skin
+    400036: //RootNode
+    400038: Root_skin
+    400040: Shoulder_left_skin
+    400042: Shoulder_Right_skin
+    400044: Toe_Left_skin
+    400046: Toe_Right_skin
+    400048: torso
+    400050: Wrist_left_skin
+    400052: Wrist_Right_skin
+    4300000: head
+    4300002: item
+    4300004: legs_f
+    4300006: hats
+    4300008: legs_m
+    4300010: torso
+    7400000: talk
+    7400002: idle
+    7400004: walk
+    9500000: //RootNode
+    13700000: hats
+    13700002: head
+    13700004: item
+    13700006: legs_f
+    13700008: legs_m
+    13700010: torso
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: talk
+      takeName: Take 001
+      firstFrame: 801
+      lastFrame: 1100
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hats
+        weight: 1
+      - path: head
+        weight: 1
+      - path: item
+        weight: 1
+      - path: legs_f
+        weight: 1
+      - path: legs_m
+        weight: 1
+      - path: Root_skin
+        weight: 1
+      - path: Root_skin/Chest_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/neck_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/neck_skin/Head_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin/elbow_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin/elbow_left_skin/Wrist_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin/elbow_left_skin/Wrist_left_skin/Hand_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin/Elbow_Right_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin/Elbow_Right_skin/Wrist_Right_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin/Elbow_Right_skin/Wrist_Right_skin/Hand_right_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin/Knee_Left_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin/Knee_Left_skin/Foot_Left_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin/Knee_Left_skin/Foot_Left_skin/Toe_Left_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin/Knee_Right_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin/Knee_Right_skin/Foot_Right_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin/Knee_Right_skin/Foot_Right_skin/Toe_Right_skin
+        weight: 1
+      - path: torso
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 1
+    - serializedVersion: 16
+      name: idle
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 759
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hats
+        weight: 1
+      - path: head
+        weight: 1
+      - path: item
+        weight: 1
+      - path: legs_f
+        weight: 1
+      - path: legs_m
+        weight: 1
+      - path: Root_skin
+        weight: 1
+      - path: Root_skin/Chest_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/neck_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/neck_skin/Head_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin/elbow_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin/elbow_left_skin/Wrist_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin/elbow_left_skin/Wrist_left_skin/Hand_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin/Elbow_Right_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin/Elbow_Right_skin/Wrist_Right_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin/Elbow_Right_skin/Wrist_Right_skin/Hand_right_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin/Knee_Left_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin/Knee_Left_skin/Foot_Left_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin/Knee_Left_skin/Foot_Left_skin/Toe_Left_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin/Knee_Right_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin/Knee_Right_skin/Foot_Right_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin/Knee_Right_skin/Foot_Right_skin/Toe_Right_skin
+        weight: 1
+      - path: torso
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 1
+    - serializedVersion: 16
+      name: walk
+      takeName: Take 001
+      firstFrame: 761
+      lastFrame: 800
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: hats
+        weight: 1
+      - path: head
+        weight: 1
+      - path: item
+        weight: 1
+      - path: legs_f
+        weight: 1
+      - path: legs_m
+        weight: 1
+      - path: Root_skin
+        weight: 1
+      - path: Root_skin/Chest_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/neck_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/neck_skin/Head_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin/elbow_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin/elbow_left_skin/Wrist_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_left_skin/elbow_left_skin/Wrist_left_skin/Hand_left_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin/Elbow_Right_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin/Elbow_Right_skin/Wrist_Right_skin
+        weight: 1
+      - path: Root_skin/Chest_skin/Shoulder_Right_skin/Elbow_Right_skin/Wrist_Right_skin/Hand_right_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin/Knee_Left_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin/Knee_Left_skin/Foot_Left_skin
+        weight: 1
+      - path: Root_skin/Hip_left_skin/Knee_Left_skin/Foot_Left_skin/Toe_Left_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin/Knee_Right_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin/Knee_Right_skin/Foot_Right_skin
+        weight: 1
+      - path: Root_skin/Hip_Right_skin/Knee_Right_skin/Foot_Right_skin/Toe_Right_skin
+        weight: 1
+      - path: torso
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 1
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,119 @@
+fileFormatVersion: 2
+guid: 3f1782aa04a63504fae23c8c9535dc8a
+timeCreated: 1462883693
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Chest_skin
+    100002: elbow_left_skin
+    100004: Elbow_Right_skin
+    100006: Foot_Left_skin
+    100008: Foot_Right_skin
+    100010: Hand_left_skin
+    100012: Hand_right_skin
+    100014: Head_skin
+    100016: Hip_left_skin
+    100018: Hip_Right_skin
+    100020: jacket_f
+    100022: //RootNode
+    100024: Knee_Left_skin
+    100026: Knee_Right_skin
+    100028: neck_skin
+    100030: Root_skin
+    100032: Shoulder_left_skin
+    100034: Shoulder_Right_skin
+    100036: Toe_Left_skin
+    100038: Toe_Right_skin
+    100040: Wrist_left_skin
+    100042: Wrist_Right_skin
+    400000: Chest_skin
+    400002: elbow_left_skin
+    400004: Elbow_Right_skin
+    400006: Foot_Left_skin
+    400008: Foot_Right_skin
+    400010: Hand_left_skin
+    400012: Hand_right_skin
+    400014: Head_skin
+    400016: Hip_left_skin
+    400018: Hip_Right_skin
+    400020: //RootNode
+    400022: jacket_f
+    400024: Knee_Left_skin
+    400026: Knee_Right_skin
+    400028: neck_skin
+    400030: Root_skin
+    400032: Shoulder_left_skin
+    400034: Shoulder_Right_skin
+    400036: Toe_Left_skin
+    400038: Toe_Right_skin
+    400040: Wrist_left_skin
+    400042: Wrist_Right_skin
+    4300000: jacket_f
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: jacket_f
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

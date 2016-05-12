@@ -1,2 +1,0 @@
-The murderer was wearing a [Part].
-The murderer is a [Gender].

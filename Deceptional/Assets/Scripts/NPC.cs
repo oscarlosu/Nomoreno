@@ -55,23 +55,32 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     /// <summary>
     /// References to rendering components for the NPC's body parts
     /// </summary>
-    public MeshFilter HeadMeshFilter;
-    public MeshRenderer HeadRenderer;
-    public MeshFilter TorsoMeshFilter;
-    public MeshRenderer TorsoRenderer;
-    public MeshFilter LegsMeshFilter;
-    public MeshRenderer LegsRenderer;
+    //public MeshFilter HeadMeshFilter;
+    //public MeshRenderer HeadRenderer;
+    //public MeshFilter TorsoMeshFilter;
+    //public MeshRenderer TorsoRenderer;
+    //public MeshFilter LegsMeshFilter;
+    //public MeshRenderer LegsRenderer;
 
-    public NPCPart Head { get; set; }
+    
+    public SkinnedMeshRenderer headRenderer;
+    public SkinnedMeshRenderer hatRenderer;
+    public SkinnedMeshRenderer torsoRenderer;
+    public SkinnedMeshRenderer legsRenderer_m;
+    public SkinnedMeshRenderer legsRenderer_f;
+    public SkinnedMeshRenderer itemRenderer;
+
+    public NPCPart Hat { get; set; }
     public NPCPart Torso { get; set; }
     public NPCPart Legs { get; set; }
+    public NPCPart Item { get; set; }
 
     private NavMeshAgent navAgent;
     public Vector3 InterrogationPosition;
     public Vector3 PoliceBoxPosition;
     private Animator anim;
 
-    private NPC mingleTarget;
+    //private NPC mingleTarget;
     public float BehaviourChangeChance;
 
     public float MinglingDistance;
@@ -216,21 +225,80 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         PlayerController.Instance.SelectedNPC = this;
     }
 
-    public void Assemble(NPCPart head, NPCPart torso, NPCPart legs) {
+    public void Assemble(NPCPart hat, NPCPart torso, NPCPart legs) {
+        Assemble(hat, torso, legs, null);
+    }
+
+    public void Assemble(NPCPart hat, NPCPart torso, NPCPart legs, NPCPart item) {
         // Save parts
-        Head = head;
+        Hat = hat;
         Torso = torso;
         Legs = legs;
+        Item = item;
         // Load meshes and materials
+        string gender_suffix = (IsMale ? "_m" : "_f");
+        string material_suffix = "_mat";
         // Head
-        //HeadMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Head.Type.ToString());
-        HeadRenderer.material = Resources.Load<Material>("Materials/" + Head.Description.ToString());
+        headRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + "head" + gender_suffix);
+        headRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + "head" + gender_suffix + material_suffix);
+        // Hat
+        hatRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + Hat.GetFileName());
+        hatRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + Hat.GetFileName() + material_suffix);
         // Torso
-        //TorsoMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Torso.Type.ToString());
-        TorsoRenderer.material = Resources.Load<Material>("Materials/" + Torso.Description.ToString());
+        torsoRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + Torso.GetFileName() + gender_suffix);
+        torsoRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + Torso.GetFileName() + gender_suffix + material_suffix);
         // Legs
-        //LegsMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Legs.Type.ToString());
-        LegsRenderer.material = Resources.Load<Material>("Materials/" + Legs.Description.ToString());
+        if(IsMale) {
+            // Load male legs
+            legsRenderer_m.sharedMesh = Resources.Load<Mesh>("Models/" + Legs.GetFileName() + gender_suffix);
+            legsRenderer_m.sharedMaterial = Resources.Load<Material>("Materials/" + Legs.GetFileName() + gender_suffix + material_suffix);
+            // Set female to null
+            legsRenderer_f.sharedMesh = null;
+            legsRenderer_f.sharedMaterial = null;
+            // Disable female
+            legsRenderer_f.enabled = false;
+        } else {
+            // Load female legs
+            legsRenderer_f.sharedMesh = Resources.Load<Mesh>("Models/" + Legs.GetFileName() + gender_suffix);
+            legsRenderer_f.sharedMaterial = Resources.Load<Material>("Materials/" + Legs.GetFileName() + gender_suffix + material_suffix);
+            // Set male to null
+            legsRenderer_m.sharedMesh = null;
+            legsRenderer_m.sharedMaterial = null;
+            // Disable male
+            legsRenderer_m.enabled = false;
+        }
+        
+        // Item
+        if(Item != null) {
+            itemRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + Item.GetFileName() + gender_suffix);
+            itemRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + Item.GetFileName() + gender_suffix + material_suffix);
+        }       
+
+    }
+
+    private void AnimateWalk() {
+        anim.SetBool("Talk", false);
+        anim.SetBool("Walk", true);
+        anim.SetBool("None", false);
+    }
+
+    private void AnimateIdle() {
+        anim.SetFloat("AnimOffset", (float)PlayerController.Instance.Rng.NextDouble());
+        anim.SetBool("Talk", false);
+        anim.SetBool("Walk", false);
+        anim.SetBool("None", false);
+    }
+
+    private void AnimateTalk() {
+        anim.SetBool("Talk", true);
+        anim.SetBool("Walk", false);
+        anim.SetBool("None", false);
+    }
+
+    private void AnimateNone() {
+        anim.SetBool("Talk", false);
+        anim.SetBool("Walk", false);
+        anim.SetBool("None", true);
     }
 
     public void CoolMood() {
@@ -247,17 +315,6 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     }
     public void HideNameLabel() {
         NameLabelHolder.SetActive(false);
-    }
-
-    private IEnumerator HandleWalkAnimation() {
-        // Start walk animation        
-        anim.SetBool("Walk", true);
-        // Wait for agent to reach destination
-        do {
-            yield return null;
-        } while (!HasReachedDestination());
-        // Stop walk animation
-        anim.SetBool("Walk", false);
     }
 
     private bool RotateTowards(Transform target) {
@@ -346,6 +403,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     private void Wait() {
         CurrentBehaviour = Behaviour.Waiting;
         // Set idle animation
+        AnimateIdle();
     }
 
     private IEnumerator Mingle(List<NPC> targets) {
@@ -360,7 +418,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         // Change state
         CurrentBehaviour = Behaviour.Mingling;
         // Set animator state
-        anim.SetBool("Walk", true);
+        AnimateWalk();
         // Inform target of mingling start
         target.WaitForMingle(this);
         // Navigate to target
@@ -372,18 +430,16 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         yield return null;   
         // Wait until near enough to the target
         yield return new WaitUntil(() => this.HasReachedDestination());
-        //while(!Mathf.Approximately(navAgent.remainingDistance, 0.0f)) {
-        //    yield return null;
-            
-        //}
-        //Debug.Log("Reached target");
-        target.CurrentBehaviour = Behaviour.MingleReady;
         // Set animator state
-        anim.SetBool("Walk", false);
+        AnimateNone();
         // Face other NPC
         while (!RotateTowards(target.transform)) {
             yield return null; // Replace with WaitUntil(RotateTowards(target.transform));
-        }        
+        }
+        // Set state so that other NOPC knows that the mingling can start
+        target.CurrentBehaviour = Behaviour.MingleReady;
+        // Set animator state
+        AnimateTalk();
         // Display result of mingling
         Emoji.sprite = GetMingleResult(target);
         Emoji.enabled = true;
@@ -399,13 +455,13 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         currentCell = Grid.Instance.GetIsolatedCell();
         navAgent.SetDestination(currentCell.transform.position);
         // Set animator state
-        anim.SetBool("Walk", true);
+        AnimateWalk();
         // Wait until target is reached
         do {
             yield return null;
         } while (!HasReachedDestination());
         // Set animation state
-        anim.SetBool("Walk", false);
+        AnimateIdle();
     }
 
     private IEnumerator CoWaitForMingle(NPC other) {
@@ -414,19 +470,16 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
 
 
         Debug.Log(Name + " receives mingle from " + other.Name);
-        // Start animation
-        anim.SetBool("Walk", false);
+        // Walk animation
+        AnimateIdle();
         //MingleReady = false;
         // Wait for other NPC to get near
         // Wait for distance to be lower than threshold, instead of mingling signal from initiator?
         while (CurrentBehaviour != Behaviour.MingleReady) {
             yield return null;
         }
-        //yield return new WaitUntil(() => CurrentBehaviour == Behaviour.MingleReady);
-        // Face other NPC
-        // Store original rotation
-        //Quaternion originalRotation = transform.rotation;
-        //transform.LookAt(other.transform);
+        // Dont want any animation during rotation
+        AnimateNone();
         while (!RotateTowards(other.transform)) {
             yield return null;
         }
@@ -438,23 +491,16 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
             Debug.LogWarning("No result in mingle with " + Name);
 
         }
+        // Talking animation
+        AnimateTalk();
 
         Emoji.enabled = true;
-        //yield return new WaitForSeconds(MinglingDuration);
-        //yield return new WaitUntil(() => CurrentBehaviour != Behaviour.Mingling);
-        //// Hide emoji
-        //Emoji.enabled = false;
-        //// Face original direction
-        ////transform.rotation = originalRotation;
-        //while (!RotateTowards(originalRotation)) {
-        //    yield return null;
-        //}
+
     }
 
     private IEnumerator CoGoToInterrogation() {
-        //CanMingle = false;
-        // Set animator state
-        anim.SetBool("Walk", true);
+        // Walking animation
+        AnimateWalk();
         // Free cell
         Grid.Instance.FreeCell(currentCell);
         currentCell = null;
@@ -470,8 +516,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         warped = true;
         // Hide name label
         HideNameLabel();
-        // Set animation state
-        anim.SetBool("Walk", false);
+        // Talk animation
+        AnimateTalk();
         CurrentBehaviour = Behaviour.Interrogated;
 
         // Inform Player Controller of arrival
@@ -493,8 +539,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
 
 
         CurrentBehaviour = Behaviour.Moving;
-        // Set animation state
-        anim.SetBool("Walk", true);
+        // Walk animation
+        AnimateWalk();
         // Navigate to waiting room
         navAgent.SetDestination(currentCell.transform.position);
         // Wait until target is reached
@@ -502,10 +548,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
             yield return null;
         } while (!HasReachedDestination());
         // Set animation state
-        anim.SetBool("Walk", false);
-        // Start Waiting coroutine
-        //StartCoroutine(Waiting());
-        // End
+        AnimateIdle();
+
     }
     #endregion
 
@@ -517,8 +561,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
             return Agree;
         } else if (IsDisagree(other.Conversation.ActualClue)) {
             return Disagree;
-        } else if (IsHappy(other)) {
-            return Trust;
+        //} else if (IsHappy(other)) {
+        //    return Trust;
         } else if (IsAngry(other)) {
             return Distrust;
         } else {
@@ -544,7 +588,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
             // Supportive or  Accusatory
             else {
                 // Same target
-                if (Conversation.ActualClue.Target == other.Target) {
+                if (Conversation.ActualClue.Targets.Any(npc => other.Targets.Any(oNPC => npc == oNPC))) {
                     return true;
                 } else {
                     return false;
@@ -573,28 +617,29 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
             else {
                 return false;
             }
-        } else if ((Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && other.Identifier == ClueIdentifier.Informational) ||
-                    (Conversation.ActualClue.Identifier == ClueIdentifier.Informational && other.Identifier == ClueIdentifier.Accusatory)) {
-            if (Conversation.ActualClue.Target == other.Target) {
-                return true;
-            }
+        // Cannot reasonably be converted to match new statements.
+        //} else if ((Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && other.Identifier == ClueIdentifier.Informational) ||
+        //            (Conversation.ActualClue.Identifier == ClueIdentifier.Informational && other.Identifier == ClueIdentifier.Accusatory)) {
+        //    if (Conversation.ActualClue.Target == other.Target) {
+        //        return true;
+        //    }
         }
         return false;
     }
-    public bool IsHappy(NPC other) {
-        if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
-            other.Conversation.ActualClue.Target == this) ||
-            (Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
-            Conversation.ActualClue.Target == other)) {
-            return true;
-        }
-        return false;
-    }
+    //public bool IsHappy(NPC other) {
+    //    if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
+    //        other.Conversation.ActualClue.Target == this) ||
+    //        (Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
+    //        Conversation.ActualClue.Target == other)) {
+    //        return true;
+    //    }
+    //    return false;
+    //}
     public bool IsAngry(NPC other) {
         if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
-            other.Conversation.ActualClue.Target == this) ||
+            other.Conversation.ActualClue.Targets.Contains(this)) ||
             (Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
-            Conversation.ActualClue.Target == other)) {
+            Conversation.ActualClue.Targets.Contains(other))) {
             return true;
         }
         return false;

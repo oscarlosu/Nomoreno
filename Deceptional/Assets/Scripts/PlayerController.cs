@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Assets.Scripts {
@@ -65,6 +65,7 @@ namespace Assets.Scripts {
         public int DailyInteracions;
         public int NumberOfNPCS;
         public int NumberOfDescriptiveClues;
+        public int Difficulty;
         
 
         public ButtonController CallInButton;
@@ -84,13 +85,12 @@ namespace Assets.Scripts {
 
         private List<Coroutine> conversationCoroutines;
         public float PercentageLiars;
-        
+        public float PercentageDescriptiveLiars;
+
         public float SelectionSpotlightYOffset;
 
         public int MaxMinglers;
         public int MinMinglers;
-
-
 
         private string platformText;
 
@@ -112,7 +112,7 @@ namespace Assets.Scripts {
         public void Awake() {
 			State = ControllerState.Disabled;
             // Initialize RNG
-            if(!UseFixedSeed) {
+            if (!UseFixedSeed) {
                 Seed = (int) DateTime.Now.Ticks;
             }
             Rng = new System.Random(Seed);
@@ -176,29 +176,25 @@ namespace Assets.Scripts {
 		}
 
         public void DisplayConversation() {
-            // Display name on wall
-            NameText.text = CurrentInterrogationTarget.Name + " says:";
-            // Get statement and break into lines
-            string statement = string.Empty;
-            if (CurrentInterrogationTarget.Mood) {
-                statement = CurrentInterrogationTarget.Conversation.MoodyMessage;
-            } else {
-                statement = CurrentInterrogationTarget.Conversation.ActualClue.Statement;
-            }
-
-            statement = TextWrapper.BreakLine(statement);
-            StatementTextMesh.gameObject.SetActive(true);
-            Coroutine inst = StartCoroutine(CoDisplayText(statement, StatementTextMesh));
-            conversationCoroutines.Add(inst);
+            DisplayConversation(string.Empty);
         }
 
         public void DisplayConversation(string prefix) {
+            // Display name on wall
             NameText.text = CurrentInterrogationTarget.Name + " says:";
+            // Get statement and break into lines
             var statement = string.Empty;
             if (CurrentInterrogationTarget.Mood) {
                 statement = CurrentInterrogationTarget.Conversation.MoodyMessage;
             } else {
                 statement = prefix + CurrentInterrogationTarget.Conversation.ActualClue.Statement;
+                // Add displayed clue to AIDirector list if not present already
+                if (!AIDirector.Instance.DailyClues.Contains(CurrentInterrogationTarget.Conversation.ActualClue))
+                    AIDirector.Instance.DailyClues.Add(CurrentInterrogationTarget.Conversation.ActualClue);
+                // Add displayed hard clue to AIDirector list if not present already
+                if (!AIDirector.Instance.HardClues.Contains(CurrentInterrogationTarget.Conversation.ActualClue) &&
+                    CurrentInterrogationTarget.Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive)
+                    AIDirector.Instance.HardClues.Add(CurrentInterrogationTarget.Conversation.ActualClue);
             }
 
             statement = TextWrapper.BreakLine(statement);
@@ -384,6 +380,9 @@ namespace Assets.Scripts {
         }
         public void ClearScene() {
             HideConversation();
+            // Update AIDirector
+            AIDirector.Instance.CalculateDifficulty();
+
             // Hide scene
             HideScene();
             // Reset interaction count
@@ -404,17 +403,39 @@ namespace Assets.Scripts {
             ClearPlatformText();
             ++currentDay;
             // Murder new witness
-            string victimName = MurderWitness();
+            Clue.LatestVictim = MurderWitness();
+            //LatestLocation = "Nowhere"; // TODO: Insert 'real' location.
             // Clear reference to arrested NPC
             arrestedNPC = null;
             // Cool NPC moods
             foreach (NPC n in NPC.NPCList) { n.CoolMood(); }
             // Generate conversations
-            ConversationHandler.TruthGraph = GraphBuilder.BuildRandomGraph(NPC.NPCList.Count, NumberOfDescriptiveClues);
-            ConversationHandler.SetupConversations(PercentageLiars);
+            // TODO: Add variables for location clues and pointers.
+            ConversationHandler.TruthGraph = GraphBuilder.BuildGraph(AIDirector.Instance.NumberOfDescriptiveClues, 2, 2, 2);
+            ConversationHandler.SetupConversations(AIDirector.Instance.PercentageLiars, AIDirector.Instance.PercentageDescriptiveLiars);
+            // Reset clock
+            ResetClock();
             // Show new day message
-            platformText = "Day " + currentDay + "\n\n" + victimName + " has\n been murdered.";
+            var dayStartStatements = IO.FileLoader.GetLimericks();
+            platformText = TextWrapper.BreakLine(ConstructDayStatement(dayStartStatements[Rng.Next(dayStartStatements.Count)], Clue.LatestVictim.Name, Clue.LatestVictim.IsMale));
+            //platformText = "Day " + currentDay + ":\n\n" + victimName + " has\n been murdered.";
             
+        }
+
+        #region Pronouns
+        private static List<string> malePronouns = new List<string>() { "man", "he", "his", "men", "him", "Mister" };
+        private static List<string> femalePronouns = new List<string>() { "woman", "she", "hers", "women", "her", "Miss" };
+        #endregion
+        private string ConstructDayStatement(string limerick, string name, bool isMale) {
+            Regex genderRegex = new Regex(@"(\[gender\[(\d)\]\])");
+            var genderMatches = genderRegex.Matches(limerick);
+            foreach (Match m in genderMatches) {
+                var pronoun = isMale ? malePronouns[int.Parse(m.Groups[2].Value) - 1] : femalePronouns[int.Parse(m.Groups[2].Value) - 1];
+                limerick = limerick.Replace(m.Value, pronoun);
+            }
+            limerick = limerick.Replace("[name]", name);
+
+            return limerick;
         }
 
         public void BeginDay() {
@@ -460,8 +481,8 @@ namespace Assets.Scripts {
             }
         }
 
-        private string MurderWitness() {
-            string name = "Nobody";
+        private NPC MurderWitness() {
+            NPC victim = null;
             // Only murder if there is more than one NPC
             if (NPC.NPCList.Count > 1) {
                 // Find an NPC that is not the killer
@@ -469,18 +490,18 @@ namespace Assets.Scripts {
                 NPC target;
                 do {
                     //index = UnityEngine.Random.Range(0, NPC.NPCList.Count);
+                    index = Rng.Next(NPC.NPCList.Count);
                     //index = UseFixedSeed ? new System.Random(Seed).Next(NPC.NPCList.Count) : new System.Random(DateTime.Now.Millisecond).Next(NPC.NPCList.Count);
-                    index = Rng.Next(0, NPC.NPCList.Count);
                     target = NPC.NPCList[index];
                 } while (NPC.NPCList[index].IsKiller || (arrestedNPC == target && NPC.NPCList.Count > 2));
                 // Save victim's name
-                name = target.Name;
+                victim = target;
                 // Remove from list
                 NPC.NPCList.RemoveAt(index);
                 // Destroy game object
                 Destroy(target.gameObject);
             }
-            return name;
+            return victim;
         }
         #endregion
     }

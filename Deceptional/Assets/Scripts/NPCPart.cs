@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using Assets.Scripts;
 
 public class NPCPart
 {
@@ -8,7 +8,8 @@ public class NPCPart
         None,
         Pants,
         Shirt,
-        Hat
+        Hat,
+        Item
     }
     public enum NPCPartDescription
     {
@@ -21,27 +22,26 @@ public class NPCPart
     }
 
     public NPCPartType Type { get; set; }
-    public NPCPartDescription Description { get; set; }
+    //public NPCPartDescription Description { get; set; }
+    public string Description { get; set; }
 
-    public NPCPart(NPCPartType type, NPCPartDescription description)
+    //public NPCPart(NPCPartType type, NPCPartDescription description)
+    public NPCPart(NPCPartType type, int descIdx)
     {
         Type = type;
-        Description = description;
+        var posParts = Assets.Scripts.IO.FileLoader.GetParts(type);
+        descIdx = descIdx % posParts.Count;
+        Description = posParts[descIdx];
     }
 
-    /*
-    private Mesh model;
-    public Mesh Model { get; set; }
-
-    private Material material;
-    public Material Material { get; set; }
-
-    public NPCPart(Mesh model, Material material, NPCPartType type, NPCPartDescription description)
-    {
-        this.model = model;
-        this.material = material;
-        this.type = type;
-        this.description = description;
+    public string GetFileName() {
+        string fileName = "";
+        string[] words = Description.Split(' ');
+        fileName += words[0];
+        for(int i = 1; i < words.Length; ++i) {
+            fileName += "_";
+            fileName += words[i];
+        }
+        return fileName;
     }
-    */
 }
