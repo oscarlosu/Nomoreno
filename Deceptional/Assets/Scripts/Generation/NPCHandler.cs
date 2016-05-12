@@ -78,7 +78,7 @@ namespace Assets.Scripts {
             var newPants = isCustomPart[NPCPart.NPCPartType.Pants] != null ? isCustomPart[NPCPart.NPCPartType.Pants] : GetRandomPart(NPCPart.NPCPartType.Pants);
             var newItem = isCustomPart[NPCPart.NPCPartType.Item] != null ? isCustomPart[NPCPart.NPCPartType.Item] : GetRandomPart(NPCPart.NPCPartType.Item);
 
-            npc.Assemble(newHat, newShirt, newPants);
+            npc.Assemble(newHat, newShirt, newPants, newItem);
 
             return npcGO;
         }

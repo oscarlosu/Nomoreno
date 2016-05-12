@@ -270,8 +270,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         
         // Item
         if(Item != null) {
-            itemRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + Item.GetFileName() + gender_suffix);
-            itemRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + Item.GetFileName() + gender_suffix + material_suffix);
+            itemRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + Item.GetFileName());
+            itemRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + Item.GetFileName() + material_suffix);
         }       
 
     }
