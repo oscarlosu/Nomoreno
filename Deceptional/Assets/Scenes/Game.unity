@@ -4821,6 +4821,14 @@ Prefab:
       propertyPath: Help
       value: 
       objectReference: {fileID: 25668352}
+    - target: {fileID: 11411500, guid: 8b43a59f4cabe0f4b861fa1d76bdeffc, type: 2}
+      propertyPath: PlatformTurningSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c1100d8dcc10afc428f52418e5279053, type: 3}
+    - target: {fileID: 11411500, guid: 8b43a59f4cabe0f4b861fa1d76bdeffc, type: 2}
+      propertyPath: PlatformStopSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 9d346a4886ed98f4e81ec096b4b0bc9a, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8b43a59f4cabe0f4b861fa1d76bdeffc, type: 2}
   m_IsPrefabParent: 0

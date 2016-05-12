@@ -54,12 +54,18 @@ MonoBehaviour:
   CageDrop: {fileID: 0}
   CageLift: {fileID: 0}
   CageBase: {fileID: 0}
-  SuccessSound: {fileID: 0}
+  SuccessSound: {fileID: 8300000, guid: f1b2be02bffecf344b00c99bc4aea30a, type: 3}
   SuccessSoundVolume: 1
-  FailureSound: {fileID: 0}
+  FailureSound: {fileID: 8300000, guid: 83d9b318296d39e49a22ee5627654fd9, type: 3}
   FailureSoundVolume: 1
+  CageHitSound: {fileID: 8300000, guid: 9d346a4886ed98f4e81ec096b4b0bc9a, type: 3}
+  CageHitVolume: 1
+  CageChainSound: {fileID: 8300000, guid: 79372a545f500c247803a5fd6c540216, type: 3}
+  CageChainVolume: 1
   CamerasOut: {fileID: 0}
   Help: {fileID: 0}
+  PlatformTurningSound: {fileID: 0}
+  PlatformTurningVolume: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
