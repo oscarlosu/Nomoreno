@@ -33,8 +33,7 @@ namespace Assets.Scripts {
             }
 
             foreach (NPC liar in LieGraph.Nodes.Select(node => node.NPC)) {
-                if (liar.Conversation.IsTrue)
-                    throw new Exception("Liars have not been connected with corrosponding lies.");
+                if (liar.Conversation.IsTrue) throw new Exception("Liars have not been connected with corrosponding lies.");
             }
         }
     }

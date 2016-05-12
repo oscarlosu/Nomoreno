@@ -1,4 +1,4 @@
-[namelist] were at [location] when the murder happened.
+[namelist] were at [Location] when the murder happened.
 I was wiv [namelist] at [location] so I do not really know anythin' abaaaht da murder, sorry I cannot 'elp yew buddy.
 Awright geeezzaa! I know that [namelist] was at [location] around when da murder 'appened, yew should probably look in'er what they was doing. Sorted mate. 
 Blimey! I was wiv [namelist] at [location] when we 'eard a rumor that a murder 'appened, we immediately started discussin' who might be da victim. Nuff said, yeah?
