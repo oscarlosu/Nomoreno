@@ -192,8 +192,18 @@ namespace Assets.Scripts {
         public void SetupMultiSupportNode(Node baseNode, List<NPC> targets, string location) { SetupMultiSupportNode(baseNode, targets, location, ClueIdentifier.PeopleLocation); }
         public void SetupMultiSupportNode(Node baseNode, List<NPC> targets, string location, ClueIdentifier identifier) {
             baseNode.TargetNodes = targets;
-            //var template = targets.Contains(baseNode.NPC) ? /* ClueConverter.GetClueTemplate(Incriminating) */ : ClueConverter.GetClueTemplate(identifier);
-            var template = ClueConverter.GetClueTemplate(identifier);
+            var template = "";
+            if (identifier == ClueIdentifier.PeopleLocation) {
+                if (targets.Contains(baseNode.NPC)) {
+                    template = ClueConverter.GetLocationSubTemplate(true);
+                    targets.Remove(baseNode.NPC);
+                } else {
+                    template = ClueConverter.GetLocationSubTemplate(false);
+                }
+            } else {
+                ClueConverter.GetClueTemplate(identifier);
+            }
+            //var template = ClueConverter.GetClueTemplate(identifier);
             baseNode.NodeClue = new Clue(template, baseNode.TargetNodes, identifier, NPCPart.NPCPartType.None) { Location = location };
         }
         #endregion
