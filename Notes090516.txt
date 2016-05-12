@@ -1,6 +1,4 @@
 BUGS:
-Statement tokens not properly serialized
-	- One statement contains token '[him]'(?)
 Accusations against liars count even if liar has already caved
 Almost all liars have Accusational truth statements.
 
@@ -14,22 +12,22 @@ Description:	(F, straw hat, jacket, black pants, McDonalds)
 
 D1 Graph:
 Name---		Lie---			Truth---
-- Ginny					Accusation(Davis)
-- John					Pointer(Jennie)
-- Sue					Pointer(Agatha)
-- Davis					PeopleLoc(McDonalds)
+- Ginny					PeopleLoc(FUnderwood)
 - Joseph				MurderLoc(McDonalds)
+- Agatha				MurderLoc(McDonalds)	
+- Rudolph	Pointer(Abby)		Descriptive(jacket)	x
 - Jennie				PeopleLoc(McDonalds)
-- Agatha	Pointer(Abby)		MurderLoc(McDonalds)
-- Rudolph	Pointer(Sue)		Accusation(Lilly)
-- Ann		PeopleLoc(BKings)	Accusation(Maria)
-- Frank		Descriptive(shirt)	Accusation(Abby)
-- August	Descriptive(wPants)	Accusation(Abby) 
-- Maria		Descriptive(bowler)	Accusation(Anna)
-- Lilly		Pointer(Abby)		Accusation(Becky)
-- Jacob		Pointer(Lilly)		Accusation(Anna)
-- Molly		Pointer(Lilly)		Accusation(Claude)
-- Anna		Descriptive(sixpence)	Accusation(Becky)
-- Abby		Pointer(Becky)		Accusation(Frank)
-- Becky		PeopleLoc(FUpperwood)	Accusation(Molly)
-- Claude	Descriptive(shirt)	Accusation(August)
+- Davis					PeopleLoc(McDonalds)
+- Sue					Pointer(Jennie)
+- Lilly					Pointer(Rudolph)
+- Ann		Pointer(Sue)		Accusation(Maria)	x
+- Frank		PeopleLoc(BKings)	Accusation(Ann)		x
+- August	Descriptive(wPants)	Accusation(Jacob)	x 
+- Maria		Descriptive(shirt)	Accusation(Molly)	x
+- John		Descriptive(bowler)	Accusation(Becky)	x
+- Jacob		Pointer(Becky)		Accusation(Ann)		x
+- Molly		Pointer(Jacob)		Accusation(Anna)	x
+- Anna		Descriptive(sixpence)	Accusation(Becky)	x
+- Abby		Pointer(Jacob)		Accusation(Anna)	x
+- Becky		PeopleLoc(FUpperwood)	Accusation(Anna)	x
+- Claude	Descriptive(shirt)	Accusation(Ann)		x

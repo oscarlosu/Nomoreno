@@ -131,18 +131,6 @@
     <None Include="Assets\Resources\Statements\variables\names.txt" />
     <None Include="Assets\Resources\Statements\variables\torso.txt" />
     <None Include="Assets\Shaders\3DText.shader" />
-    <None Include="Assets\Statements\templates\accusation.txt" />
-    <None Include="Assets\Statements\templates\description.txt" />
-    <None Include="Assets\Statements\templates\ignorance.txt" />
-    <None Include="Assets\Statements\templates\murderLocation.txt" />
-    <None Include="Assets\Statements\templates\peopleLocation.txt" />
-    <None Include="Assets\Statements\templates\specificPointer.txt" />
-    <None Include="Assets\Statements\variables\hats.txt" />
-    <None Include="Assets\Statements\variables\items.txt" />
-    <None Include="Assets\Statements\variables\legs.txt" />
-    <None Include="Assets\Statements\variables\locations.txt" />
-    <None Include="Assets\Statements\variables\names.txt" />
-    <None Include="Assets\Statements\variables\torso.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

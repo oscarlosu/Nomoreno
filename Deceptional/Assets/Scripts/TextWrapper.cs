@@ -5,10 +5,17 @@ using System.Linq;
 
 namespace Assets.Scripts {
     public static class TextWrapper {
-        public static int MaxLineCharacters = 20; // 20 characters.
+        public static int DefaultMaxLength = 20; // 20 characters.
+
+
+        public static string BreakLine(string s, int maxLen) {
+            var retString = SplitByLength(s, maxLen).Aggregate((wS, n) => wS + "\n" + n);
+
+            return retString;
+        }
 
         public static string BreakLine(string s) {
-            var retString = SplitByLength(s, MaxLineCharacters).Aggregate((wS, n) => wS + "\n" + n);
+            var retString = SplitByLength(s, DefaultMaxLength).Aggregate((wS, n) => wS + "\n" + n);
 
             return retString;
         }

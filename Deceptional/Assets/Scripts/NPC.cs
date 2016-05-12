@@ -55,16 +55,25 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     /// <summary>
     /// References to rendering components for the NPC's body parts
     /// </summary>
-    public MeshFilter HeadMeshFilter;
-    public MeshRenderer HeadRenderer;
-    public MeshFilter TorsoMeshFilter;
-    public MeshRenderer TorsoRenderer;
-    public MeshFilter LegsMeshFilter;
-    public MeshRenderer LegsRenderer;
+    //public MeshFilter HeadMeshFilter;
+    //public MeshRenderer HeadRenderer;
+    //public MeshFilter TorsoMeshFilter;
+    //public MeshRenderer TorsoRenderer;
+    //public MeshFilter LegsMeshFilter;
+    //public MeshRenderer LegsRenderer;
 
-    public NPCPart Head { get; set; }
+    
+    public SkinnedMeshRenderer headRenderer;
+    public SkinnedMeshRenderer hatRenderer;
+    public SkinnedMeshRenderer torsoRenderer;
+    public SkinnedMeshRenderer legsRenderer_m;
+    public SkinnedMeshRenderer legsRenderer_f;
+    public SkinnedMeshRenderer itemRenderer;
+
+    public NPCPart Hat { get; set; }
     public NPCPart Torso { get; set; }
     public NPCPart Legs { get; set; }
+    public NPCPart Item { get; set; }
 
     private NavMeshAgent navAgent;
     public Vector3 InterrogationPosition;
@@ -216,22 +225,58 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         PlayerController.Instance.SelectedNPC = this;
     }
 
-    public void Assemble(NPCPart head, NPCPart torso, NPCPart legs) {
+    public void Assemble(NPCPart hat, NPCPart torso, NPCPart legs) {
+        Assemble(hat, torso, legs, null);
+    }
+
+    public void Assemble(NPCPart hat, NPCPart torso, NPCPart legs, NPCPart item) {
         // Save parts
-        Head = head;
+        Hat = hat;
         Torso = torso;
         Legs = legs;
+        Item = item;
         // Load meshes and materials
+        string gender_suffix = (IsMale ? "_m" : "_f");
+        string material_suffix = "_mat";
         // Head
-        //HeadMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Head.Type.ToString());
-        HeadRenderer.material = Resources.Load<Material>("Materials/" + Head.Description.ToString());
+        headRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + "head" + gender_suffix);
+        headRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + "head" + gender_suffix + material_suffix);
+        // Hat
+        hatRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + Hat.GetFileName() + gender_suffix);
+        hatRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + Hat.GetFileName() + gender_suffix + material_suffix);
         // Torso
-        //TorsoMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Torso.Type.ToString());
-        TorsoRenderer.material = Resources.Load<Material>("Materials/" + Torso.Description.ToString());
+        torsoRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + Torso.GetFileName() + gender_suffix);
+        torsoRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + Torso.GetFileName() + gender_suffix + material_suffix);
         // Legs
-        //LegsMeshFilter.mesh = Resources.Load<Mesh>("Models/" + this.Legs.Type.ToString());
-        LegsRenderer.material = Resources.Load<Material>("Materials/" + Legs.Description.ToString());
+        if(IsMale) {
+            // Load male legs
+            legsRenderer_m.sharedMesh = Resources.Load<Mesh>("Models/" + Legs.GetFileName() + gender_suffix);
+            legsRenderer_m.sharedMaterial = Resources.Load<Material>("Materials/" + Legs.GetFileName() + gender_suffix + material_suffix);
+            // Set female to null
+            legsRenderer_f.sharedMesh = null;
+            legsRenderer_f.sharedMaterial = null;
+            // Disable female
+            legsRenderer_f.enabled = false;
+        } else {
+            // Load female legs
+            legsRenderer_f.sharedMesh = Resources.Load<Mesh>("Models/" + Legs.GetFileName() + gender_suffix);
+            legsRenderer_f.sharedMaterial = Resources.Load<Material>("Materials/" + Legs.GetFileName() + gender_suffix + material_suffix);
+            // Set male to null
+            legsRenderer_m.sharedMesh = null;
+            legsRenderer_m.sharedMaterial = null;
+            // Disable male
+            legsRenderer_m.enabled = false;
+        }
+        
+        // Item
+        if(Item != null) {
+            itemRenderer.sharedMesh = Resources.Load<Mesh>("Models/" + Item.GetFileName() + gender_suffix);
+            itemRenderer.sharedMaterial = Resources.Load<Material>("Materials/" + Item.GetFileName() + gender_suffix + material_suffix);
+        }       
+
     }
+
+    
 
     public void CoolMood() {
         if (Mood)

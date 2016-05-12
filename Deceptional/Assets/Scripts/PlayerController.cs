@@ -380,7 +380,6 @@ namespace Assets.Scripts {
         }
         public void ClearScene() {
             HideConversation();
-            ++currentDay;
             // Update AIDirector
             AIDirector.Instance.CalculateDifficulty();
 
