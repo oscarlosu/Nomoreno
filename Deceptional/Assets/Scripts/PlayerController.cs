@@ -189,7 +189,7 @@ namespace Assets.Scripts {
                     AIDirector.Instance.HardClues.Add(CurrentInterrogationTarget.Conversation.ActualClue);
             }
 
-            statement = TextWrapper.BreakLine(statement);
+            statement = TextWrapper.BreakLine(statement, 25);
             StatementTextMesh.gameObject.SetActive(true);
             Coroutine inst = StartCoroutine(CoDisplayText(statement, StatementTextMesh));
             conversationCoroutines.Add(inst);
