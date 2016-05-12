@@ -187,6 +187,19 @@ namespace Assets.Scripts {
         #endregion
         #endregion
 
+        // Should only be used for accusations, as these need to be certain that their target doesn't change status.
+        public Node CreateEmptyNode(NPC hookNPC) {
+            Node emptyNode = new Node() {
+                NPC = hookNPC,
+                TargetNodes = new List<NPC>()
+            };
+
+            // Assumes that above comment is adhered to.
+            var template = ClueConverter.GetClueTemplate(ClueIdentifier.Accusatory);
+            emptyNode.NodeClue = new Clue(template, emptyNode.TargetNodes, ClueIdentifier.Accusatory, NPCPart.NPCPartType.None);
+            return emptyNode;
+        }
+
         // DOES NOT CREATE DESCRIPTIVE LIES! THESE SHOULD BE CREATED EXPLICITLY
         public Node CreateRandomLie(NPC hookNPC, CaseHandler caseHandler, Graph truthGraph) {
             var lieIdx = PlayerController.Instance.Rng.Next(4);
@@ -211,8 +224,9 @@ namespace Assets.Scripts {
                     possibleTargets = NPC.NPCList.Where(npc => !pointerTargets.Contains(npc));
                     return CreatePointerNode(possibleTargets.ElementAt(PlayerController.Instance.Rng.Next(possibleTargets.Count())), hookNPC);
                 case 3: // Accusation
-                    possibleTargets = truthGraph.Nodes.Select(node => node.NPC);
-                    return CreateAccusationNode(possibleTargets.ElementAt(PlayerController.Instance.Rng.Next(possibleTargets.Count())), hookNPC);
+                    //possibleTargets = truthGraph.Nodes.Select(node => node.NPC);
+                    //return CreateAccusationNode(possibleTargets.ElementAt(PlayerController.Instance.Rng.Next(possibleTargets.Count())), hookNPC);
+                    return CreateEmptyNode(hookNPC);
                 default: throw new Exception("lieIdx tried to access a number larger than 3.");
             }
         }

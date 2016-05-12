@@ -52,7 +52,7 @@ namespace Assets.Scripts {
         #region Clues
         public int PeopleLocationClues = 2;
         public int MurderLocationClues = 2;
-        public int Pointers = 3;
+        public int Pointers = 4;
         #endregion
         #endregion
 

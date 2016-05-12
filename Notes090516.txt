@@ -12,22 +12,22 @@ Description:	(F, straw hat, jacket, black pants, McDonalds)
 
 D1 Graph:
 Name---		Lie---			Truth---
-- Ginny					PeopleLoc(FUnderwood)
-- Joseph				MurderLoc(McDonalds)
-- Agatha				MurderLoc(McDonalds)	
-- Rudolph	Pointer(Abby)		Descriptive(jacket)	x
-- Jennie				PeopleLoc(McDonalds)
-- Davis					PeopleLoc(McDonalds)
-- Sue					Pointer(Jennie)
-- Lilly					Pointer(Rudolph)
-- Ann		Pointer(Sue)		Accusation(Maria)	x
-- Frank		PeopleLoc(BKings)	Accusation(Ann)		x
-- August	Descriptive(wPants)	Accusation(Jacob)	x 
-- Maria		Descriptive(shirt)	Accusation(Molly)	x
-- John		Descriptive(bowler)	Accusation(Becky)	x
-- Jacob		Pointer(Becky)		Accusation(Ann)		x
-- Molly		Pointer(Jacob)		Accusation(Anna)	x
-- Anna		Descriptive(sixpence)	Accusation(Becky)	x
-- Abby		Pointer(Jacob)		Accusation(Anna)	x
-- Becky		PeopleLoc(FUpperwood)	Accusation(Anna)	x
-- Claude	Descriptive(shirt)	Accusation(Ann)		x
+- Jacob					PeopleLoc(McD.Tavern) 
+- Maria		Descriptive(whitePants)	MurderLoc(FUp.Cemetery)
+- Ann		MurderLoc(McD.Tavern)	Descriptive(sixpence hat)
+- John		Descriptive(whitePants)	PeopleLoc(FUp.Cemetery)
+- Frank		Accusation(August)	PeopleLoc(BKings.Pub)
+- August	Descriptive(whitePants)	PeopleLoc(FUp.Cemetery)
+- Abby		Accusation(Rudolph)	PeopleLoc(BKings.Pub)
+- Rudolph	Pointer(Abby)		Pointer(John)
+- Joseph				Pointer(Jacob)
+- Becky		Accusation(Sue)		Pointer(Maria)
+- Molly		Pointer(Jennie)		Pointer(Maria)
+- Ginny		Pointer(Anna)		Pointer(Jacob)
+- Jennie	MurderLoc(JLPs.Park)	Pointer(Ann)
+- Davis		MurderLoc(McD.Tavern)	Accusation(Jennie)
+- Lilly		Descriptive(bowlerHat)	Accusation(Molly)
+- Anna		Descriptive(bowlerHat)	Accusation(Jeremy)
+- Claude				Accusation(Becky)
+- Sue					Accusation(Jacob)
+- Jeremy	Accusation(Rudolph)	MurderLoc(BK)

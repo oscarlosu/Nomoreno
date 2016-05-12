@@ -38,8 +38,6 @@ namespace Assets.Scripts {
                 var targetLoc = caseHandler.NPCLocations.Keys.ElementAt(PlayerController.Instance.Rng.Next(caseHandler.NPCLocations.Count));
                 ClueFactory.Instance.SetupMultiSupportNode(killerNode, caseHandler.NPCLocations[targetLoc], targetLoc);
                 hasKiller = true;
-                // The killer, whose statement points to the people at the murder location, is a valid pointer target.
-                pointerTargets.Add(killerNode);
                 remainingNPCs.Remove(killerNode.NPC);
                 SetupReferences(g, killerNode);
             }
@@ -114,7 +112,6 @@ namespace Assets.Scripts {
         public static Graph BuildLieGraph(Graph truthGraph, int descriptiveLies, int miscLies, int hidingDescriptive) {
             // Create neccessary graph and lists.
             var lieGraph = new Graph();
-            List<NPC> remainingNPCs = NPC.NPCList.Where(npc => !truthGraph.Nodes.Select(node => node.NPC).Contains(npc)).ToList();
             List<NPC> nonKillerNPCs = NPC.NPCList.Where(npc => !npc.IsKiller).ToList();
 
             List<Node> descriptiveNodes = truthGraph.Nodes.Where(node => node.IsDescriptive).ToList();
@@ -124,22 +121,22 @@ namespace Assets.Scripts {
             var nonSimilarHats = nonKillerNPCs.Where(npc => npc.Hat.Description != killer.Hat.Description);
             var nonSimilarTorsos = nonKillerNPCs.Where(npc => npc.Torso.Description != killer.Torso.Description);
             var nonSimilarPants = nonKillerNPCs.Where(npc => npc.Legs.Description != killer.Legs.Description);
-            var possibleTargets = new List<NPC>();
             Node lieNode = new Node();
 
             // Setup hiding descriptive nodes.
             while (hidingDescriptive-- > 0 && descriptiveNodes.Count > 0) {
                 Node newLie = ClueFactory.Instance.CreateRandomLie(descriptiveNodes[0].NPC, caseHandler, truthGraph);
 
-                remainingNPCs.Remove(descriptiveNodes[0].NPC);
+                nonKillerNPCs.Remove(descriptiveNodes[0].NPC);
                 descriptiveNodes.RemoveAt(0);
                 lieGraph.Nodes.Add(newLie);
                 SetupReferences(lieGraph, newLie);
             }
-
+            
+            var possibleTargets = new List<NPC>();
             // Setup descriptive liars
             while (descriptiveLies-- > 0) {
-                if (remainingNPCs.Count == 0) { throw new Exception("No remaining NPCs. Less liars required."); }
+                if (nonKillerNPCs.Count == 0) { throw new Exception("No remaining NPCs. Less liars required."); }
 
                 int partIdx = PlayerController.Instance.Rng.Next(3);
                 switch (partIdx) {
@@ -150,19 +147,19 @@ namespace Assets.Scripts {
                 }
 
                 NPC lieTarget = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
-                NPC newLiar = remainingNPCs[PlayerController.Instance.Rng.Next(remainingNPCs.Count)];
+                NPC newLiar = nonKillerNPCs[PlayerController.Instance.Rng.Next(nonKillerNPCs.Count)];
                 lieNode = ClueFactory.Instance.CreateDescriptiveNode(lieTarget, newLiar, partIdx);
 
                 lieGraph.Nodes.Add(lieNode);
-                remainingNPCs.Remove(newLiar);
+                nonKillerNPCs.Remove(newLiar);
                 SetupReferences(lieGraph, lieNode);
             }
 
             // Setup miscellanous lies.
-            while (miscLies-- > 0 && remainingNPCs.Count > 0) {
-                Node newLie = ClueFactory.Instance.CreateRandomLie(remainingNPCs[PlayerController.Instance.Rng.Next(remainingNPCs.Count)], caseHandler, truthGraph);
+            while (miscLies-- > 0 && nonKillerNPCs.Count > 0) {
+                Node newLie = ClueFactory.Instance.CreateRandomLie(nonKillerNPCs[PlayerController.Instance.Rng.Next(nonKillerNPCs.Count)], caseHandler, truthGraph);
 
-                remainingNPCs.Remove(newLie.NPC);
+                nonKillerNPCs.Remove(newLie.NPC);
                 lieGraph.Nodes.Add(newLie);
                 SetupReferences(lieGraph, newLie);
             }
@@ -176,8 +173,20 @@ namespace Assets.Scripts {
             var remainingNPCs = NPC.NPCList.Where(npc => !truth.Nodes.Select(node => node.NPC).Contains(npc));
             var liars = lies.Nodes.Select(node => node.NPC);
 
+            List<NPC> possibleTargets;
+
+            // Setup lying accusations. This is done after node creation to ensure logical coherency.
+            possibleTargets = NPC.NPCList.Except(lies.Nodes.Select(node => node.NPC)).ToList();
+            var lyingAccusers = lies.Nodes.Where(n => n.NodeClue.Identifier == ClueIdentifier.Accusatory);
+            foreach (Node n in lyingAccusers) {
+                var target = possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)];
+                n.TargetNodes.Add(target);
+                n.NodeClue.Targets.Add(target);
+            }
+
+            // Setup true accusations. This is done after lying accusations, so that all liars are on equal footing.
             foreach (NPC npc in remainingNPCs) {
-                var possibleTargets = liars.Where(n => n != npc).ToList();
+                possibleTargets = liars.Where(n => n != npc).ToList();
                 Node accusation = ClueFactory.Instance.CreateAccusationNode(possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)], npc);
                 truth.Nodes.Add(accusation);
             }

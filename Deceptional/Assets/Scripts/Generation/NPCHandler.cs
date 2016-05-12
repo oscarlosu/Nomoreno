@@ -25,7 +25,7 @@ namespace Assets.Scripts {
 
         public static void GenerateMultipleWitnesses(int count) {
             PlayerController.NPCParent.SetActive(false);
-            while (--count > 0) GenerateRandomWitness();
+            while (--count > 4) GenerateRandomWitness(); // count need to be more than 4, because the killer will generate 4 additional NPCs
             GenerateKiller();
         }
 
