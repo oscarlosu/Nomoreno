@@ -23,7 +23,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 175116}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.7655745, y: 20.1875, z: -7.178538}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -41,9 +41,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Title: {fileID: 0}
   StartButton: {fileID: 0}
-  Cameras: {fileID: 0}
-  Buttons: {fileID: 0}
+  CamerasIn: {fileID: 0}
+  ButtonsIn: {fileID: 0}
   WaitingRoomCam: {fileID: 0}
+  ButtonsOut: {fileID: 0}
+  Clock: {fileID: 0}
+  DayOverSound: {fileID: 8300000, guid: e76806218a75b40e3bc8ecd6efd4e866, type: 3}
+  DayOverSoundVolume: 1
+  PlatformBackController: {fileID: 0}
+  BeginDayButtonEnter: {fileID: 0}
+  BeginDayButtonExit: {fileID: 0}
+  CageDrop: {fileID: 0}
+  CageLift: {fileID: 0}
+  CageBase: {fileID: 0}
+  SuccessSound: {fileID: 0}
+  SuccessSoundVolume: 1
+  FailureSound: {fileID: 0}
+  FailureSoundVolume: 1
+  CamerasOut: {fileID: 0}
+  Help: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

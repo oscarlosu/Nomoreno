@@ -27,16 +27,22 @@ public class TransitionManager : MonoBehaviour {
     // Day over
     public Transition ButtonsOut;
     public RotateTransition Clock;
+    public AudioClip DayOverSound;
+    public float DayOverSoundVolume = 1.0f;
     // End day
 
     // New day
-	public FaceMainCamera PlatformBackController;
+    public FaceMainCamera PlatformBackController;
 	public Transition BeginDayButtonEnter;
 	public Transition BeginDayButtonExit;
     // Arrest
     public Transition CageDrop;
     public Transition CageLift;
 	public GameObject CageBase;
+    public AudioClip SuccessSound;
+    public float SuccessSoundVolume = 1.0f;
+    public AudioClip FailureSound;
+    public float FailureSoundVolume = 1.0f;
     // End game
     public Transition CamerasOut;
 
@@ -125,7 +131,9 @@ public class TransitionManager : MonoBehaviour {
     }
     private IEnumerator DayOverCo(bool gameFinished) {
 		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
-        if(gameFinished) {
+        // Play day over sound
+        AudioManager.Instance.Play(DayOverSound, s => s.volume = DayOverSoundVolume);
+        if (gameFinished) {
             // Clear platform text
             PlayerController.Instance.ClearPlatformText();
             camController.enabled = false;
@@ -196,6 +204,8 @@ public class TransitionManager : MonoBehaviour {
         camController.enabled = false;
         ButtonsOut.Execute();
         WaitingRoomCam.Execute(-1);
+        // Play day over sound
+        AudioManager.Instance.Play(DayOverSound, s => s.volume = DayOverSoundVolume);
         yield return new WaitUntil(() => CageLift.State == Transition.TransitionState.Done && 
                                          WaitingRoomCam.State == Transition.TransitionState.Done && 
                                          ButtonsOut.State == Transition.TransitionState.Done);
@@ -203,8 +213,12 @@ public class TransitionManager : MonoBehaviour {
         arrested.SetParent(parent);        
         
         if(gameFinished) {
+            // Play success
+            AudioManager.Instance.Play(SuccessSound, s => s.volume = SuccessSoundVolume);
             PlayerController.Instance.ClearScene();
         } else {
+            // Play failure
+            AudioManager.Instance.Play(FailureSound, s => s.volume = FailureSoundVolume);
             // Tell PlayerController to generate next day
             PlayerController.Instance.GenerateNextDay();
         }
