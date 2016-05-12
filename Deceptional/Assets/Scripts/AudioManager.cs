@@ -40,10 +40,10 @@ public class AudioManager : MonoBehaviour {
             yield return new WaitForSeconds(poolRefillPeriod);
         }
     }
-    public void Play(AudioClip clip, System.Action<AudioSource> modifier) {
+    public AudioSource Play(AudioClip clip, System.Action<AudioSource> modifier) {
         // Dont do anything if the clip is null
         if (clip == null) {
-            return;
+            return null;
         }
         // Get an audio source
         AudioSource audioSource = GetAudioSource();
@@ -61,6 +61,7 @@ public class AudioManager : MonoBehaviour {
         modifier(audioSource);
         // Play sound
         audioSource.Play();
+        return audioSource;
     }
 
     private AudioSource GetAudioSource() {
@@ -110,6 +111,5 @@ public class AudioManager : MonoBehaviour {
             source.gameObject.SetActive(false);
         }
     }
-
 
 }

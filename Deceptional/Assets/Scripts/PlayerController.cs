@@ -105,7 +105,18 @@ namespace Assets.Scripts {
 			Enabled
 		}
 		public ControllerState State;
+
+        public AudioClip ClockSound;
+        public float ClockSoundVolume = 1.0f;
+        public AudioClip MinglingSound;
+        public float MinglingSoundVolume = 1.0f;
+
+
         #endregion
+
+
+
+
 
         #region Instance methods
 
@@ -130,31 +141,6 @@ namespace Assets.Scripts {
 
             TransitionManager.Instance.GameTransition();            
         }
-
-        
-
-        public void Update() {
-            //HandleButtons();
-        }
-
-        private void HandleButtons() {
-            if(CurrentInterrogationTarget == null) {
-                // Show call in
-                CallInButton.ChangeButton("CALL\nIN", "CallIn");
-            } else if(SelectedNPC == null) {
-                // Show dismiss
-                CallInButton.ChangeButton("DISMISS", "Dismiss");
-            } else if(CurrentInterrogationTarget == SelectedNPC) {
-                // Show dismiss
-                CallInButton.ChangeButton("DISMISS", "Dismiss");
-            } else if(CurrentInterrogationTarget != SelectedNPC) {
-                // Show call in
-                CallInButton.ChangeButton("CALL\nIN", "CallIn");
-            }
-        }
-
-        
-
 
         public void CallIn() {
 			if (State == ControllerState.Disabled || 
@@ -298,7 +284,6 @@ namespace Assets.Scripts {
                 if (interactionCount <= 0) {
                     //StartCoroutine(NextDay());
                     //TODO
-
                     if (NPC.NPCList.Count <= 2) {
                         PrepareGameOver();
                         TransitionManager.Instance.DayOverTransition(true);
@@ -313,6 +298,7 @@ namespace Assets.Scripts {
 
 
         private void ExecuteMinglePhase() {
+            AudioManager.Instance.Play(MinglingSound, s => s.volume = MinglingSoundVolume);
             // Reset States
             for (int i = 0; i < NPC.NPCList.Count; ++i) {
                 NPC.NPCList[i].CurrentBehaviour = NPC.Behaviour.None;
@@ -348,6 +334,8 @@ namespace Assets.Scripts {
         private void UpdateTime() {
             // Update interactions
             interactionCount--;
+            // Play clock sound
+            AudioManager.Instance.Play(ClockSound, s => s.volume = ClockSoundVolume);
             // Animate clock
             StartCoroutine(AnimateClock());
         }
