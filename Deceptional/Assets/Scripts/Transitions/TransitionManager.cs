@@ -27,22 +27,40 @@ public class TransitionManager : MonoBehaviour {
     // Day over
     public Transition ButtonsOut;
     public RotateTransition Clock;
+    public AudioClip DayOverSound;
+    public float DayOverSoundVolume = 1.0f;
     // End day
 
     // New day
-	public FaceMainCamera PlatformBackController;
+    public FaceMainCamera PlatformBackController;
 	public Transition BeginDayButtonEnter;
 	public Transition BeginDayButtonExit;
     // Arrest
     public Transition CageDrop;
     public Transition CageLift;
 	public GameObject CageBase;
+    public AudioClip SuccessSound;
+    public float SuccessSoundVolume = 1.0f;
+    public AudioClip FailureSound;
+    public float FailureSoundVolume = 1.0f;
+    public AudioClip CageHitSound;
+    public float CageHitSoundVolume = 1.0f;
+    public AudioClip CageChainSound;
+    public float CageChainSoundVolume = 1.0f;
     // End game
     public Transition CamerasOut;
 
     private CameraController camController;
     // Help
     public GameObject Help;
+
+    public AudioClip PlatformTurningSound;
+    public float PlatformTurningSoundVolume = 1.0f;
+    public AudioClip PlatformStopSound;
+    public float PlatformStopSoundVolume = 1.0f;
+
+
+    public float ResultSoundDelay = 1.0f;
 
     // Use this for initialization
     void Awake() {
@@ -79,7 +97,12 @@ public class TransitionManager : MonoBehaviour {
         // Rotate waiting room
         camController.enabled = false;
         WaitingRoomCam.Execute(-1);
+        // Play platform rotation sound
+        AudioSource rotationAS = AudioManager.Instance.Play(PlatformTurningSound, s => s.volume = PlatformTurningSoundVolume);
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
+        // Play end platform rotation sound and stop previous
+        AudioManager.Instance.Stop(rotationAS);
+        AudioManager.Instance.Play(PlatformStopSound, s => s.volume = PlatformStopSoundVolume);
         // Show text
         PlayerController.Instance.ShowPlatformText();
         PlayerController.Instance.ShowCalendarText();
@@ -104,7 +127,12 @@ public class TransitionManager : MonoBehaviour {
         PlayerController.Instance.BeginDay();
         // Rotate waiting room back
         WaitingRoomCam.Execute(1);
+        // Play platform rotation sound
+        AudioSource rotationAS = AudioManager.Instance.Play(PlatformTurningSound, s => s.volume = PlatformTurningSoundVolume);
         yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done);
+        // Play end platform rotation sound and stop previous
+        AudioManager.Instance.Stop(rotationAS);
+        AudioManager.Instance.Play(PlatformStopSound, s => s.volume = PlatformStopSoundVolume);
         camController.enabled = true;
         // Drop Begin Day button
         BeginDayButtonExit.Execute();
@@ -125,18 +153,33 @@ public class TransitionManager : MonoBehaviour {
     }
     private IEnumerator DayOverCo(bool gameFinished) {
 		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
-        if(gameFinished) {
+        // Play day over sound
+        AudioManager.Instance.Play(DayOverSound, s => s.volume = DayOverSoundVolume);
+        if (gameFinished) {
             // Clear platform text
             PlayerController.Instance.ClearPlatformText();
             camController.enabled = false;
             WaitingRoomCam.Execute(-1);
             ButtonsOut.Execute();
-            yield return new WaitUntil(() => WaitingRoomCam.State == Transition.TransitionState.Done &&
-                                             ButtonsOut.State == Transition.TransitionState.Done);
-            PlayerController.Instance.ShowPlatformText();
+
+
+            // Play platform rotation sound
+            AudioSource rotationAS = AudioManager.Instance.Play(PlatformTurningSound, s => s.volume = PlatformTurningSoundVolume);
+            do {
+                yield return null;
+                if (WaitingRoomCam.State == Transition.TransitionState.Done) {
+                    // Play end platform rotation sound and stop previous
+                    AudioManager.Instance.Stop(rotationAS);
+                    AudioManager.Instance.Play(PlatformStopSound, s => s.volume = PlatformStopSoundVolume);
+                }                
+            } while (ButtonsOut.State != Transition.TransitionState.Done || WaitingRoomCam.State != Transition.TransitionState.Done);
+
+        PlayerController.Instance.ShowPlatformText();
         } else {
             ButtonsOut.Execute();
             Clock.Execute(-1);
+
+
             yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done &&
                                              ButtonsOut.State == Transition.TransitionState.Done);
         }
@@ -157,7 +200,19 @@ public class TransitionManager : MonoBehaviour {
         Clock.Execute(1);
         camController.enabled = false;
         WaitingRoomCam.Execute(-1);
-        yield return new WaitUntil(() => Clock.State == Transition.TransitionState.Done && WaitingRoomCam.State == Transition.TransitionState.Done);
+
+        // Play platform rotation sound
+        AudioSource rotationAS = AudioManager.Instance.Play(PlatformTurningSound, s => s.volume = PlatformTurningSoundVolume);
+
+        do {
+            yield return null;
+            if (WaitingRoomCam.State == Transition.TransitionState.Done) {
+                // Play end platform rotation sound and stop previous
+                AudioManager.Instance.Stop(rotationAS);
+                AudioManager.Instance.Play(PlatformStopSound, s => s.volume = PlatformStopSoundVolume);
+            }            
+        } while (Clock.State != Transition.TransitionState.Done || WaitingRoomCam.State != Transition.TransitionState.Done);
+
         PlayerController.Instance.ShowPlatformText();
 		// Drop begin day button
 		BeginDayButtonEnter.Execute();
@@ -181,7 +236,15 @@ public class TransitionManager : MonoBehaviour {
 		CageBase.SetActive(false);
         // Drop cage
         CageDrop.Execute();
+
+        // Play cage chain sound
+        AudioSource cageChainAS = AudioManager.Instance.Play(CageChainSound, s => s.volume = CageChainSoundVolume);
         yield return new WaitUntil(() => CageDrop.State == Transition.TransitionState.Done);
+        // Stop cage sound
+        AudioManager.Instance.Stop(cageChainAS);
+        AudioManager.Instance.Play(CageHitSound, s => s.volume = CageHitSoundVolume);
+
+
         // Parent accused to cage
         NavMeshAgent navAg = arrested.GetComponent<NavMeshAgent>();
         navAg.enabled = false;
@@ -196,18 +259,38 @@ public class TransitionManager : MonoBehaviour {
         camController.enabled = false;
         ButtonsOut.Execute();
         WaitingRoomCam.Execute(-1);
-        yield return new WaitUntil(() => CageLift.State == Transition.TransitionState.Done && 
-                                         WaitingRoomCam.State == Transition.TransitionState.Done && 
-                                         ButtonsOut.State == Transition.TransitionState.Done);
-        // Unparent accused from cage
-        arrested.SetParent(parent);        
-        
-        if(gameFinished) {
-            PlayerController.Instance.ClearScene();
-        } else {
-            // Tell PlayerController to generate next day
-            PlayerController.Instance.GenerateNextDay();
+        // Play day over sound
+        AudioManager.Instance.Play(DayOverSound, s => s.volume = DayOverSoundVolume);
+        // Play platform turning sound
+        AudioSource rotationAS = AudioManager.Instance.Play(PlatformTurningSound, s => s.volume = PlatformTurningSoundVolume);
+        // Play cage chain sound
+        cageChainAS = AudioManager.Instance.Play(CageChainSound, s => s.volume = CageChainSoundVolume);
+        do {
+            yield return null;
+            if (WaitingRoomCam.State == Transition.TransitionState.Done) {
+                // Play end platform rotation sound and stop previous
+                AudioManager.Instance.Stop(rotationAS);
+                AudioManager.Instance.Play(PlatformStopSound, s => s.volume = PlatformStopSoundVolume);
+            }
+            if (CageLift.State == Transition.TransitionState.Done) {
+                // Stop cage sound
+                AudioManager.Instance.Stop(cageChainAS);
+                AudioManager.Instance.Play(CageHitSound, s => s.volume = CageHitSoundVolume);
+            }            
+        } while (CageLift.State != Transition.TransitionState.Done || WaitingRoomCam.State != Transition.TransitionState.Done || ButtonsOut.State != Transition.TransitionState.Done);
+
+        if(WaitingRoomCam.State != Transition.TransitionState.Done) {
+            Debug.Log("Platform rotation not done");
         }
+            // Unparent accused from cage
+            arrested.SetParent(parent);
+        // Play result sound with small delay to avoid sound overlapping
+        if(gameFinished) {
+            Invoke("PlayArrestSuccesSound", ResultSoundDelay);
+        } else {
+            Invoke("PlayArrestFailureSound", ResultSoundDelay);
+        }
+
         PlayerController.Instance.ShowPlatformText();
 		// Drop begin day button
 		BeginDayButtonEnter.Execute();
@@ -216,6 +299,22 @@ public class TransitionManager : MonoBehaviour {
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
 
     }
+
+    void PlayArrestSuccesSound() {
+        // Play success
+        AudioManager.Instance.Play(SuccessSound, s => s.volume = SuccessSoundVolume);
+        PlayerController.Instance.ClearScene();
+    }
+
+    void PlayArrestFailureSound() {
+        // Play failure
+        AudioManager.Instance.Play(FailureSound, s => s.volume = FailureSoundVolume);
+        // Tell PlayerController to generate next day
+        PlayerController.Instance.GenerateNextDay();
+    }
+
+    
+
     /// <summary>
     /// Transition that happens when the player presses the Return to Start button or the Restart button.
     /// </summary>

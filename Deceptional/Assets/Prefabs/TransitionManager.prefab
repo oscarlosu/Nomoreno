@@ -23,7 +23,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 175116}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.7655745, y: 20.1875, z: -7.178538}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -41,9 +41,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Title: {fileID: 0}
   StartButton: {fileID: 0}
-  Cameras: {fileID: 0}
-  Buttons: {fileID: 0}
+  CamerasIn: {fileID: 0}
+  ButtonsIn: {fileID: 0}
   WaitingRoomCam: {fileID: 0}
+  ButtonsOut: {fileID: 0}
+  Clock: {fileID: 0}
+  DayOverSound: {fileID: 8300000, guid: e76806218a75b40e3bc8ecd6efd4e866, type: 3}
+  DayOverSoundVolume: 0.5
+  PlatformBackController: {fileID: 0}
+  BeginDayButtonEnter: {fileID: 0}
+  BeginDayButtonExit: {fileID: 0}
+  CageDrop: {fileID: 0}
+  CageLift: {fileID: 0}
+  CageBase: {fileID: 0}
+  SuccessSound: {fileID: 8300000, guid: f1b2be02bffecf344b00c99bc4aea30a, type: 3}
+  SuccessSoundVolume: 1
+  FailureSound: {fileID: 8300000, guid: 83d9b318296d39e49a22ee5627654fd9, type: 3}
+  FailureSoundVolume: 1
+  CageHitSound: {fileID: 8300000, guid: 9d346a4886ed98f4e81ec096b4b0bc9a, type: 3}
+  CageHitSoundVolume: 1
+  CageChainSound: {fileID: 8300000, guid: 79372a545f500c247803a5fd6c540216, type: 3}
+  CageChainSoundVolume: 1
+  CamerasOut: {fileID: 0}
+  Help: {fileID: 0}
+  PlatformTurningSound: {fileID: 8300000, guid: c1100d8dcc10afc428f52418e5279053,
+    type: 3}
+  PlatformTurningSoundVolume: 1
+  PlatformStopSound: {fileID: 8300000, guid: 9d346a4886ed98f4e81ec096b4b0bc9a, type: 3}
+  PlatformStopSoundVolume: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

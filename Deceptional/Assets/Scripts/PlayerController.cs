@@ -105,7 +105,24 @@ namespace Assets.Scripts {
 			Enabled
 		}
 		public ControllerState State;
+
+        public AudioClip ClockSound;
+        public float ClockSoundVolume = 1.0f;
+        public AudioClip MinglingSound;
+        public float MinglingSoundVolume = 1.0f;
+
+
+        public AudioClip WrongAccuseSound;
+        public float WrongAccuseSoundVolume = 1.0f;
+        public AudioClip RightAccuseSound;
+        public float RightAccuseSoundVolume = 1.0f;
+
+
         #endregion
+
+
+
+
 
         #region Instance methods
 
@@ -130,31 +147,6 @@ namespace Assets.Scripts {
 
             TransitionManager.Instance.GameTransition();            
         }
-
-        
-
-        public void Update() {
-            //HandleButtons();
-        }
-
-        private void HandleButtons() {
-            if(CurrentInterrogationTarget == null) {
-                // Show call in
-                CallInButton.ChangeButton("CALL\nIN", "CallIn");
-            } else if(SelectedNPC == null) {
-                // Show dismiss
-                CallInButton.ChangeButton("DISMISS", "Dismiss");
-            } else if(CurrentInterrogationTarget == SelectedNPC) {
-                // Show dismiss
-                CallInButton.ChangeButton("DISMISS", "Dismiss");
-            } else if(CurrentInterrogationTarget != SelectedNPC) {
-                // Show call in
-                CallInButton.ChangeButton("CALL\nIN", "CallIn");
-            }
-        }
-
-        
-
 
         public void CallIn() {
 			if (State == ControllerState.Disabled || 
@@ -197,7 +189,7 @@ namespace Assets.Scripts {
                     AIDirector.Instance.HardClues.Add(CurrentInterrogationTarget.Conversation.ActualClue);
             }
 
-            statement = TextWrapper.BreakLine(statement);
+            statement = TextWrapper.BreakLine(statement, 25);
             StatementTextMesh.gameObject.SetActive(true);
             Coroutine inst = StartCoroutine(CoDisplayText(statement, StatementTextMesh));
             conversationCoroutines.Add(inst);
@@ -275,6 +267,9 @@ namespace Assets.Scripts {
                 if (!CurrentInterrogationTarget.Conversation.Next(false)) {
                     CurrentInterrogationTarget.Mood = true;
                     CurrentInterrogationTarget.MoodDays = 1;
+                    AudioManager.Instance.Play(WrongAccuseSound, s => s.volume = WrongAccuseSoundVolume);
+                } else {
+                    AudioManager.Instance.Play(RightAccuseSound, s => s.volume = RightAccuseSoundVolume);
                 }
                 // Display next text lerping it
                 DisplayConversation("Okay, okay, you got me... ");
@@ -295,7 +290,6 @@ namespace Assets.Scripts {
                 if (interactionCount <= 0) {
                     //StartCoroutine(NextDay());
                     //TODO
-
                     if (NPC.NPCList.Count <= 2) {
                         PrepareGameOver();
                         TransitionManager.Instance.DayOverTransition(true);
@@ -310,6 +304,7 @@ namespace Assets.Scripts {
 
 
         private void ExecuteMinglePhase() {
+            AudioManager.Instance.Play(MinglingSound, s => s.volume = MinglingSoundVolume);
             // Reset States
             for (int i = 0; i < NPC.NPCList.Count; ++i) {
                 NPC.NPCList[i].CurrentBehaviour = NPC.Behaviour.None;
@@ -345,6 +340,8 @@ namespace Assets.Scripts {
         private void UpdateTime() {
             // Update interactions
             interactionCount--;
+            // Play clock sound
+            AudioManager.Instance.Play(ClockSound, s => s.volume = ClockSoundVolume);
             // Animate clock
             StartCoroutine(AnimateClock());
         }

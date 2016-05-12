@@ -25,8 +25,11 @@ public class ButtonController : MonoBehaviour, IPointerDownHandler
     }
     public TriggerMode Mode;
 
+    public AudioSource ClickSound;
+
 
     public void OnPointerDown(PointerEventData eventData) {
+        ClickSound.Play();
         if (Mode == TriggerMode.OnDown) {
             //MethodBase mb = typeof(PlayerController).GetMethod(MethodName);
             //mb.Invoke(PlayerController.Instance, new Object[0]);
