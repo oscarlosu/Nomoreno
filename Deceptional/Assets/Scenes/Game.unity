@@ -41,7 +41,7 @@ RenderSettings:
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 6
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_LightmapsMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -66,7 +66,8 @@ LightmapSettings:
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
     m_ReflectionCompression: 2
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000001, guid: 304ba289d0b17414dbc79aba5b1b55ef,
+    type: 2}
   m_RuntimeCPUUsage: 25
 --- !u!196 &4
 NavMeshSettings:
@@ -4518,10 +4519,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 12
       objectReference: {fileID: 0}
-    - target: {fileID: 8218604, guid: 06b54dea10531e64cb48effaa5baa717, type: 2}
-      propertyPath: m_Volume
-      value: 0.156
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 06b54dea10531e64cb48effaa5baa717, type: 2}
   m_IsPrefabParent: 0
@@ -4885,14 +4882,6 @@ Prefab:
       propertyPath: Help
       value: 
       objectReference: {fileID: 25668352}
-    - target: {fileID: 11411500, guid: 8b43a59f4cabe0f4b861fa1d76bdeffc, type: 2}
-      propertyPath: PlatformTurningSound
-      value: 
-      objectReference: {fileID: 8300000, guid: c1100d8dcc10afc428f52418e5279053, type: 3}
-    - target: {fileID: 11411500, guid: 8b43a59f4cabe0f4b861fa1d76bdeffc, type: 2}
-      propertyPath: PlatformStopSound
-      value: 
-      objectReference: {fileID: 8300000, guid: 9d346a4886ed98f4e81ec096b4b0bc9a, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8b43a59f4cabe0f4b861fa1d76bdeffc, type: 2}
   m_IsPrefabParent: 0
@@ -6109,8 +6098,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 859739003}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.00012}
-  m_LocalScale: {x: 0.000038271573, y: 0.000038271573, z: 0.38271573}
+  m_LocalPosition: {x: 0, y: 0, z: 0.0001}
+  m_LocalScale: {x: 0.000015, y: 0.000015, z: 1}
   m_Children: []
   m_Father: {fileID: 1341258305}
   m_RootOrder: 0
@@ -6140,8 +6129,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 80
-    m_FontStyle: 0
+    m_FontSize: 100
+    m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 300
@@ -6151,9 +6140,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 0.8
-  m_Text: 'BEGIN
-
-    DAY'
+  m_Text: BEGIN DAY
 --- !u!222 &859739006
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7535,7 +7522,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 412539a539e25444dac90557758ba75a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Label: BEGIN\nDAY
+  Label: BEGIN DAY
   MethodName: BeginDayTransition
   Controller: {fileID: 788544643}
   TextField: {fileID: 859739005}
@@ -10999,8 +10986,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1486560998}
   m_LocalRotation: {x: -0.05661611, y: 0.001764393, z: 0.9983945, w: -0.00015135968}
-  m_LocalPosition: {x: -3.63, y: -60, z: -0.05}
-  m_LocalScale: {x: 2, y: 1, z: 2}
+  m_LocalPosition: {x: -4.53, y: -60, z: -0.16}
+  m_LocalScale: {x: 3, y: 1, z: 3}
   m_Children:
   - {fileID: 53440873}
   - {fileID: 1071961598}
@@ -11019,8 +11006,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   State: 0
   Targets:
-  - {x: -3.63, y: -3.66, z: -0.05}
-  - {x: -3.63, y: -60, z: -0.05}
+  - {x: -4.53, y: -3.66, z: -0.16}
+  - {x: -4.53, y: -60, z: -0.16}
   SpeedCurves:
   - serializedVersion: 2
     m_Curve:
@@ -11050,10 +11037,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   State: 0
   Targets:
-  - {x: -3.63, y: -60, z: -0.05}
-  - {x: -3.63, y: -3.2, z: -0.05}
-  - {x: -3.63, y: -3.8, z: -0.05}
-  - {x: -3.63, y: -3.66, z: -0.05}
+  - {x: -4.53, y: -60, z: -0.16}
+  - {x: -4.53, y: -3.2, z: -0.16}
+  - {x: -4.53, y: -3.8, z: -0.16}
+  - {x: -4.53, y: -3.66, z: -0.16}
   SpeedCurves:
   - serializedVersion: 2
     m_Curve:

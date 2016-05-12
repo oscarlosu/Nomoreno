@@ -47,7 +47,7 @@ MonoBehaviour:
   ButtonsOut: {fileID: 0}
   Clock: {fileID: 0}
   DayOverSound: {fileID: 8300000, guid: e76806218a75b40e3bc8ecd6efd4e866, type: 3}
-  DayOverSoundVolume: 1
+  DayOverSoundVolume: 0.5
   PlatformBackController: {fileID: 0}
   BeginDayButtonEnter: {fileID: 0}
   BeginDayButtonExit: {fileID: 0}
@@ -59,13 +59,16 @@ MonoBehaviour:
   FailureSound: {fileID: 8300000, guid: 83d9b318296d39e49a22ee5627654fd9, type: 3}
   FailureSoundVolume: 1
   CageHitSound: {fileID: 8300000, guid: 9d346a4886ed98f4e81ec096b4b0bc9a, type: 3}
-  CageHitVolume: 1
+  CageHitSoundVolume: 1
   CageChainSound: {fileID: 8300000, guid: 79372a545f500c247803a5fd6c540216, type: 3}
-  CageChainVolume: 1
+  CageChainSoundVolume: 1
   CamerasOut: {fileID: 0}
   Help: {fileID: 0}
-  PlatformTurningSound: {fileID: 0}
-  PlatformTurningVolume: 1
+  PlatformTurningSound: {fileID: 8300000, guid: c1100d8dcc10afc428f52418e5279053,
+    type: 3}
+  PlatformTurningSoundVolume: 1
+  PlatformStopSound: {fileID: 8300000, guid: 9d346a4886ed98f4e81ec096b4b0bc9a, type: 3}
+  PlatformStopSoundVolume: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -112,6 +112,12 @@ namespace Assets.Scripts {
         public float MinglingSoundVolume = 1.0f;
 
 
+        public AudioClip WrongAccuseSound;
+        public float WrongAccuseSoundVolume = 1.0f;
+        public AudioClip RightAccuseSound;
+        public float RightAccuseSoundVolume = 1.0f;
+
+
         #endregion
 
 
@@ -264,6 +270,9 @@ namespace Assets.Scripts {
                 if (!CurrentInterrogationTarget.Conversation.Next(false)) {
                     CurrentInterrogationTarget.Mood = true;
                     CurrentInterrogationTarget.MoodDays = 1;
+                    AudioManager.Instance.Play(WrongAccuseSound, s => s.volume = WrongAccuseSoundVolume);
+                } else {
+                    AudioManager.Instance.Play(RightAccuseSound, s => s.volume = RightAccuseSoundVolume);
                 }
                 // Display next text lerping it
                 DisplayConversation("Okay, okay, you got me... ");
