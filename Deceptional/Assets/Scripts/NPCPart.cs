@@ -11,21 +11,10 @@ public class NPCPart
         Hat,
         Item
     }
-    public enum NPCPartDescription
-    {
-        Red,
-        Blue,
-        Green,
-        Yellow,
-        Black,
-        White
-    }
 
     public NPCPartType Type { get; set; }
-    //public NPCPartDescription Description { get; set; }
     public string Description { get; set; }
 
-    //public NPCPart(NPCPartType type, NPCPartDescription description)
     public NPCPart(NPCPartType type, int descIdx)
     {
         Type = type;

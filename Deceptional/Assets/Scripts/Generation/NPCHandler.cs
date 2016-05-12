@@ -31,39 +31,60 @@ namespace Assets.Scripts {
 
         public static void GenerateKiller() {
             GameObject killerGO = GenerateRandomWitness();
-            killerGO.GetComponent<NPC>().IsKiller = true;
+            NPC killer = killerGO.GetComponent<NPC>();
+
+            // Generate likeness NPCs
+            var generationStep = 0;
+            var doppelgangerCount = 2;
+            while (generationStep < 2) {
+                while (doppelgangerCount-- > 0) {
+                    switch(generationStep) {
+                        case 0: GenerateWitnessLikeness(new List<NPCPart>() { killer.Hat }); break;
+                        case 1: GenerateWitnessLikeness(new List<NPCPart>() { killer.Torso }); break;
+                        default: throw new Exception("GenerationStep overflow; no such generationStep");
+                    }
+                }
+                doppelgangerCount = 2;
+                generationStep++;
+            }
+
+            killer.IsKiller = true;
         }
 
-        public static GameObject GenerateRandomWitness() {
+        public static GameObject GenerateRandomWitness() { return GenerateWitnessLikeness(new List<NPCPart>()); }
+        public static GameObject GenerateWitnessLikeness(List<NPCPart> likeness) {
             // Instantiate new npc from prefab, get NPC script
             var npcGO = GameObject.Instantiate(PlayerController.Instance.DefaultNPC);
             NPC npc = npcGO.GetComponent<NPC>();
             // Make NPCS game object as parent
             npcGO.transform.SetParent(PlayerController.NPCParent.transform);
-                      
 
             // Set gender and name
             bool npcGender = Convert.ToBoolean(PlayerController.Instance.Rng.Next(0, 2));
             npc.IsMale = npcGender;
             npc.Name = GetRandomName(npcGender, useFullNames);
-            
-            // TODO: Control for murderer similarity
-            int randomDesc;
-            //var maxValue = Enum.GetValues(typeof(NPCPart.NPCPartDescription)).Length;
-            var maxValue = IO.FileLoader.GetParts(NPCPart.NPCPartType.Hat).Count;
-            randomDesc = PlayerController.Instance.Rng.Next(maxValue);
-            var newHead = new NPCPart(NPCPart.NPCPartType.Hat, randomDesc);
-            maxValue = IO.FileLoader.GetParts(NPCPart.NPCPartType.Hat).Count;
-            randomDesc = PlayerController.Instance.Rng.Next(maxValue);
-            var newTorso = new NPCPart(NPCPart.NPCPartType.Shirt, randomDesc);
-            maxValue = IO.FileLoader.GetParts(NPCPart.NPCPartType.Hat).Count;
-            randomDesc = PlayerController.Instance.Rng.Next(maxValue);
-            var newLegs = new NPCPart(NPCPart.NPCPartType.Pants, randomDesc);
 
-            npc.Assemble(newHead, newTorso, newLegs);
+            Dictionary<NPCPart.NPCPartType, NPCPart> isCustomPart = new Dictionary<NPCPart.NPCPartType, NPCPart>() {
+                { NPCPart.NPCPartType.Hat, null },
+                { NPCPart.NPCPartType.Shirt, null },
+                { NPCPart.NPCPartType.Pants, null },
+                { NPCPart.NPCPartType.Item, null }
+            };
 
-            
+            foreach (NPCPart part in likeness) isCustomPart[part.Type] = part;
+
+            var newHat = isCustomPart[NPCPart.NPCPartType.Hat] != null ? isCustomPart[NPCPart.NPCPartType.Hat] : GetRandomPart(NPCPart.NPCPartType.Hat);
+            var newShirt = isCustomPart[NPCPart.NPCPartType.Shirt] != null ? isCustomPart[NPCPart.NPCPartType.Shirt] : GetRandomPart(NPCPart.NPCPartType.Shirt);
+            var newPants = isCustomPart[NPCPart.NPCPartType.Pants] != null ? isCustomPart[NPCPart.NPCPartType.Pants] : GetRandomPart(NPCPart.NPCPartType.Pants);
+            var newItem = isCustomPart[NPCPart.NPCPartType.Item] != null ? isCustomPart[NPCPart.NPCPartType.Item] : GetRandomPart(NPCPart.NPCPartType.Item);
+
+            npc.Assemble(newHat, newShirt, newPants);
+
             return npcGO;
+        }
+        public static NPCPart GetRandomPart(NPCPart.NPCPartType identifier) {
+            var parts = IO.FileLoader.GetParts(identifier);
+            return new NPCPart(identifier, PlayerController.Instance.Rng.Next(parts.Count));
         }
 
         private static bool useFullNames = false;

@@ -1,4 +1,4 @@
-jacket
-coat
-shirt
-vest
+black jacket
+brown coat
+blue shirt
+green vest

@@ -848,8 +848,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Label: ACCUSE\nOF\nLYING
   MethodName: Accuse
-  Controller: {fileID: 0}
-  TextField: {fileID: 0}
+  Controller: {fileID: 631920658}
+  TextField: {fileID: 1007484909}
   SpeedDown: 0.05
   SpeedUp: 0.01
   Mode: 0
@@ -3180,7 +3180,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Label: ARREST
   MethodName: Arrest
-  Controller: {fileID: 0}
+  Controller: {fileID: 631920658}
   TextField: {fileID: 0}
   SpeedDown: 0.05
   SpeedUp: 0.01
@@ -4180,6 +4180,10 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 617230397}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &631920658 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 114114, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
+  m_PrefabInternal: {fileID: 1880119730}
 --- !u!1001 &642946144
 Prefab:
   m_ObjectHideFlags: 0
@@ -13312,7 +13316,7 @@ Prefab:
       objectReference: {fileID: 122182, guid: 29208151730cecf4eb6c3ddb9dea3bfc, type: 2}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: Difficulty
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11489994, guid: ce9859cf4818f5b4aa68a0a933210ff2, type: 2}
       propertyPath: CalendarTextMesh
@@ -14810,8 +14814,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Label: CALL\nIN
   MethodName: CallIn
-  Controller: {fileID: 0}
-  TextField: {fileID: 0}
+  Controller: {fileID: 631920658}
+  TextField: {fileID: 1249097040}
   SpeedDown: 0.05
   SpeedUp: 0.01
   Mode: 0

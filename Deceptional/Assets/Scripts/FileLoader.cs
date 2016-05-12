@@ -44,7 +44,8 @@ namespace Assets.Scripts.IO {
                 case NPCPart.NPCPartType.Hat:   filePath += "hats"; break;
                 case NPCPart.NPCPartType.Shirt: filePath += "torso"; break;
                 case NPCPart.NPCPartType.Pants: filePath += "legs"; break;
-                default: throw new ArgumentException("Invalid part type supplied. Only 'Hat', 'Shirt' & 'Pants' are valid.");
+                case NPCPart.NPCPartType.Item:  filePath += "items"; break;
+                default: throw new ArgumentException("Invalid part type supplied. Only 'Hat', 'Shirt', 'Pants' & 'Item' are valid.");
             }
             var parts = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
             return parts.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -62,14 +63,20 @@ namespace Assets.Scripts.IO {
                 case ClueIdentifier.Accusatory:     filePath += @"accusation"; break;
                 case ClueIdentifier.Descriptive:    filePath += @"description"; break;
                 case ClueIdentifier.MurderLocation: filePath += @"murderLocation"; break;
-                case ClueIdentifier.PeopleLocation: filePath += @"peopleLocation"; break;
+                case ClueIdentifier.PeopleLocation: throw new NotSupportedException("PeopleLocation clues have been switched for Alibis and Inciminations.");
                 case ClueIdentifier.Pointer:        filePath += @"specificPointer"; break;
-                default: throw new Exception();
             }
 
             var templates = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
             return templates.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
+
+        public static List<string> GetLimericks() {
+            string filePath = @"Statements/startstatement";
+            var limericks = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
+            return limericks.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+
         #region Subtemplates
         public static List<string> GetAlibis() {
             string filePath = @"Statements/templates/alibilocation";
@@ -85,11 +92,5 @@ namespace Assets.Scripts.IO {
             return templates.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
         #endregion
-
-        public static List<string> GetLimericks() {
-            string filePath = @"Statements/startstatement";
-            var limericks = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
-            return limericks.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        }
     }
 }
