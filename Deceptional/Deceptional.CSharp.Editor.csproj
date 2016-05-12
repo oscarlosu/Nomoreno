@@ -118,10 +118,8 @@
     <None Include="Assets\Resources\Statements\templates\accusation.txt" />
     <None Include="Assets\Resources\Statements\templates\alibilocation.txt" />
     <None Include="Assets\Resources\Statements\templates\description.txt" />
-    <None Include="Assets\Resources\Statements\templates\ignorance.txt" />
     <None Include="Assets\Resources\Statements\templates\incriminatinglocation.txt" />
     <None Include="Assets\Resources\Statements\templates\murderLocation.txt" />
-    <None Include="Assets\Resources\Statements\templates\peopleLocation.txt" />
     <None Include="Assets\Resources\Statements\templates\specificPointer.txt" />
     <None Include="Assets\Resources\Statements\templates\startstatement.txt" />
     <None Include="Assets\Resources\Statements\variables\gender.txt" />
