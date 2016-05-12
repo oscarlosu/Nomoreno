@@ -250,9 +250,6 @@ namespace Assets.Scripts {
                     // Save reference to arrested NPC
                     arrestedNPC = CurrentInterrogationTarget;
 
-                    // TODO: Is this necessary?
-                    // Deselect current interragation target. This prevents the player from triggering next day several times by spamming the arrest button
-                    //Dismiss();
                     CallInButton.ChangeButton("CALL\nIN", "CallIn");
                     TransitionManager.Instance.ArrestTransition(CurrentInterrogationTarget.transform, false);
                 }                
@@ -314,7 +311,7 @@ namespace Assets.Scripts {
                 NPC.NPCList[i].Emoji.enabled = false;
             }
 
-            // TODO: Shuffle npc list
+            // Shuffles NPCList
             List<NPC> shuffledList = new List<NPC>();
             while(NPC.NPCList.Count > 0) { 
                 int index = Rng.Next(0, NPC.NPCList.Count);
@@ -401,15 +398,19 @@ namespace Assets.Scripts {
             ++currentDay;
             // Murder new witness
             Clue.LatestVictim = MurderWitness();
-            //LatestLocation = "Nowhere"; // TODO: Insert 'real' location.
             // Clear reference to arrested NPC
             arrestedNPC = null;
             // Cool NPC moods
             foreach (NPC n in NPC.NPCList) { n.CoolMood(); }
             // Generate conversations
-            // TODO: Add variables for location clues and pointers.
-            ConversationHandler.TruthGraph = GraphBuilder.BuildGraph(AIDirector.Instance.NumberOfDescriptiveClues, 2, 2, 2);
-            ConversationHandler.SetupConversations(AIDirector.Instance.PercentageLiars, AIDirector.Instance.PercentageDescriptiveLiars);
+            ConversationHandler.TruthGraph = GraphBuilder.BuildGraph(
+                AIDirector.Instance.NumberOfDescriptiveClues, 
+                AIDirector.Instance.PeopleLocationClues, 
+                AIDirector.Instance.MurderLocationClues,
+                AIDirector.Instance.Pointers);
+            ConversationHandler.SetupConversations(
+                AIDirector.Instance.PercentageLiars, 
+                AIDirector.Instance.PercentageDescriptiveLiars);
             // Reset clock
             ResetClock();
             // Show new day message

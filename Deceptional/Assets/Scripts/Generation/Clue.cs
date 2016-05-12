@@ -16,20 +16,9 @@ namespace Assets.Scripts {
         public string NPCDescription { get; set; }
         public string Location { get; set; }
 
-        public Clue(string template, NPC target, ClueIdentifier identifier, NPCPart.NPCPartType targetPart) {
-            Template = template;
-            Targets = new List<NPC>() { target };
-            Identifier = identifier;
-            NPCPartType = targetPart;
-            switch (NPCPartType) {
-                case NPCPart.NPCPartType.None:  NPCDescription = string.Empty; break;
-                case NPCPart.NPCPartType.Hat:   NPCDescription = Targets[0].Hat.Description; break;
-                case NPCPart.NPCPartType.Shirt: NPCDescription = Targets[0].Torso.Description; break;
-                case NPCPart.NPCPartType.Pants: NPCDescription = Targets[0].Legs.Description; break;
-                default: throw new Exception("NPCPart unidentifiable");
-            }
-            Location = "Nowhere";
-        }
+        #region Constructors
+        public Clue(string template, NPC target, ClueIdentifier identifier, NPCPart.NPCPartType targetPart)
+            : this(template, new List<NPC> { target }, identifier, targetPart) { }
 
         public Clue(string template, List<NPC> targets, ClueIdentifier identifier, NPCPart.NPCPartType targetPart) {
             Template = template;
@@ -46,6 +35,7 @@ namespace Assets.Scripts {
             }
             Location = "Nowhere";
         }
+        #endregion
 
         /// <summary>
         /// Constructs a statement using all custom parameters.
@@ -70,10 +60,10 @@ namespace Assets.Scripts {
                     default: throw new Exception(string.Format("Found unexpected token {0} while constructing statement.", m.Value));
                 }
 
-                // If the match group 3 is a success, the token must be gender.
+                // If the match group 2 is a success, the token must be gender.
                 // Finds the correct pronoun and replaces the abstract token with the correct value.
-                if (m.Groups[3].Success) {
-                    int pronounIdx = int.Parse(m.Groups[3].Value);
+                if (m.Groups[2].Success) {
+                    int pronounIdx = int.Parse(m.Groups[2].Value);
                     usedPronoun = Targets[0].IsMale ? malePronouns[pronounIdx - 1] : femalePronouns[pronounIdx - 1];
                     usedPronoun = useCockney ? CocknifyPronoun(usedPronoun) : usedPronoun;
                     clueBuilder.Replace(m.Value, usedPronoun);
@@ -85,7 +75,7 @@ namespace Assets.Scripts {
 
         #region Static fields
         private static bool useCockney = true;
-        private static Regex cluePattern = new Regex(@"\[(\w+)(\[(\d)\])?\]");
+        private static Regex cluePattern = new Regex(@"\[(\w+)(?:\[(\d)\])?\]");
 
         #region Pronouns
         private static List<string> malePronouns = new List<string>() { "man", "he", "his", "men", "him", "Mister" };

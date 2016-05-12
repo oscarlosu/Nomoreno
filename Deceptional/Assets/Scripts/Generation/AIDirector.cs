@@ -37,13 +37,24 @@ namespace Assets.Scripts {
             set { PlayerController.Instance.NumberOfDescriptiveClues = value; }
         }
 
-        /* FIXED PARAMETERS */
+        #region Parameters
+        #region Liars
         public float PercentageLiars = 0.4f;
         public float PercentageDescriptiveLiars = 0.2f;
         public int HidingDescriptiveNPCs = 0;
+        #endregion
+        
+        #region Mingling
         public float MingleValue = 2.5f;
         public int NumMinglers = 3;
+        #endregion
 
+        #region Clues
+        public int PeopleLocationClues = 2;
+        public int MurderLocationClues = 2;
+        public int Pointers = 3;
+        #endregion
+        #endregion
 
         /// <summary>
         /// Calculates a new difficulty and changes game parameters accordingly.
@@ -66,18 +77,21 @@ namespace Assets.Scripts {
         ///     - PercentageDescriptiveLiars    = 20 %
         ///     - MingleValue                   = 2.5
         ///     - NumDescriptiveClues           = 3
+        ///     - NumHidingDescriptive          = 0 : NumDescriptiveClues
         /// Max Values:
         ///     - NumMinglers                   = 5
         ///     - PercentageLiars               = 75 %
         ///     - PercentageDescriptiveLiars    = 40 %
         ///     - MingleValue                   = 4.0
         ///     - NumDescriptiveClues           = 5
+        ///     - NumHidingDescriptive          = (0 : NumDescriptiveClues) - 1 + difficultyValue/2
         /// Min Values
         ///     - NumMinglers                   = 1
         ///     - PercentageLiars               = 5 %
         ///     - PercentageDescriptiveLiars    = 0 %
         ///     - MingleValue                   = 1.0
         ///     - NumDescriptiveClues           = 1
+        ///     - NumHidingDescriptive          = 0 : (NumDescriptiveClues / 2)
         /// </summary>
         /// <param name="difficultyValue">The current difficulty.</param>
         private void SetDifficulty(int difficultyValue) {
