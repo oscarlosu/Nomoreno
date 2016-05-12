@@ -59,6 +59,9 @@ public class TransitionManager : MonoBehaviour {
     public AudioClip PlatformStopSound;
     public float PlatformStopSoundVolume = 1.0f;
 
+
+    public float ResultSoundDelay = 1.0f;
+
     // Use this for initialization
     void Awake() {
         //DontDestroyOnLoad(gameObject);
@@ -280,18 +283,14 @@ public class TransitionManager : MonoBehaviour {
             Debug.Log("Platform rotation not done");
         }
             // Unparent accused from cage
-            arrested.SetParent(parent);        
-        
+            arrested.SetParent(parent);
+        // Play result sound with small delay to avoid sound overlapping
         if(gameFinished) {
-            // Play success
-            AudioManager.Instance.Play(SuccessSound, s => s.volume = SuccessSoundVolume);
-            PlayerController.Instance.ClearScene();
+            Invoke("PlayArrestSuccesSound", ResultSoundDelay);
         } else {
-            // Play failure
-            AudioManager.Instance.Play(FailureSound, s => s.volume = FailureSoundVolume);
-            // Tell PlayerController to generate next day
-            PlayerController.Instance.GenerateNextDay();
+            Invoke("PlayArrestFailureSound", ResultSoundDelay);
         }
+
         PlayerController.Instance.ShowPlatformText();
 		// Drop begin day button
 		BeginDayButtonEnter.Execute();
@@ -300,6 +299,22 @@ public class TransitionManager : MonoBehaviour {
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
 
     }
+
+    void PlayArrestSuccesSound() {
+        // Play success
+        AudioManager.Instance.Play(SuccessSound, s => s.volume = SuccessSoundVolume);
+        PlayerController.Instance.ClearScene();
+    }
+
+    void PlayArrestFailureSound() {
+        // Play failure
+        AudioManager.Instance.Play(FailureSound, s => s.volume = FailureSoundVolume);
+        // Tell PlayerController to generate next day
+        PlayerController.Instance.GenerateNextDay();
+    }
+
+    
+
     /// <summary>
     /// Transition that happens when the player presses the Return to Start button or the Restart button.
     /// </summary>

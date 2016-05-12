@@ -144,8 +144,16 @@ MonoBehaviour:
   SuccessSoundVolume: 1
   FailureSound: {fileID: 0}
   FailureSoundVolume: 1
+  CageHitSound: {fileID: 0}
+  CageHitSoundVolume: 1
+  CageChainSound: {fileID: 0}
+  CageChainSoundVolume: 1
   CamerasOut: {fileID: 0}
   Help: {fileID: 0}
+  PlatformTurningSound: {fileID: 0}
+  PlatformTurningSoundVolume: 1
+  PlatformStopSound: {fileID: 0}
+  PlatformStopSoundVolume: 1
 --- !u!4 &125553510 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 5be0f7118b3314be590e34941c2bca05, type: 3}
@@ -188,14 +196,6 @@ Prefab:
     - target: {fileID: 428044, guid: 06b54dea10531e64cb48effaa5baa717, type: 2}
       propertyPath: m_RootOrder
       value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 8218604, guid: 06b54dea10531e64cb48effaa5baa717, type: 2}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 0a0c62c15030e46a9a5a77b1a20791d6, type: 3}
-    - target: {fileID: 8266684, guid: 06b54dea10531e64cb48effaa5baa717, type: 2}
-      propertyPath: m_Volume
-      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 06b54dea10531e64cb48effaa5baa717, type: 2}
