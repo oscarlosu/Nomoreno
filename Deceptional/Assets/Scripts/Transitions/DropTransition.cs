@@ -26,14 +26,14 @@ public class DropTransition : Transition {
     }
     private IEnumerator GoThroughTargets() {
         State = TransitionState.Running;
-        transform.position = Targets[0];
+        transform.localPosition = Targets[0];
         // Go from startPos through all the targets
         for (int i = 1; i < Targets.Count; ++i) {
 
             // Lerp towards current target
             elapsedTime = 0;
             travelledDistance = 0;
-            targetDistance = Vector3.Distance(transform.position, Targets[i]);
+            targetDistance = Vector3.Distance(transform.localPosition, Targets[i]);
             while (!LerpTowardsTarget(i)) {
                 elapsedTime += Time.deltaTime;
                 yield return null;
@@ -43,12 +43,12 @@ public class DropTransition : Transition {
         State = TransitionState.Done;
     }
     private bool LerpTowardsTarget(int index) {
-        Vector3 dir = Targets[index] - transform.position;
+        Vector3 dir = Targets[index] - transform.localPosition;
         dir.Normalize();
         float remainingDistance = targetDistance - travelledDistance;
         float stepLength = Mathf.Min(SpeedCurves[index - 1].Evaluate(elapsedTime), remainingDistance);
         travelledDistance += stepLength;
-        transform.position = transform.position + dir * stepLength;
+        transform.localPosition = transform.localPosition + dir * stepLength;
         return travelledDistance >= targetDistance;
     }
 }
