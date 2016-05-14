@@ -104,8 +104,7 @@ public class TransitionManager : MonoBehaviour {
         AudioManager.Instance.Stop(rotationAS);
         AudioManager.Instance.Play(PlatformStopSound, s => s.volume = PlatformStopSoundVolume);
         // Show text
-        PlayerController.Instance.ShowPlatformText();
-        PlayerController.Instance.ShowCalendarText();
+        PlayerController.Instance.ShowPlatformText();        
 		// Drop begin day button
 		BeginDayButtonEnter.Execute();
 		yield return new WaitUntil(() => BeginDayButtonEnter.State == Transition.TransitionState.Done);
@@ -125,6 +124,8 @@ public class TransitionManager : MonoBehaviour {
 		PlatformBackController.enabled = false;
         // Tell PlayerController to start next day
         PlayerController.Instance.BeginDay();
+        // Update calendar
+        PlayerController.Instance.ShowCalendarText();
         // Rotate waiting room back
         WaitingRoomCam.Execute(1);
         // Play platform rotation sound
@@ -214,8 +215,8 @@ public class TransitionManager : MonoBehaviour {
         } while (Clock.State != Transition.TransitionState.Done || WaitingRoomCam.State != Transition.TransitionState.Done);
 
         PlayerController.Instance.ShowPlatformText();
-		// Drop begin day button
-		BeginDayButtonEnter.Execute();
+        // Drop begin day button
+        BeginDayButtonEnter.Execute();
 		yield return new WaitUntil(() => BeginDayButtonEnter.State == Transition.TransitionState.Done);
 
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
@@ -292,8 +293,9 @@ public class TransitionManager : MonoBehaviour {
         }
 
         PlayerController.Instance.ShowPlatformText();
-		// Drop begin day button
-		BeginDayButtonEnter.Execute();
+        
+        // Drop begin day button
+        BeginDayButtonEnter.Execute();
 		yield return new WaitUntil(() => BeginDayButtonEnter.State == Transition.TransitionState.Done);
 
 		PlayerController.Instance.State = PlayerController.ControllerState.Enabled;
