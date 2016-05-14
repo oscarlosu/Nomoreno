@@ -175,16 +175,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         //CanMingle = true;
         warped = false;
         // Place npc on random empty position
-        //Grid.Instance.FreeCell(currentCell);
-        
-        //currentCell = Grid.Instance.GetRandomCell();
+        Grid.Instance.FreeCell(currentCell);
         currentCell = Grid.Instance.GetIsolatedCell();
-
-
-
-
-        //transform.position = currentCell.transform.position;
-        //navAgent.Warp(currentCell.transform.position);
         if (!navAgent.enabled) {
             Debug.Log(Name + " was in the cage");
         }
@@ -197,9 +189,6 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
 
         Emoji.enabled = false;
         CurrentBehaviour = Behaviour.None;
-        //HideNameLabel();
-        // NPCs always start waiting
-        //StartCoroutine(Waiting());
     }
 
     void OnDisable() {
