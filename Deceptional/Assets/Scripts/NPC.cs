@@ -570,93 +570,72 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
 
 
     #region Mingling results
-    private Sprite GetMingleResult(NPC other) {
-        if (IsAgree(other.Conversation.ActualClue)) {
-            return Agree;
-        } else if (IsDisagree(other.Conversation.ActualClue)) {
-            return Disagree;
-        //} else if (IsHappy(other)) {
-        //    return Trust;
-        } else if (IsAngry(other)) {
-            return Distrust;
-        } else {
-            return NoResult;
+    public Sprite GetMingleResult(NPC other) {
+        Sprite result = CheckAgree(this, other);
+        if (result != null) {
+            return result;
         }
-    }   
-    private bool IsAgree(Clue other) {
-        if (Conversation.ActualClue.Identifier == other.Identifier) {
-            // Descriptive
-            if (Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive) {
-                // Talking about the same part
-                if (other.NPCPartType == Conversation.ActualClue.NPCPartType) {
-                    // Agreement on descriptive clue
-                    if (other.NPCDescription == Conversation.ActualClue.NPCDescription) {
-                        return true;
-                    }
-                    // Disagreement on descriptive clue
-                    else {
-                        return false;
-                    }
-                }
-            }
-            // Supportive or  Accusatory
-            else {
-                // Same target
-                if (Conversation.ActualClue.Targets.Any(npc => other.Targets.Any(oNPC => npc == oNPC))) {
-                    return true;
+        result = CheckTrust(this, other);
+        if(result != null) {
+            return result;
+        }
+        return null;
+    }
+
+    public Sprite CheckAgree(NPC a, NPC b) {
+        // Description + Description
+        if (a.Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive &&
+            b.Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive) {
+            if (a.Conversation.ActualClue.NPCPartType == b.Conversation.ActualClue.NPCPartType) {
+                if (String.Compare(a.Conversation.ActualClue.NPCDescription, b.Conversation.ActualClue.NPCDescription, true) == 0) {
+                    // Agree
+                    return Agree;
                 } else {
-                    return false;
+                    // Disagree
+                    return Disagree;
                 }
+            } else {
+                // No result
+                return null;
             }
         }
-        return false;
+        // Accusation + Pointer
+        else if ((a.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && b.Conversation.ActualClue.Identifier == ClueIdentifier.Pointer) ||
+                   (a.Conversation.ActualClue.Identifier == ClueIdentifier.Pointer && b.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory)) {
+            if (a.Conversation.ActualClue.Targets[0] == b.Conversation.ActualClue.Targets[0]) {
+                // Disagree
+                return Disagree;
+            } else {
+                // No result
+                return null;
+            }
+        }
+        // Murder Location + Murder Location
+        else if (a.Conversation.ActualClue.Identifier == ClueIdentifier.MurderLocation &&
+                b.Conversation.ActualClue.Identifier == ClueIdentifier.MurderLocation) {
+            if (String.Compare(a.Conversation.ActualClue.Location, b.Conversation.ActualClue.Location, true) == 0) {
+                // Agree
+                return Agree;
+            } else {
+                // Disagree
+                return Disagree;
+            }
+        }
+        return null;
     }
-    private bool IsDisagree(Clue other) {
-        if (Conversation.ActualClue.Identifier == other.Identifier) {
-            // Descriptive
-            if (Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive) {
-                // Talking about the same part
-                if (other.NPCPartType == Conversation.ActualClue.NPCPartType) {
-                    // Agreement on descriptive clue
-                    if (other.NPCDescription == Conversation.ActualClue.NPCDescription) {
-                        return false;
-                    }
-                    // Disagreement on descriptive clue
-                    else {
-                        return true;
-                    }
-                }
-            }
-            // Supportive or  Accusatory
-            else {
-                return false;
-            }
-        // Cannot reasonably be converted to match new statements.
-        //} else if ((Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && other.Identifier == ClueIdentifier.Informational) ||
-        //            (Conversation.ActualClue.Identifier == ClueIdentifier.Informational && other.Identifier == ClueIdentifier.Accusatory)) {
-        //    if (Conversation.ActualClue.Target == other.Target) {
-        //        return true;
-        //    }
+    
+    private Sprite CheckTrust(NPC a, NPC b) {
+        // Accusation + Target
+        if ((a.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && a.Conversation.ActualClue.Targets[0] == b) || 
+            (b.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && b.Conversation.ActualClue.Targets[0] == this)) {
+            return Distrust;
         }
-        return false;
-    }
-    //public bool IsHappy(NPC other) {
-    //    if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
-    //        other.Conversation.ActualClue.Target == this) ||
-    //        (Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
-    //        Conversation.ActualClue.Target == other)) {
-    //        return true;
-    //    }
-    //    return false;
-    //}
-    public bool IsAngry(NPC other) {
-        if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
-            other.Conversation.ActualClue.Targets.Contains(this)) ||
-            (Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
-            Conversation.ActualClue.Targets.Contains(other))) {
-            return true;
+        // Pointer + Target
+        else if((a.Conversation.ActualClue.Identifier == ClueIdentifier.Pointer && a.Conversation.ActualClue.Targets[0] == b) ||
+                (b.Conversation.ActualClue.Identifier == ClueIdentifier.Pointer && b.Conversation.ActualClue.Targets[0] == this)) {
+            return Trust;
         }
-        return false;
+        return null;
     }
     #endregion
 }
