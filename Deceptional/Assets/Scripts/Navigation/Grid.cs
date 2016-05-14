@@ -18,7 +18,6 @@ public class Grid : MonoBehaviour {
     }
     public List<Cell> Cells;
     public List<Cell> FreeCells;
-    public List<Cell> IsolatedCells;
 
     public float CellSideLength;
     private float ErrorMargin = 0.5f;
@@ -56,6 +55,12 @@ public class Grid : MonoBehaviour {
             FreeCells.RemoveAt(index);
             cell.Free = false;
 
+        }
+        if(cell == null) {
+            cell = GetRandomCell();
+        }
+        if(cell == null) {
+            Debug.LogWarning("Couldn't get free cell to move to.");
         }
         return cell;
     }
