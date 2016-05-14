@@ -169,7 +169,7 @@ namespace Assets.Scripts {
 
         public void SetupMultiSupportNode(Node baseNode, List<NPC> targets, string location) { SetupMultiSupportNode(baseNode, targets, location, ClueIdentifier.PeopleLocation); }
         public void SetupMultiSupportNode(Node baseNode, List<NPC> targets, string location, ClueIdentifier identifier) {
-            baseNode.TargetNodes = targets;
+            baseNode.TargetNodes = PickRandomTargets(targets, 4);
             var template = "";
             if (identifier == ClueIdentifier.PeopleLocation) {
                 if (targets.Contains(baseNode.NPC)) {
@@ -224,11 +224,24 @@ namespace Assets.Scripts {
                     possibleTargets = NPC.NPCList.Where(npc => !pointerTargets.Contains(npc));
                     return CreatePointerNode(possibleTargets.ElementAt(PlayerController.Instance.Rng.Next(possibleTargets.Count())), hookNPC);
                 case 3: // Accusation
-                    //possibleTargets = truthGraph.Nodes.Select(node => node.NPC);
-                    //return CreateAccusationNode(possibleTargets.ElementAt(PlayerController.Instance.Rng.Next(possibleTargets.Count())), hookNPC);
                     return CreateEmptyNode(hookNPC);
                 default: throw new Exception("lieIdx tried to access a number larger than 3.");
             }
+        }
+
+        public static List<NPC> PickRandomTargets(List<NPC> baseList, int count) {
+            if (count >= baseList.Count) return baseList;
+
+            var pickedIdx = new List<int>();
+            var pickedElements = new List<NPC>();
+            for (int i = 0; i < count; i++) {
+                var nextIdx = PlayerController.Instance.Rng.Next(baseList.Count);
+                while (pickedIdx.Contains(nextIdx % baseList.Count)) { nextIdx = (nextIdx + 1) % baseList.Count; }
+                pickedIdx.Add(nextIdx);
+                pickedElements.Add(baseList[nextIdx]);
+            }
+
+            return pickedElements;
         }
     }
 }
