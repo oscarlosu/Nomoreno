@@ -25,6 +25,13 @@ namespace Assets.Scripts {
 
             MurderLocation = NPCLocations.Keys.ElementAt(PlayerController.Instance.Rng.Next(NPCLocations.Count));
             NPCLocations[MurderLocation].Add(NPC.NPCList.FirstOrDefault(npc => npc.IsKiller));
+
+            // Used for debug.
+            foreach (KeyValuePair<string, List<NPC>> kvp in NPCLocations) {
+                string message = kvp.Key + ":";
+                kvp.Value.ForEach(npc => message += "\n\t - " + npc.Name);
+                UnityEngine.Debug.Log(message);
+            }
         }
 
         public CaseHandler(List<NPC> NPCs, string murderLocation) : this(NPCs) {

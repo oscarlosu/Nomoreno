@@ -9,7 +9,7 @@ namespace Assets.Scripts {
         private static void SetupReferences(Graph g, Node n) {
             foreach (NPC t in n.TargetNodes) {
                 Node t_node = g.Nodes.FirstOrDefault(node => node.NPC == t);
-                if (t_node == null) { UnityEngine.Debug.LogWarning("NPC has been set up without target."); return; }
+                if (t_node == null) { /*UnityEngine.Debug.LogWarning("NPC has been set up without reference target.");*/ return; }
 
                 if (g.ReferenceLookup.ContainsKey(t_node)) {
                     g.ReferenceLookup[t_node].Add(n);

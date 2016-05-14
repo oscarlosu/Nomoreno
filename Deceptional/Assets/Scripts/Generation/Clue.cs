@@ -34,6 +34,7 @@ namespace Assets.Scripts {
                 default: throw new Exception("NPCPart unidentifiable");
             }
             Location = "Nowhere";
+            if (targets.Count == 0) { UnityEngine.Debug.LogWarning("Clue of type: '" + Identifier.ToString() + "' constructed with no target" /*+ ConstructClue()*/); }
         }
         #endregion
 
@@ -97,7 +98,9 @@ namespace Assets.Scripts {
         }
 
         private static string SerializeTargets(List<NPC> targets) {
-            if (targets.Count > 1) {
+            if (targets.Count == 0) {
+                return "nobody";
+            } else if (targets.Count > 1) {
                 string returnValue = targets.Take(targets.Count - 1).Select(npc => npc.Name).Aggregate((ag, s) => ag + ", " + s);
                 returnValue += useCockney ? " and " + targets.Last().Name : " an' " + targets.Last().Name;
                 return returnValue;
