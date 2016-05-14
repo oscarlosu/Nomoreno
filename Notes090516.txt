@@ -10,24 +10,8 @@ SEED 0:
 Murderer: 	Ginny 
 Description:	(F, straw hat, jacket, black pants, McDonalds)
 
+Claude has 2 lies
+Random Generator not regenerated on restart
+
 D1 Graph:
 Name---		Lie---			Truth---
-- Jacob					PeopleLoc(McD.Tavern) 
-- Maria		Descriptive(whitePants)	MurderLoc(FUp.Cemetery)
-- Ann		MurderLoc(McD.Tavern)	Descriptive(sixpence hat)
-- John		Descriptive(whitePants)	PeopleLoc(FUp.Cemetery)
-- Frank		Accusation(August)	PeopleLoc(BKings.Pub)
-- August	Descriptive(whitePants)	PeopleLoc(FUp.Cemetery)
-- Abby		Accusation(Rudolph)	PeopleLoc(BKings.Pub)
-- Rudolph	Pointer(Abby)		Pointer(John)
-- Joseph				Pointer(Jacob)
-- Becky		Accusation(Sue)		Pointer(Maria)
-- Molly		Pointer(Jennie)		Pointer(Maria)
-- Ginny		Pointer(Anna)		Pointer(Jacob)
-- Jennie	MurderLoc(JLPs.Park)	Pointer(Ann)
-- Davis		MurderLoc(McD.Tavern)	Accusation(Jennie)
-- Lilly		Descriptive(bowlerHat)	Accusation(Molly)
-- Anna		Descriptive(bowlerHat)	Accusation(Jeremy)
-- Claude				Accusation(Becky)
-- Sue					Accusation(Jacob)
-- Jeremy	Accusation(Rudolph)	MurderLoc(BK)

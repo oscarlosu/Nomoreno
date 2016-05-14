@@ -72,7 +72,7 @@ namespace Assets.Scripts {
                     var murderScenePois = caseHandler.NPCLocations[caseHandler.MurderLocation];
 
                     newNode = ClueFactory.Instance.CreatePeopleLocationNode(
-                        murderScenePois,
+                        PickRandomTargets(murderScenePois, 4),
                         murderScenePois.Where(npc => !npc.IsKiller).ElementAt(PlayerController.Instance.Rng.Next(murderScenePois.Count-1)),
                         caseHandler.MurderLocation);
                     hasKillerLocation = true;
@@ -86,7 +86,7 @@ namespace Assets.Scripts {
                     if (availablePois.Count() == 0) { availablePois = remainingNPCs; }
 
                     newNode = ClueFactory.Instance.CreatePeopleLocationNode(
-                        locationPois,
+                        PickRandomTargets(locationPois, 4),
                         availablePois.ElementAt(PlayerController.Instance.Rng.Next(availablePois.Count())),
                         locationString);
                 }
@@ -190,6 +190,20 @@ namespace Assets.Scripts {
                 Node accusation = ClueFactory.Instance.CreateAccusationNode(possibleTargets[PlayerController.Instance.Rng.Next(possibleTargets.Count)], npc);
                 truth.Nodes.Add(accusation);
             }
+        }
+
+        public static List<NPC> PickRandomTargets(List<NPC> baseList, int count) {
+            if (count >= baseList.Count) return baseList;
+
+            var pickedIdx = new List<int>();
+            var pickedElements = new List<NPC>();
+            for (int i = 0; i < count; i++) {
+                var nextIdx = PlayerController.Instance.Rng.Next(baseList.Count);
+                while (pickedIdx.Contains(nextIdx % baseList.Count)) { nextIdx = (nextIdx + 1) % baseList.Count; }
+                pickedElements.Add(baseList[nextIdx]);
+            }
+
+            return pickedElements;
         }
     }
 }

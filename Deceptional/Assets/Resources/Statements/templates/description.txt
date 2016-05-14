@@ -1,9 +1,9 @@
 The murderer was wearing a [part].
-The murderer is a [gender].
+The murderer is a [gender[1]].
 Awright geeezzaa! I saw da murder 'appen! I was so scared, I 'id benearf da windowsill, I was shaking! I peaked up an' saw a [part] turning, an' quickly ducked down again! Sorted mate.
 I was openin' me shop, I 'eard some commoshun in da street, when I wen' ter look I just saw a glimpse ov da murderer and saw a [part]
 Lawd above! I 'eard a scream so I rushed ter see what 'appened, I saw [victim] lyin' dead in da ground. Out ov da corner ov me eye a saw someone turnin' da corner wiv a [item].
-This big [gender[1]] rushed in'er ter me when I turned da corner, [gender[2]] knocked me off me feet an' I did not get a good look ov [gender[1]]. When I got ter me feet I saw da dead body! 
+This big [gender[1]] rushed in'er ter me when I turned da corner, [gender[2]] knocked me off me feet an' I did not get a good look ov [gender[5]]. When I got ter me feet I saw da dead body! 
 I was up on da second floor, an' 'eard some someone cry aaaht down in da street. I wen' ter da window, I caught glimpse ov a [part] movin' away from a dead [gender[1]]. Sorted mate.
 Blimey! I was just walkin' down a side alley, when dis person wiv a [part] rushin' right by da end ov da alley. As came ter da end I noticed da corpse ov [victim]. Nuff said, yeah?
 I was sittin' on a bench when I noticed a couple in da distance, I did not pay a lot ov attenshun ter 'em, befawer da [gender[1]] laaahred da [gender[1]] ter da ground discreetly. Sorted mate.
