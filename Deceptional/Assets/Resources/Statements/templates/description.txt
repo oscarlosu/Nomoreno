@@ -1,5 +1,3 @@
-The murderer was wearing a [part].
-The murderer is a [gender[1]].
 Awright geeezzaa! I saw da murder 'appen! I was so scared, I 'id benearf da windowsill, I was shaking! I peaked up an' saw a [part] turning, an' quickly ducked down again! Sorted mate.
 I was openin' me shop, I 'eard some commoshun in da street, when I wen' ter look I just saw a glimpse ov da murderer and saw a [part]
 Lawd above! I 'eard a scream so I rushed ter see what 'appened, I saw [victim] lyin' dead in da ground. Out ov da corner ov me eye a saw someone turnin' da corner wiv a [item].
@@ -10,10 +8,3 @@ I was sittin' on a bench when I noticed a couple in da distance, I did not pay a
 Lawd above! I was strollin' down one side ov da street an' I saw a person wiv a [part] on da uvver side walkin' da opposite direcshun, a little while later I saw a crowd garfer around a dead body.
 Awright geeezzaa! I was on me way 'ome, when I saw a body layin' perfectly still, just then I noticed a [gender[1]] runnin' away in da distance. Sorted mate.
 I saw everything, i' was 'orrible! A person wiv a [part] killed that poor [gender[1]]... I was so scared. OK?
-
-
-
-
-
-
-
