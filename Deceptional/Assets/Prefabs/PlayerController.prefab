@@ -67,7 +67,7 @@ MonoBehaviour:
   ClockSound: {fileID: 8300000, guid: a27b22d47a73146fa92911c08078da6b, type: 3}
   ClockSoundVolume: 0.5
   MinglingSound: {fileID: 8300000, guid: 9730a8126ed184b77a4d9cebd3f694a4, type: 3}
-  MinglingSoundVolume: 1
+  MinglingSoundVolume: 0.3
   WrongAccuseSound: {fileID: 8300000, guid: 81b678ac19d0aed428d229268dc5793e, type: 3}
   WrongAccuseSoundVolume: 1
   RightAccuseSound: {fileID: 8300000, guid: 6e9edb06f126df3419cd0e692bb1b552, type: 3}
