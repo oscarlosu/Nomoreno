@@ -154,6 +154,7 @@ MonoBehaviour:
   PlatformTurningSoundVolume: 1
   PlatformStopSound: {fileID: 0}
   PlatformStopSoundVolume: 1
+  ResultSoundDelay: 1
 --- !u!4 &125553510 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 5be0f7118b3314be590e34941c2bca05, type: 3}
@@ -255,6 +256,18 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: f07a757474a087a4c8405b9d4e2acaaf, type: 2}
+    - target: {fileID: 2300000, guid: 5be0f7118b3314be590e34941c2bca05, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 5be0f7118b3314be590e34941c2bca05, type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 5be0f7118b3314be590e34941c2bca05, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5be0f7118b3314be590e34941c2bca05, type: 3}
   m_IsPrefabParent: 0
@@ -528,6 +541,14 @@ Prefab:
     - target: {fileID: 2300000, guid: 5be0f7118b3314be590e34941c2bca05, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 5be0f7118b3314be590e34941c2bca05, type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 5be0f7118b3314be590e34941c2bca05, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5be0f7118b3314be590e34941c2bca05, type: 3}
