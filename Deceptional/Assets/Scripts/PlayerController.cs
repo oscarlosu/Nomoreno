@@ -189,7 +189,7 @@ namespace Assets.Scripts {
                     AIDirector.Instance.HardClues.Add(CurrentInterrogationTarget.Conversation.ActualClue);
             }
 
-            statement = TextWrapper.BreakLine(statement, 25);
+            statement = TextWrapper.BreakLine(statement, 23);
             StatementTextMesh.gameObject.SetActive(true);
             Coroutine inst = StartCoroutine(CoDisplayText(statement, StatementTextMesh));
             conversationCoroutines.Add(inst);
@@ -307,8 +307,11 @@ namespace Assets.Scripts {
             AudioManager.Instance.Play(MinglingSound, s => s.volume = MinglingSoundVolume);
             // Reset States
             for (int i = 0; i < NPC.NPCList.Count; ++i) {
-                NPC.NPCList[i].CurrentBehaviour = NPC.Behaviour.None;
-                NPC.NPCList[i].Emoji.enabled = false;
+                if(NPC.NPCList[i].CurrentBehaviour != NPC.Behaviour.ReturningFromInterrogation) {
+                    NPC.NPCList[i].CurrentBehaviour = NPC.Behaviour.None;
+                    NPC.NPCList[i].Emoji.enabled = false;
+                }
+                
             }
 
             // Shuffles NPCList
@@ -394,7 +397,7 @@ namespace Assets.Scripts {
 
         public void GenerateNextDay() {
             ClearScene();
-            ClearPlatformText();
+            //ClearPlatformText();
             ++currentDay;
             // Murder new witness
             Clue.LatestVictim = MurderWitness();

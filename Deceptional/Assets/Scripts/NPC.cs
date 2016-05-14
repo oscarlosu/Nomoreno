@@ -145,7 +145,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         MingleReady,
         Mingling,
         MingleWaiting,
-        Interrogated
+        Interrogated,
+        ReturningFromInterrogation
     };
     public Behaviour CurrentBehaviour = Behaviour.None;
     public bool CanMingle {
@@ -317,13 +318,13 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         NameLabelHolder.SetActive(false);
     }
 
-    private bool RotateTowards(Transform target) {
+    private bool RotateTowards(Vector3 target) {
         // Update rotation
-        Vector3 direction = (target.position - transform.position).normalized;
+        Vector3 direction = (target - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * RotationSpeed);
         // Return true if target reached
-        return Mathf.Approximately(Quaternion.Angle(transform.rotation, lookRotation), 0.0f);
+        return Quaternion.Angle(transform.rotation, lookRotation) < 5.0f;
     }
 
     private bool RotateTowards(Quaternion targetRotation) {
@@ -331,7 +332,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         // Update rotation of name label
         nameLabelScript.UpdateRotation();
         // Return true if target reached
-        return Mathf.Approximately(Quaternion.Angle(transform.rotation, targetRotation), 0.0f);
+        return Quaternion.Angle(transform.rotation, targetRotation) < 5.0f;
     }
 
     private bool HasReachedDestination() {
@@ -417,6 +418,10 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
 
         // Change state
         CurrentBehaviour = Behaviour.Mingling;
+        // Face other NPC
+        while (!RotateTowards(targetCell.transform.position)) {
+            yield return null; // Replace with WaitUntil(RotateTowards(target.transform));
+        }
         // Set animator state
         AnimateWalk();
         // Inform target of mingling start
@@ -433,7 +438,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         // Set animator state
         AnimateNone();
         // Face other NPC
-        while (!RotateTowards(target.transform)) {
+        while (!RotateTowards(target.transform.position)) {
             yield return null; // Replace with WaitUntil(RotateTowards(target.transform));
         }
         // Set state so that other NOPC knows that the mingling can start
@@ -451,8 +456,13 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         // Select destination
         Grid.Instance.FreeCell(currentCell);
         currentCell = null;
-        //currentCell = Grid.Instance.GetRandomCell();
         currentCell = Grid.Instance.GetIsolatedCell();
+
+        // Face target cell
+        while (!RotateTowards(currentCell.transform.position)) {
+            yield return null; // Replace with WaitUntil(RotateTowards(target.transform));
+        }
+
         navAgent.SetDestination(currentCell.transform.position);
         // Set animator state
         AnimateWalk();
@@ -467,9 +477,6 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     private IEnumerator CoWaitForMingle(NPC other) {
         // Set behaviour to MingleWaiting
         CurrentBehaviour = Behaviour.MingleWaiting;
-
-
-        Debug.Log(Name + " receives mingle from " + other.Name);
         // Walk animation
         AnimateIdle();
         //MingleReady = false;
@@ -480,7 +487,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         }
         // Dont want any animation during rotation
         AnimateNone();
-        while (!RotateTowards(other.transform)) {
+        while (!RotateTowards(other.transform.position)) {
             yield return null;
         }
         // Set behaviour to mingling.
@@ -499,6 +506,9 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     }
 
     private IEnumerator CoGoToInterrogation() {
+        while (!RotateTowards(PoliceBoxPosition)) {
+            yield return null;
+        }
         // Walking animation
         AnimateWalk();
         // Free cell
@@ -526,6 +536,10 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     }
 
     private IEnumerator CoGoToWaiting() {
+        CurrentBehaviour = Behaviour.ReturningFromInterrogation;
+        while (!RotateTowards(PoliceBoxPosition)) {
+            yield return null;
+        }
         //CanMingle = false;
         // Teleport to waiting room
         if (warped) {
@@ -556,93 +570,72 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
 
 
     #region Mingling results
-    private Sprite GetMingleResult(NPC other) {
-        if (IsAgree(other.Conversation.ActualClue)) {
-            return Agree;
-        } else if (IsDisagree(other.Conversation.ActualClue)) {
-            return Disagree;
-        //} else if (IsHappy(other)) {
-        //    return Trust;
-        } else if (IsAngry(other)) {
-            return Distrust;
-        } else {
-            return NoResult;
+    public Sprite GetMingleResult(NPC other) {
+        Sprite result = CheckAgree(this, other);
+        if (result != null) {
+            return result;
         }
-    }   
-    private bool IsAgree(Clue other) {
-        if (Conversation.ActualClue.Identifier == other.Identifier) {
-            // Descriptive
-            if (Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive) {
-                // Talking about the same part
-                if (other.NPCPartType == Conversation.ActualClue.NPCPartType) {
-                    // Agreement on descriptive clue
-                    if (other.NPCDescription == Conversation.ActualClue.NPCDescription) {
-                        return true;
-                    }
-                    // Disagreement on descriptive clue
-                    else {
-                        return false;
-                    }
-                }
-            }
-            // Supportive or  Accusatory
-            else {
-                // Same target
-                if (Conversation.ActualClue.Targets.Any(npc => other.Targets.Any(oNPC => npc == oNPC))) {
-                    return true;
+        result = CheckTrust(this, other);
+        if(result != null) {
+            return result;
+        }
+        return null;
+    }
+
+    public Sprite CheckAgree(NPC a, NPC b) {
+        // Description + Description
+        if (a.Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive &&
+            b.Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive) {
+            if (a.Conversation.ActualClue.NPCPartType == b.Conversation.ActualClue.NPCPartType) {
+                if (String.Compare(a.Conversation.ActualClue.NPCDescription, b.Conversation.ActualClue.NPCDescription, true) == 0) {
+                    // Agree
+                    return Agree;
                 } else {
-                    return false;
+                    // Disagree
+                    return Disagree;
                 }
+            } else {
+                // No result
+                return null;
             }
         }
-        return false;
+        // Accusation + Pointer
+        else if ((a.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && b.Conversation.ActualClue.Identifier == ClueIdentifier.Pointer) ||
+                   (a.Conversation.ActualClue.Identifier == ClueIdentifier.Pointer && b.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory)) {
+            if (a.Conversation.ActualClue.Targets[0] == b.Conversation.ActualClue.Targets[0]) {
+                // Disagree
+                return Disagree;
+            } else {
+                // No result
+                return null;
+            }
+        }
+        // Murder Location + Murder Location
+        else if (a.Conversation.ActualClue.Identifier == ClueIdentifier.MurderLocation &&
+                b.Conversation.ActualClue.Identifier == ClueIdentifier.MurderLocation) {
+            if (String.Compare(a.Conversation.ActualClue.Location, b.Conversation.ActualClue.Location, true) == 0) {
+                // Agree
+                return Agree;
+            } else {
+                // Disagree
+                return Disagree;
+            }
+        }
+        return null;
     }
-    private bool IsDisagree(Clue other) {
-        if (Conversation.ActualClue.Identifier == other.Identifier) {
-            // Descriptive
-            if (Conversation.ActualClue.Identifier == ClueIdentifier.Descriptive) {
-                // Talking about the same part
-                if (other.NPCPartType == Conversation.ActualClue.NPCPartType) {
-                    // Agreement on descriptive clue
-                    if (other.NPCDescription == Conversation.ActualClue.NPCDescription) {
-                        return false;
-                    }
-                    // Disagreement on descriptive clue
-                    else {
-                        return true;
-                    }
-                }
-            }
-            // Supportive or  Accusatory
-            else {
-                return false;
-            }
-        // Cannot reasonably be converted to match new statements.
-        //} else if ((Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && other.Identifier == ClueIdentifier.Informational) ||
-        //            (Conversation.ActualClue.Identifier == ClueIdentifier.Informational && other.Identifier == ClueIdentifier.Accusatory)) {
-        //    if (Conversation.ActualClue.Target == other.Target) {
-        //        return true;
-        //    }
+    
+    private Sprite CheckTrust(NPC a, NPC b) {
+        // Accusation + Target
+        if ((a.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && a.Conversation.ActualClue.Targets[0] == b) || 
+            (b.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory && b.Conversation.ActualClue.Targets[0] == this)) {
+            return Distrust;
         }
-        return false;
-    }
-    //public bool IsHappy(NPC other) {
-    //    if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
-    //        other.Conversation.ActualClue.Target == this) ||
-    //        (Conversation.ActualClue.Identifier == ClueIdentifier.Informational &&
-    //        Conversation.ActualClue.Target == other)) {
-    //        return true;
-    //    }
-    //    return false;
-    //}
-    public bool IsAngry(NPC other) {
-        if ((other.Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
-            other.Conversation.ActualClue.Targets.Contains(this)) ||
-            (Conversation.ActualClue.Identifier == ClueIdentifier.Accusatory &&
-            Conversation.ActualClue.Targets.Contains(other))) {
-            return true;
+        // Pointer + Target
+        else if((a.Conversation.ActualClue.Identifier == ClueIdentifier.Pointer && a.Conversation.ActualClue.Targets[0] == b) ||
+                (b.Conversation.ActualClue.Identifier == ClueIdentifier.Pointer && b.Conversation.ActualClue.Targets[0] == this)) {
+            return Trust;
         }
-        return false;
+        return null;
     }
     #endregion
 }
