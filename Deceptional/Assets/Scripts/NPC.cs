@@ -404,6 +404,14 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
 
         Debug.Log(Name + " mingles with " + target.Name);
 
+        // MUST BE BEFORE THE COROUTINE YIELDS TO ENSURE THE GAME STATE DOESNT CHANGE
+        // Inform target of mingling start
+        target.WaitForMingle(this);
+        // Navigate to target
+        Grid.Instance.FreeCell(currentCell);
+        currentCell = null;
+        Grid.Instance.TakeCell(targetCell);
+        currentCell = targetCell;
 
         // Change state
         CurrentBehaviour = Behaviour.Mingling;
@@ -413,13 +421,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         }
         // Set animator state
         AnimateWalk();
-        // Inform target of mingling start
-        target.WaitForMingle(this);
-        // Navigate to target
-        Grid.Instance.FreeCell(currentCell);
-        currentCell = null;
-        Grid.Instance.TakeCell(targetCell);
-        currentCell = targetCell;
+        
         navAgent.SetDestination(targetCell.transform.position);
         yield return null;   
         // Wait until near enough to the target
