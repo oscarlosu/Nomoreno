@@ -216,13 +216,13 @@ namespace Assets.Scripts {
 
         public void PrepareArrestSuccess() {
             // Victory
-            platformText = "On day " + currentDay + " the detective\n caught the murderer:\n" + CurrentInterrogationTarget.Name;
+            platformText = TextWrapper.BreakLine(currentDay + " people were killed before the detective caught the murderer: " + CurrentInterrogationTarget.Name);
             PlatformButton.ChangeButton("RETURN TO\nMENU", "EndGameTransition");
         }
 
         public void PrepareGameOver() {
             // Game Over
-            platformText = "On day " + currentDay + " the detective\n hadn't arrested the murderer\n but since everyone else was dead, \nthere was no real need anymore...";
+            platformText = TextWrapper.BreakLine("After " + currentDay + " people had been killed, the detective was fired.");
             PlatformButton.ChangeButton("RETURN TO\nMENU", "EndGameTransition");
         }
         public void ShowPlatformText() {
