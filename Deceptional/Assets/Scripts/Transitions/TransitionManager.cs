@@ -93,6 +93,7 @@ public class TransitionManager : MonoBehaviour {
         CamerasIn.Execute();
         yield return new WaitUntil(() => CamerasIn.State == Transition.TransitionState.Done);
         // Tell PlayerController to generate next day
+        PlayerController.Instance.ClearPlatformText();
         PlayerController.Instance.GenerateNextDay();
         // Rotate waiting room
         camController.enabled = false;
@@ -154,11 +155,11 @@ public class TransitionManager : MonoBehaviour {
     }
     private IEnumerator DayOverCo(bool gameFinished) {
 		PlayerController.Instance.State = PlayerController.ControllerState.Disabled;
+        // Clear platform text
+        PlayerController.Instance.ClearPlatformText();
         // Play day over sound
         AudioManager.Instance.Play(DayOverSound, s => s.volume = DayOverSoundVolume);
         if (gameFinished) {
-            // Clear platform text
-            PlayerController.Instance.ClearPlatformText();
             camController.enabled = false;
             WaitingRoomCam.Execute(-1);
             ButtonsOut.Execute();

@@ -394,7 +394,7 @@ namespace Assets.Scripts {
 
         public void GenerateNextDay() {
             ClearScene();
-            ClearPlatformText();
+            //ClearPlatformText();
             ++currentDay;
             // Murder new witness
             Clue.LatestVictim = MurderWitness();
