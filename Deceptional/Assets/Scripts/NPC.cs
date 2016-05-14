@@ -145,7 +145,8 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         MingleReady,
         Mingling,
         MingleWaiting,
-        Interrogated
+        Interrogated,
+        ReturningFromInterrogation
     };
     public Behaviour CurrentBehaviour = Behaviour.None;
     public bool CanMingle {
@@ -317,13 +318,13 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         NameLabelHolder.SetActive(false);
     }
 
-    private bool RotateTowards(Transform target) {
+    private bool RotateTowards(Vector3 target) {
         // Update rotation
-        Vector3 direction = (target.position - transform.position).normalized;
+        Vector3 direction = (target - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * RotationSpeed);
         // Return true if target reached
-        return Mathf.Approximately(Quaternion.Angle(transform.rotation, lookRotation), 0.0f);
+        return Quaternion.Angle(transform.rotation, lookRotation) < 5.0f;
     }
 
     private bool RotateTowards(Quaternion targetRotation) {
@@ -331,7 +332,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         // Update rotation of name label
         nameLabelScript.UpdateRotation();
         // Return true if target reached
-        return Mathf.Approximately(Quaternion.Angle(transform.rotation, targetRotation), 0.0f);
+        return Quaternion.Angle(transform.rotation, targetRotation) < 5.0f;
     }
 
     private bool HasReachedDestination() {
@@ -417,6 +418,10 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
 
         // Change state
         CurrentBehaviour = Behaviour.Mingling;
+        // Face other NPC
+        while (!RotateTowards(targetCell.transform.position)) {
+            yield return null; // Replace with WaitUntil(RotateTowards(target.transform));
+        }
         // Set animator state
         AnimateWalk();
         // Inform target of mingling start
@@ -433,7 +438,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         // Set animator state
         AnimateNone();
         // Face other NPC
-        while (!RotateTowards(target.transform)) {
+        while (!RotateTowards(target.transform.position)) {
             yield return null; // Replace with WaitUntil(RotateTowards(target.transform));
         }
         // Set state so that other NOPC knows that the mingling can start
@@ -451,8 +456,13 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         // Select destination
         Grid.Instance.FreeCell(currentCell);
         currentCell = null;
-        //currentCell = Grid.Instance.GetRandomCell();
         currentCell = Grid.Instance.GetIsolatedCell();
+
+        // Face target cell
+        while (!RotateTowards(currentCell.transform.position)) {
+            yield return null; // Replace with WaitUntil(RotateTowards(target.transform));
+        }
+
         navAgent.SetDestination(currentCell.transform.position);
         // Set animator state
         AnimateWalk();
@@ -467,9 +477,6 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     private IEnumerator CoWaitForMingle(NPC other) {
         // Set behaviour to MingleWaiting
         CurrentBehaviour = Behaviour.MingleWaiting;
-
-
-        Debug.Log(Name + " receives mingle from " + other.Name);
         // Walk animation
         AnimateIdle();
         //MingleReady = false;
@@ -480,7 +487,7 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         }
         // Dont want any animation during rotation
         AnimateNone();
-        while (!RotateTowards(other.transform)) {
+        while (!RotateTowards(other.transform.position)) {
             yield return null;
         }
         // Set behaviour to mingling.
@@ -499,6 +506,9 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     }
 
     private IEnumerator CoGoToInterrogation() {
+        while (!RotateTowards(PoliceBoxPosition)) {
+            yield return null;
+        }
         // Walking animation
         AnimateWalk();
         // Free cell
@@ -526,6 +536,10 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
     }
 
     private IEnumerator CoGoToWaiting() {
+        CurrentBehaviour = Behaviour.ReturningFromInterrogation;
+        while (!RotateTowards(PoliceBoxPosition)) {
+            yield return null;
+        }
         //CanMingle = false;
         // Teleport to waiting room
         if (warped) {

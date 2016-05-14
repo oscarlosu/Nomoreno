@@ -307,8 +307,11 @@ namespace Assets.Scripts {
             AudioManager.Instance.Play(MinglingSound, s => s.volume = MinglingSoundVolume);
             // Reset States
             for (int i = 0; i < NPC.NPCList.Count; ++i) {
-                NPC.NPCList[i].CurrentBehaviour = NPC.Behaviour.None;
-                NPC.NPCList[i].Emoji.enabled = false;
+                if(NPC.NPCList[i].CurrentBehaviour != NPC.Behaviour.ReturningFromInterrogation) {
+                    NPC.NPCList[i].CurrentBehaviour = NPC.Behaviour.None;
+                    NPC.NPCList[i].Emoji.enabled = false;
+                }
+                
             }
 
             // Shuffles NPCList
