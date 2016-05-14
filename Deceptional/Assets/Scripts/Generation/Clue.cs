@@ -69,6 +69,13 @@ namespace Assets.Scripts {
                     clueBuilder.Replace(m.Value, usedPronoun);
                 }
             }
+
+            var capitalCapture = new Regex(@"\.\s(\w)");
+            var capitalMatches = capitalCapture.Matches(clueBuilder.ToString());
+            foreach (Match m in capitalMatches) {
+                // m.Groups[1].Value[0] is the only character in the string.
+                clueBuilder[m.Groups[1].Index] = m.Groups[1].Value.ToUpper()[0];
+            }
         
             return clueBuilder.ToString().Trim();
         }
@@ -91,9 +98,6 @@ namespace Assets.Scripts {
 
         private static string SerializeTargets(List<NPC> targets) {
             if (targets.Count > 1) {
-                // Max 4 targets
-                //string returnValue = targets.Take(Math.Min(targets.Count-1, 3)).Select(npc => npc.Name).Aggregate((ag, s) => ag + ", " + s);
-                // Any # targets
                 string returnValue = targets.Take(targets.Count - 1).Select(npc => npc.Name).Aggregate((ag, s) => ag + ", " + s);
                 returnValue += useCockney ? " and " + targets.Last().Name : " an' " + targets.Last().Name;
                 return returnValue;

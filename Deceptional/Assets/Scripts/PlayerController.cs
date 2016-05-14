@@ -419,7 +419,7 @@ namespace Assets.Scripts {
             // Show new day message
             var dayStartStatements = IO.FileLoader.GetLimericks();
             // Fuck Ann that sleazy greaseball, she is always stealing my fries. #FuckAnn
-            var platformMessage = Clue.LatestVictim.Name != "Ann" && Rng.Next(5) != 0 ?
+            var platformMessage = !(Clue.LatestVictim.Name == "Ann" && Rng.Next(5) == 0) ?
                 ConstructDayStatement(dayStartStatements[Rng.Next(dayStartStatements.Count)], Clue.LatestVictim.Name, Clue.LatestVictim.IsMale) :
                 "I was in a room with Hitler, Bin Laden, and Ann, carrying a gun with two bullets, and I still shot Ann twice.";
             platformText = TextWrapper.BreakLine(platformMessage);
