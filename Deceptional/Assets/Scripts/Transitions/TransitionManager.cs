@@ -280,10 +280,6 @@ public class TransitionManager : MonoBehaviour {
                 AudioManager.Instance.Play(CageHitSound, s => s.volume = CageHitSoundVolume);
             }            
         } while (CageLift.State != Transition.TransitionState.Done || WaitingRoomCam.State != Transition.TransitionState.Done || ButtonsOut.State != Transition.TransitionState.Done);
-
-        if(WaitingRoomCam.State != Transition.TransitionState.Done) {
-            Debug.Log("Platform rotation not done");
-        }
             // Unparent accused from cage
             arrested.SetParent(parent);
         // Play result sound with small delay to avoid sound overlapping
