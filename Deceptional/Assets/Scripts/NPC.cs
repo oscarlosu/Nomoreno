@@ -177,9 +177,6 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         // Place npc on random empty position
         Grid.Instance.FreeCell(currentCell);
         currentCell = Grid.Instance.GetIsolatedCell();
-        if (!navAgent.enabled) {
-            Debug.Log(Name + " was in the cage");
-        }
         navAgent.enabled = false;
         transform.position = currentCell.transform.position;
         navAgent.enabled = true;
@@ -401,8 +398,6 @@ public class NPC : MonoBehaviour, IPointerDownHandler {
         // Select random target
         NPC target = targets[PlayerController.Instance.Rng.Next(0, targets.Count)];
         Cell targetCell = target.currentCell.Adjacent.Find(cell => cell.Free);
-
-        Debug.Log(Name + " mingles with " + target.Name);
 
         // MUST BE BEFORE THE COROUTINE YIELDS TO ENSURE THE GAME STATE DOESNT CHANGE
         // Inform target of mingling start

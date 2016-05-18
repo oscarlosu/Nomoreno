@@ -34,7 +34,7 @@ namespace Assets.Scripts {
                 default: throw new Exception("NPCPart unidentifiable");
             }
             Location = "Nowhere";
-            if (targets.Count == 0) { UnityEngine.Debug.LogWarning("Clue of type: '" + Identifier.ToString() + "' constructed with no target" /*+ ConstructClue()*/); }
+            //if (targets.Count == 0) { UnityEngine.Debug.LogWarning("Clue of type: '" + Identifier.ToString() + "' constructed with no target" /*+ ConstructClue()*/); }
         }
         #endregion
 
