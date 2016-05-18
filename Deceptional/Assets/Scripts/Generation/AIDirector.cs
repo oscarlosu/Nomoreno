@@ -62,7 +62,7 @@ namespace Assets.Scripts {
         /// </summary>
         public void CalculateDifficulty() {
             difficultyValue = Difficulty - 5;
-            var difficultyModifier = (HardClues.Count * (5f / 2f) + (HardClues.Count * (2f / 5f)) * (float)(PlayerController.Instance.Rng.NextDouble() + 0.5f));
+            var difficultyModifier = (HardClues.Count * (5f / 2f) + (HardClues.Count * (2f / 5f)) * (float)(PlayerController.Instance.Rng.NextDouble() - 0.5f));
             difficultyModifier = difficultyModifier >= 0 ? Math.Min(difficultyModifier, 2) : Math.Max(difficultyModifier, -2);
             difficultyValue += difficultyModifier;
 
