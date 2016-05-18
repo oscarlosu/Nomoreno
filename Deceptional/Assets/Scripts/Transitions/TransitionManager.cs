@@ -290,6 +290,8 @@ public class TransitionManager : MonoBehaviour {
         if(gameFinished) {
             Invoke("PlayArrestSuccesSound", ResultSoundDelay);
         } else {
+            // Tell PlayerController to generate next day
+            PlayerController.Instance.GenerateNextDay();
             Invoke("PlayArrestFailureSound", ResultSoundDelay);
         }
 
@@ -311,9 +313,7 @@ public class TransitionManager : MonoBehaviour {
 
     void PlayArrestFailureSound() {
         // Play failure
-        AudioManager.Instance.Play(FailureSound, s => s.volume = FailureSoundVolume);
-        // Tell PlayerController to generate next day
-        PlayerController.Instance.GenerateNextDay();
+        AudioManager.Instance.Play(FailureSound, s => s.volume = FailureSoundVolume);        
     }
 
     
