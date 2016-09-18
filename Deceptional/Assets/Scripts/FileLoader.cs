@@ -17,7 +17,7 @@ namespace Assets.Scripts.IO {
             // Loads the text document as a TextAsset, Unity's text-file object.
             var locations = UnityEngine.Resources.Load<UnityEngine.TextAsset>(@"Statements/variables/locations");
             // Splits the text document at linebreaks, removes empty entries and returns the data as a list.
-            return locations.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return locations.text.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Assets.Scripts.IO {
         /// <returns>A list of all defined NPC names.</returns>
         public static List<string> GetNames(bool maleNames) {
             var names = UnityEngine.Resources.Load<UnityEngine.TextAsset>(@"Statements/variables/names");
-            string[] namesArray = names.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            string[] namesArray = names.text.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries);
             if (maleNames) {
                 return namesArray.Where(s => s.StartsWith("[M]")).Select(s => s.Replace("[M]", "").Trim()).ToList();
             } else {
@@ -48,7 +48,7 @@ namespace Assets.Scripts.IO {
                 default: throw new ArgumentException("Invalid part type supplied. Only 'Hat', 'Shirt', 'Pants' & 'Item' are valid.");
             }
             var parts = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
-            return parts.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return parts.text.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
         /// <summary>
@@ -68,13 +68,13 @@ namespace Assets.Scripts.IO {
             }
 
             var templates = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
-            return templates.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return templates.text.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
         public static List<string> GetLimericks() {
             string filePath = @"Statements/startstatement";
             var limericks = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
-            return limericks.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return limericks.text.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
         #region Subtemplates
@@ -82,14 +82,14 @@ namespace Assets.Scripts.IO {
             string filePath = @"Statements/templates/alibilocation";
             var templates = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
 
-            return templates.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return templates.text.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
         public static List<string> GetIncriminates() {
             string filePath = @"Statements/templates/incriminatinglocation";
             var templates = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filePath);
 
-            return templates.text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return templates.text.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
         #endregion
     }
